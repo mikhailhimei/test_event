@@ -78,12 +78,16 @@ function renderSettings() {
 function addScenario(scenario) {
   const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
   node.querySelector('.scenario-name').value = scenario.name || `Сценарий ${els.scenarios.children.length + 1}`;
+  node.querySelector('.scenario-name').addEventListener('click', (event) => event.stopPropagation());
+  node.querySelector('.scenario-name').addEventListener('keydown', (event) => event.stopPropagation());
   node.querySelector('.add-rule').addEventListener('click', (event) => {
     event.preventDefault();
+    event.stopPropagation();
     addRule(node.querySelector('.scenario-rules'), DEFAULT_RULE);
   });
   node.querySelector('.remove-scenario').addEventListener('click', (event) => {
     event.preventDefault();
+    event.stopPropagation();
     node.remove();
   });
   const rulesContainer = node.querySelector('.scenario-rules');
@@ -163,6 +167,7 @@ function renderList(container, records, emptyText) {
       <div>${escapeHtml(record.url)}</div>
       <div class="item-meta">${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}</div>
       <pre>${escapeHtml(formatResults(record.results))}</pre>
+      ${formatRequestDetails(record.request)}
     `;
     return item;
   }));
@@ -182,6 +187,25 @@ function formatResults(results) {
     }
     return lines.join('\n');
   }).join('\n\n');
+}
+
+function formatRequestDetails(request) {
+  if (request === undefined) return '';
+
+  return `
+    <details class="request-details">
+      <summary>Весь запрос</summary>
+      <pre class="request-payload">${escapeHtml(formatJson(request))}</pre>
+    </details>
+  `;
+}
+
+function formatJson(value) {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
 }
 
 function normalizeSettings(settings) {

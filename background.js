@@ -67,6 +67,7 @@ async function inspectOutgoingRequest(details) {
     frameId: details.frameId,
     at: new Date().toISOString(),
     results: meaningfulResults,
+    request: json,
   };
 
   const { matches = [], history = [] } = await chrome.storage.local.get(['matches', 'history']);
