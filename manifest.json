@@ -8,8 +8,7 @@
     "webRequest",
     "sidePanel",
     "tabs",
-    "scripting",
-    "debugger"
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -22,5 +21,6 @@
   },
   "action": {
     "default_title": "Open Response Match Panel"
-  }
+  },
+  "incognito": "split"
 }

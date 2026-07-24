@@ -9,7 +9,6 @@ const state = {
   settings: DEFAULT_SETTINGS,
   matches: [],
   history: [],
-  seenRequests: new Set(),
 };
 
 const els = {
@@ -39,7 +38,7 @@ async function init() {
   renderMatches();
   renderHistory();
   bindUi();
-  await attachDebuggerToActiveTab();
+  chrome.storage.onChanged.addListener(handleStorageChanges);
 }
 
 function bindUi() {
@@ -96,100 +95,18 @@ async function saveSettings() {
   await chrome.storage.local.set({ settings: state.settings });
 }
 
-async function attachDebuggerToActiveTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.id) return;
+function handleStorageChanges(changes, areaName) {
+  if (areaName !== 'local') return;
 
-  const target = { tabId: tab.id };
-  chrome.debugger.attach(target, '1.3', () => {
-    if (chrome.runtime.lastError) return;
-    chrome.debugger.sendCommand(target, 'Network.enable', { maxPostDataSize: 1048576 });
-  });
-
-  chrome.debugger.onEvent.addListener((source, method, params) => {
-    if (source.tabId !== tab.id || method !== 'Network.requestWillBeSent') return;
-    void handleRequest(params);
-  });
-}
-
-async function handleRequest(params) {
-  if (!state.settings.requestPath || !params.request.url.includes(state.settings.requestPath)) return;
-  if (state.seenRequests.has(params.requestId)) return;
-  state.seenRequests.add(params.requestId);
-
-  const json = parseRequestPayload(params.request.postData);
-  if (!json) return;
-
-  const results = state.settings.rules.map((rule) => compareRule(rule, json));
-  const meaningfulResults = results.filter((result) => result.matched || result.mode === 'loose');
-  if (!meaningfulResults.length) return;
-
-  const record = {
-    id: crypto.randomUUID(),
-    url: params.request.url,
-    method: params.request.method,
-    at: new Date().toISOString(),
-    results: meaningfulResults,
-  };
-
-  state.matches = [record, ...state.matches].slice(0, 100);
-  if (meaningfulResults.some((result) => result.matched)) {
-    state.history = [record, ...state.history].slice(0, 300);
+  if (changes.matches) {
+    state.matches = changes.matches.newValue || [];
+    renderMatches();
   }
 
-  await chrome.storage.local.set({ matches: state.matches, history: state.history });
-  renderMatches();
-  renderHistory();
-}
-
-function parseRequestPayload(postData) {
-  if (!postData) return null;
-
-  try {
-    return JSON.parse(postData);
-  } catch {
-    const formData = new URLSearchParams(postData);
-    const jsonLikePayload = formData.get('payload') || formData.get('data') || formData.get('json');
-    if (!jsonLikePayload) return null;
-
-    try {
-      return JSON.parse(jsonLikePayload);
-    } catch {
-      return null;
-    }
+  if (changes.history) {
+    state.history = changes.history.newValue || [];
+    renderHistory();
   }
-}
-
-function compareRule(rule, json) {
-  const actual = getByPath(json, rule.keyPath);
-  const expectedValues = parseExpected(rule.expected);
-  const actualValues = Array.isArray(actual) ? actual.map(stringifyComparable) : [stringifyComparable(actual)];
-  const matched = rule.mode === 'strict'
-    ? actualValues.length === expectedValues.length && expectedValues.every((value, index) => actualValues[index] === value)
-    : expectedValues.every((value) => actualValues.includes(value));
-
-  return {
-    keyPath: rule.keyPath,
-    mode: rule.mode,
-    expected: expectedValues,
-    actual: actualValues,
-    matched,
-    extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedValues.includes(value)) : [],
-  };
-}
-
-function getByPath(source, path) {
-  return path.split('.').reduce((value, key) => value == null ? undefined : value[key], source);
-}
-
-function parseExpected(value) {
-  return value.split(',').map((part) => part.trim()).filter(Boolean).map(stringifyComparable);
-}
-
-function stringifyComparable(value) {
-  if (value == null) return '';
-  if (typeof value === 'object') return JSON.stringify(value);
-  return String(value);
 }
 
 function renderMatches() {

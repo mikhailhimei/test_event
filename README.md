@@ -21,4 +21,4 @@ Chrome Manifest V3 extension that opens as a browser side panel and watches outg
 4. Select this repository folder.
 5. Click the extension icon to open the side panel.
 
-> Outgoing request payload inspection uses the Chrome Debugger API, so Chrome will show a debugger permission warning while the panel is attached to the active tab.
+> To inspect requests in Incognito, enable **Allow in Incognito** for the extension in `chrome://extensions`. Chrome keeps split Incognito storage separate from regular browsing storage.
