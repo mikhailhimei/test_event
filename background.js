@@ -176,12 +176,15 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
 function matchStrictValues(actualValues, expectedGroups) {
   if (!actualValues.length || !expectedGroups.length) return false;
 
-  if (expectedGroups.length === 1) {
+  const hasSingleExpectedGroup = expectedGroups.length === 1;
+  if (hasSingleExpectedGroup) {
     return actualValues.every((actualValue) => expectedGroups[0].includes(actualValue));
   }
 
-  return actualValues.length === expectedGroups.length
-    && expectedGroups.every((values, index) => values.includes(actualValues[index]));
+  const hasSameValuesCount = actualValues.length === expectedGroups.length;
+  if (!hasSameValuesCount) return false;
+
+  return expectedGroups.every((values, index) => values.includes(actualValues[index]));
 }
 
 async function resolveExpectedGroups(expectedGroups, details, variableValues) {
