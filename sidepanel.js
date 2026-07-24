@@ -22,12 +22,16 @@ const els = {
   scenarioTemplate: document.querySelector('#scenarioTemplate'),
   ruleTemplate: document.querySelector('#ruleTemplate'),
   addScenario: document.querySelector('#addScenario'),
+  toggleScenarios: document.querySelector('#toggleScenarios'),
   saveSettings: document.querySelector('#saveSettings'),
   clearMatches: document.querySelector('#clearMatches'),
   clearHistory: document.querySelector('#clearHistory'),
   matches: document.querySelector('#matches'),
   history: document.querySelector('#history'),
   blockExternal: document.querySelector('#blockExternal'),
+  downloadScenarios: document.querySelector('#downloadScenarios'),
+  uploadScenarios: document.querySelector('#uploadScenarios'),
+  transferStatus: document.querySelector('#transferStatus'),
   tabs: document.querySelectorAll('.tab'),
   panels: document.querySelectorAll('.tab-panel'),
   scenarioModal: document.querySelector('#scenarioModal'),
@@ -129,6 +133,7 @@ function createScenarioDraft() {
     rules: [{ ...DEFAULT_RULE }],
   };
 }
+
 
 function addRule(container, rule) {
   const node = els.ruleTemplate.content.firstElementChild.cloneNode(true);
@@ -272,7 +277,7 @@ function renderList(container, records, emptyText) {
         </summary>
 
         <div class="item-details">
-          <pre>${escapeHtml(formatResults(record.results))}</pre>
+          <div class="result-list">${formatResults(record.results)}</div>
           ${formatRequestDetails(record.request)}
         </div>
       `;
@@ -283,9 +288,9 @@ function renderList(container, records, emptyText) {
 }
 function formatResults(results) {
   return results.map((result) => {
+    const mode = result.mode === 'strict' ? 'строго' : result.mode === 'exists' ? 'должно быть' : 'не строго';
     const lines = [
-      `${result.scenarioName || 'Сценарий'} → ${result.keyPath} | ${result.mode === 'strict' ? 'строго' : 'не строго'}${result.required ? ' | 100%' : ''}`,
-      `ожидали: ${result.expected.join(', ')}`,
+      `ожидали: ${result.expected?.length ? result.expected.join(', ') : 'любое значение'}`,
       `получили: ${result.actual.length ? result.actual.join(', ') : 'путь не найден'}`,
       `путь: ${result.found ? 'найден' : 'не найден'}`,
       `результат: ${result.matched ? 'совпало' : 'не совпало'}`,
@@ -293,8 +298,17 @@ function formatResults(results) {
     if (result.extra.length) {
       lines.push(`доп. поля: ${result.extra.join(', ')}`);
     }
-    return lines.join('\n');
-  }).join('\n\n');
+
+    return `
+      <details class="result-block" open>
+        <summary>
+          <span>${escapeHtml(result.scenarioName || 'Сценарий')} → ${escapeHtml(result.keyPath)}</span>
+          <span class="result-meta">${mode}${result.required ? ' | 100%' : ''}</span>
+        </summary>
+        <pre>${escapeHtml(lines.join('\n'))}</pre>
+      </details>
+    `;
+  }).join('');
 }
 
 function formatRequestDetails(request) {
@@ -316,6 +330,52 @@ function formatJson(value) {
   }
 }
 
+function downloadScenarios() {
+  const scenarios = readScenariosFromForm();
+  const blob = new Blob([JSON.stringify({ scenarios }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `response-match-scenarios-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  setTransferStatus('Сценарии скачаны.');
+}
+
+async function uploadScenarios(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  try {
+    const data = JSON.parse(await file.text());
+    const scenarios = normalizeScenarios(data);
+    state.settings = { ...state.settings, scenarios };
+    await chrome.storage.local.set({ settings: state.settings });
+    renderSettings();
+    setTransferStatus('Сценарии загружены. Нажмите «Сохранить», если измените их вручную.');
+  } catch (error) {
+    setTransferStatus(`Не удалось загрузить сценарии: ${error.message}`);
+  } finally {
+    event.target.value = '';
+  }
+}
+
+function setTransferStatus(message) {
+  els.transferStatus.textContent = message;
+}
+
+function readScenariosFromForm() {
+  return [...els.scenarios.querySelectorAll('.scenario')].map((scenario, index) => ({
+    name: scenario.querySelector('.scenario-name').value.trim() || `Сценарий ${index + 1}`,
+    rules: [...scenario.querySelectorAll('.rule')].map((rule) => ({
+      keyPath: rule.querySelector('.rule-path').value.trim(),
+      mode: rule.querySelector('.rule-mode').value,
+      expected: rule.querySelector('.rule-value').value.trim(),
+      required: rule.querySelector('.rule-required-input').checked,
+    })).filter((rule) => rule.keyPath && (rule.mode === 'exists' || rule.expected)),
+  })).filter((scenario) => scenario.rules.length);
+}
+
 function normalizeSettings(settings) {
   return {
     ...DEFAULT_SETTINGS,
@@ -325,7 +385,8 @@ function normalizeSettings(settings) {
 }
 
 function normalizeScenarios(settings) {
-  if (settings?.scenarios?.length) return settings.scenarios;
+  if (Array.isArray(settings) && settings.length) return settings;
+  if (Array.isArray(settings?.scenarios) && settings.scenarios.length) return settings.scenarios;
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
   return DEFAULT_SETTINGS.scenarios;
 }

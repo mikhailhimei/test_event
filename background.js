@@ -119,9 +119,11 @@ function parseJsonLikeValue(value) {
 function compareRule(rule, json, scenarioName) {
   const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
   const expectedGroups = parseExpected(rule.expected);
-  const matched = rule.mode === 'strict'
-    ? actualValues.length === expectedGroups.length && expectedGroups.every((values, index) => values.includes(actualValues[index]))
-    : expectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
+  const matched = rule.mode === 'exists'
+    ? actualValues.length > 0
+    : rule.mode === 'strict'
+      ? actualValues.length === expectedGroups.length && expectedGroups.every((values, index) => values.includes(actualValues[index]))
+      : expectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
   const expectedFlatValues = expectedGroups.flat();
 
   return {
