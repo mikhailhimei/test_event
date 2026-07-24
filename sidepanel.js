@@ -43,7 +43,6 @@ const els = {
   commonElementsStatus: document.querySelector('#commonElementsStatus'),
   toggleScenarios: document.querySelector('#toggleScenarios'),
   clearMatches: document.querySelector('#clearMatches'),
-  clearHistory: document.querySelector('#clearHistory'),
   matches: document.querySelector('#matches'),
   history: document.querySelector('#history'),
   blockExternal: document.querySelector('#blockExternal'),
@@ -77,7 +76,6 @@ async function init() {
 
   renderSettings();
   renderMatches();
-  renderHistory();
   renderVariables();
   renderCommonElements();
   bindUi();
@@ -102,11 +100,6 @@ function bindUi() {
     state.matches = [];
     await chrome.storage.local.set({ matches: [] });
     renderMatches();
-  });
-  els.clearHistory.addEventListener('click', async () => {
-    state.history = [];
-    await chrome.storage.local.set({ history: [] });
-    renderHistory();
   });
   els.tabs.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.tab)));
   document.querySelector('#burgerButton').addEventListener('click', () => {
@@ -179,8 +172,8 @@ function renderVariables() {
         await saveSettings();
         renderVariables();
       });
-      node.querySelector('.variable-name').addEventListener('input', () => saveVariablesFromUi());
-      node.querySelector('.variable-expression').addEventListener('input', () => saveVariablesFromUi());
+      // node.querySelector('.variable-name').addEventListener('input', () => saveVariablesFromUi());
+      // node.querySelector('.variable-expression').addEventListener('input', () => saveVariablesFromUi());
       node.querySelector('.apply-variable').addEventListener('click', async () => {
         readVariablesFromUi();
         await saveSettings();
@@ -220,11 +213,11 @@ function renderCommonElements() {
     node.innerHTML = `<div class="variable-row"><label class="field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><div class="button-group"><button class="secondary save-common" type="button">Сохранить</button><button class="secondary danger-text remove-common" type="button">Удалить</button></div></div><div class="scenario-rules"></div><div class="actions"><button class="secondary add-common-rule" type="button">Добавить правило</button><span class="common-save-status hint" role="status"></span></div>`;
     const rules = node.querySelector('.scenario-rules');
     (element.rules?.length ? element.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rules, rule));
-    node.querySelector('.common-name').addEventListener('change', async (event) => { state.settings.commonElements[index].name = event.target.value.trim(); await saveCommonElement(index, node); });
+    // node.querySelector('.common-name').addEventListener('change', async (event) => { state.settings.commonElements[index].name = event.target.value.trim(); await saveCommonElement(index, node); });
     node.querySelector('.add-common-rule').addEventListener('click', () => addRule(rules, DEFAULT_RULE));
     node.querySelector('.save-common').addEventListener('click', async () => { await saveCommonElement(index, node); setCommonElementStatus(node, 'Общий элемент сохранен.'); });
     node.querySelector('.remove-common').addEventListener('click', async () => { state.settings.commonElements.splice(index, 1); await saveSettings(); renderCommonElements(); });
-    node.addEventListener('change', async () => saveCommonElement(index, node));
+    // node.addEventListener('change', async () => saveCommonElement(index, node));
     return node;
   }));
 }
@@ -391,22 +384,39 @@ function handleStorageChanges(changes, areaName) {
   }
 
   if (changes.matches) {
-    state.matches = changes.matches.newValue || [];
+  const newMatches = changes.matches.newValue || [];
+
+  // Если список еще не построен или был очищен
+  if (
+    !els.matches.querySelector(".item") ||
+    newMatches.length < state.matches.length
+  ) {
+    state.matches = newMatches;
     renderMatches();
+    return;
   }
 
+  appendNewMatches(newMatches);
+  state.matches = newMatches;
+}
+
   if (changes.history) {
-    state.history = changes.history.newValue || [];
+  const newHistory = changes.history.newValue || [];
+
+  if (!els.history.querySelector(".item") ||
+      newHistory.length < state.history.length) {
+    state.history = newHistory;
     renderHistory();
+    return;
   }
+
+  appendNewHistory(newHistory);
+  state.history = newHistory;
+}
 }
 
 function renderMatches() {
   renderList(els.matches, state.matches, 'Совпадений пока нет.');
-}
-
-function renderHistory() {
-  renderList(els.history, state.history, 'История пуста.');
 }
 
 function escapeHtml(value) {
@@ -416,6 +426,108 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+function appendNewHistory(newHistory) {
+  const existingKeys = new Set(
+    [...els.history.querySelectorAll(".item")]
+      .map(el => el.dataset.key)
+  );
+
+  const key = (record) => `${record.at}|${record.url}|${record.method}`;
+
+  const added = newHistory.filter(record => !existingKeys.has(key(record)));
+
+  if (!added.length) {
+    return;
+  }
+
+  if (els.history.classList.contains("empty")) {
+    els.history.classList.remove("empty");
+    els.history.replaceChildren();
+  }
+
+  for (let i = added.length - 1; i >= 0; i--) {
+    const item = createMatchItem(added[i]);
+    item.dataset.key = key(added[i]);
+    els.history.prepend(item);
+  }
+
+  while (els.history.children.length > newHistory.length) {
+    els.history.lastElementChild.remove();
+  }
+}
+
+function createMatchItem(record) {
+  const item = document.createElement('details');
+
+  const results = Array.isArray(record.results) ? record.results : [];
+
+  const allMatched = results.every(r => r.matched);
+
+  const scenarioNames = Array.from(
+    new Set(results.map(r => r.scenarioName).filter(Boolean))
+  );
+
+  let titleText = allMatched
+    ? `Совпало`
+    : 'Есть несовпадения';
+
+  titleText = `${titleText} — ${scenarioNames.join(', ') || 'Сценарий'}`
+
+  item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
+  item.dataset.key = `${record.at}|${record.url}|${record.method}`;
+
+  item.innerHTML = `
+    <summary class="item-summary">
+      <span class="item-title">${escapeHtml(titleText)}</span>
+      <span>${escapeHtml(record.url)}</span>
+      <span class="item-meta">
+        ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
+      </span>
+    </summary>
+
+    <div class="item-details">
+      <div class="result-list">
+        ${results.length ? formatResults(results) : ""}
+      </div>
+      ${formatRequestDetails(record.request)}
+    </div>
+  `;
+
+  return item;
+}
+
+function appendNewMatches(newMatches) {
+  const getKey = (record) =>
+    `${record.at}|${record.url}|${record.method}`;
+
+  const existingKeys = new Set(
+    [...els.matches.querySelectorAll(".item")]
+      .map(el => el.dataset.key)
+  );
+
+  const added = newMatches.filter(
+    record => !existingKeys.has(getKey(record))
+  );
+
+  if (!added.length) {
+    return;
+  }
+
+  if (els.matches.classList.contains("empty")) {
+    els.matches.classList.remove("empty");
+    els.matches.replaceChildren();
+  }
+
+  for (let i = added.length - 1; i >= 0; i--) {
+    const item = createMatchItem(added[i]);
+    item.dataset.key = getKey(added[i]);
+    els.matches.prepend(item);
+  }
+
+  while (els.matches.children.length > newMatches.length) {
+    els.matches.lastElementChild.remove();
+  }
 }
 
 function renderList(container, records, emptyText) {
@@ -427,37 +539,10 @@ function renderList(container, records, emptyText) {
   }
 
   container.replaceChildren(
-    ...records.map((record) => {
-      const item = document.createElement('details');
-
-      const allMatched = record.results.every((r) => r.matched);
-
-        const scenarioNames = Array.from(new Set(record.results.map((r) => r.scenarioName).filter(Boolean)));
-        const titleText = allMatched ? `Совпало — ${scenarioNames.join(', ') || 'Сценарий'}` : 'Есть несовпадения';
-
-        item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
-
-        item.innerHTML = `
-          <summary class="item-summary">
-            <span class="item-title">
-              ${escapeHtml(titleText)}
-            </span>
-            <span>${escapeHtml(record.url)}</span>
-            <span class="item-meta">
-              ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
-            </span>
-          </summary>
-
-          <div class="item-details">
-            <div class="result-list">${formatResults(record.results)}</div>
-            ${formatRequestDetails(record.request)}
-          </div>
-        `;
-
-      return item;
-    })
+    ...records.map(createMatchItem)
   );
 }
+
 function formatResults(results) {
   return results.map((result) => {
     const mode = result.mode === 'strict' ? 'строго' : result.mode === 'exists' ? 'должно быть' : 'не строго';

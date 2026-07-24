@@ -180,7 +180,8 @@ async function resolveExpectedGroups(expectedGroups, details, variableValues) {
   return await Promise.all(expectedGroups.map(async (variants) => {
     return await Promise.all(variants.map(async (entry) => {
       if (entry.type === 'cookie') {
-        const cookie = await chrome.cookies.get({ url: details.url, name: entry.name });
+        console.log(details)
+        const cookie = await chrome.cookies.get({ url: details.initiator, name: entry.name });
         return stringifyComparable(cookie?.value ?? '');
       }
       if (entry.type === 'url') {
@@ -349,7 +350,7 @@ async function evaluateExpressionValue(value, details, currentValues) {
     }
     if (token.type === 'cookie') {
       try {
-        const cookie = await chrome.cookies.get({ url: details.url, name: token.name });
+        const cookie = await chrome.cookies.get({ url: details.initiator, name: token.name });
         return stringifyComparable(cookie?.value ?? '');
       } catch {
         return '';
