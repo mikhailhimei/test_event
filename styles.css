@@ -86,11 +86,10 @@ button:hover { background: var(--primary-dark); }
 .hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 
 .rule {
-  position: relative;
   display: grid;
   gap: 8px;
   border-top: 1px solid var(--border);
-  padding: 12px 38px 12px 0;
+  padding: 12px 0;
 }
 .rule:first-child { border-top: 0; }
 .icon {
@@ -171,6 +170,28 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
   display: flex;
   justify-content: flex-end;
   padding: 0 10px 10px;
+}
+
+
+.rule-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.remove-rule {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  color: var(--danger);
+}
+
+.remove-rule:hover {
+  background: rgba(220, 38, 38, 0.12);
+}
+
+.danger-text {
+  border-color: color-mix(in srgb, var(--danger) 48%, var(--border));
 }
 
 .rule-required {

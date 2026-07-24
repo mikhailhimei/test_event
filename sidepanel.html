@@ -116,11 +116,13 @@
           <span>Значение</span>
           <input class="rule-value" type="text" placeholder="auth_click, a|b,c или пусто для «должно быть»" />
         </label>
-        <label class="rule-required">
-          <input class="rule-required-input" type="checkbox" />
-          <span>100% обязательно</span>
-        </label>
-        <button class="icon remove-rule" type="button" title="Удалить правило">×</button>
+        <div class="rule-footer">
+          <label class="rule-required">
+            <input class="rule-required-input" type="checkbox" />
+            <span>100% обязательно</span>
+          </label>
+          <button class="secondary danger-text remove-rule" type="button">Удалить правило</button>
+        </div>
       </div>
     </template>
 
