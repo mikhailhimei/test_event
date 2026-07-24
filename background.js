@@ -15,7 +15,6 @@ let cachedSettings = DEFAULT_SETTINGS;
 const decoder = new TextDecoder('utf-8');
 
 chrome.runtime.onInstalled.addListener(async () => {
-  await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
   const { settings, matches, history } = await chrome.storage.local.get(['settings', 'matches', 'history']);
   cachedSettings = normalizeSettings(settings);
   await chrome.storage.local.set({

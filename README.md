@@ -1,6 +1,6 @@
-# Response Match Side Panel
+# Response Match Tooltip
 
-Chrome Manifest V3 extension that opens as a browser side panel and watches outgoing JSON request payloads for a configured request path.
+Chrome Manifest V3 extension that opens as a toolbar popup/tooltip and watches outgoing JSON request payloads for a configured request path.
 
 ## Features
 
@@ -20,6 +20,6 @@ Chrome Manifest V3 extension that opens as a browser side panel and watches outg
 2. Enable **Developer mode**.
 3. Click **Load unpacked**.
 4. Select this repository folder.
-5. Click the extension icon to open the side panel.
+5. Click the extension icon to open the popup tooltip.
 
 > To inspect requests in Incognito, enable **Allow in Incognito** for the extension in `chrome://extensions`. Chrome keeps split Incognito storage separate from regular browsing storage.

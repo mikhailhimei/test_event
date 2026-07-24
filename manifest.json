@@ -1,15 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Response Match Side Panel",
-  "description": "Side panel extension that watches outgoing JSON requests and compares expected values by key paths.",
+  "name": "Response Match Tooltip",
+  "description": "Toolbar popup that watches outgoing JSON requests and compares expected values by key paths.",
   "version": "1.0.0",
   "permissions": [
     "storage",
     "cookies",
     "webRequest",
-    "sidePanel",
-    "tabs",
-    "scripting"
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -17,11 +15,9 @@
   "background": {
     "service_worker": "background.js"
   },
-  "side_panel": {
-    "default_path": "sidepanel.html"
-  },
   "action": {
-    "default_title": "Open Response Match Panel"
+    "default_title": "Open Response Match Tooltip",
+    "default_popup": "sidepanel.html"
   },
   "incognito": "split"
 }
