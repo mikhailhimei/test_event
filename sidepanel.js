@@ -158,28 +158,53 @@ function renderHistory() {
   renderList(els.history, state.history, 'История пуста.');
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderList(container, records, emptyText) {
   container.classList.toggle('empty', records.length === 0);
+
   if (!records.length) {
     container.textContent = emptyText;
     return;
   }
 
-  container.replaceChildren(...records.map((record) => {
-    const item = document.createElement('article');
-    const allMatched = record.results.every((result) => result.matched);
-    item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
-    item.innerHTML = `
-      <div class="item-title">${allMatched ? 'Совпало' : 'Есть несовпадения'}</div>
-      <div>${escapeHtml(record.url)}</div>
-      <div class="item-meta">${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}</div>
-      <pre>${escapeHtml(formatResults(record.results))}</pre>
-      ${formatRequestDetails(record.request)}
-    `;
-    return item;
-  }));
-}
+  container.replaceChildren(
+    ...records.map((record) => {
+      const item = document.createElement('details');
+      item.open = true;
 
+      const allMatched = record.results.every((r) => r.matched);
+
+      item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
+
+      item.innerHTML = `
+        <summary class="item-summary">
+          <span class="item-title">
+            ${allMatched ? 'Совпало' : 'Есть несовпадения'}
+          </span>
+          <span>${escapeHtml(record.url)}</span>
+          <span class="item-meta">
+            ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
+          </span>
+        </summary>
+
+        <div class="item-details">
+          <pre>${escapeHtml(formatResults(record.results))}</pre>
+          ${formatRequestDetails(record.request)}
+        </div>
+      `;
+
+      return item;
+    })
+  );
+}
 function formatResults(results) {
   return results.map((result) => {
     const lines = [
@@ -196,14 +221,11 @@ function formatResults(results) {
   }).join('\n\n');
 }
 
-    syncRecordList('matches', changes.matches.newValue, renderMatches);
+function formatRequestDetails(request) {
+  if (request === undefined) return '';
 
-    syncRecordList('history', changes.history.newValue, renderHistory);
-function syncRecordList(key, value, render) {
-  state[key] = Array.isArray(value) ? value : [];
-  render();
-}
-
+  return `
+    <details class="request-details">
       <summary>Весь запрос</summary>
       <pre class="request-payload">${escapeHtml(formatJson(request))}</pre>
     </details>
@@ -226,22 +248,8 @@ function normalizeSettings(settings) {
   };
 }
 
-    const item = document.createElement('details');
-    item.open = true;
-      <summary class="item-summary">
-        <span class="item-title">${allMatched ? 'Совпало' : 'Есть несовпадения'}</span>
-        <span>${escapeHtml(record.url)}</span>
-        <span class="item-meta">${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}</span>
-      </summary>
-      <div class="item-details">
-        <pre>${escapeHtml(formatResults(record.results))}</pre>
-        ${formatRequestDetails(record.request)}
-      </div>
-
 function normalizeScenarios(settings) {
   if (settings?.scenarios?.length) return settings.scenarios;
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
   return DEFAULT_SETTINGS.scenarios;
 }
-  if (mode === 'exists') return 'должно быть';
-  return result.mode === 'exists' ? 'должно быть' : result.expected.join(', ');
