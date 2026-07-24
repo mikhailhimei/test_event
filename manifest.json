@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Response Match Side Panel",
+  "description": "Side panel extension that watches JSON responses and compares expected values by key paths.",
+  "version": "1.0.0",
+  "permissions": [
+    "storage",
+    "webRequest",
+    "sidePanel",
+    "tabs",
+    "scripting",
+    "debugger"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "Open Response Match Panel"
+  }
+}
