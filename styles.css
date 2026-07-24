@@ -86,11 +86,10 @@ button:hover { background: var(--primary-dark); }
 .hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 
 .rule {
-  position: relative;
   display: grid;
   gap: 8px;
   border-top: 1px solid var(--border);
-  padding: 12px 38px 12px 0;
+  padding: 12px 0;
 }
 .rule:first-child { border-top: 0; }
 .icon {
@@ -173,6 +172,28 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
   padding: 0 10px 10px;
 }
 
+
+.rule-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.remove-rule {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  color: var(--danger);
+}
+
+.remove-rule:hover {
+  background: rgba(220, 38, 38, 0.12);
+}
+
+.danger-text {
+  border-color: color-mix(in srgb, var(--danger) 48%, var(--border));
+}
+
 .rule-required {
   display: inline-flex;
   align-items: center;
@@ -217,52 +238,110 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
   line-height: 1.45;
 }
 
-.tabs { grid-template-columns: repeat(3, 1fr); }
-
-.button-group,
-.transfer-actions {
-  display: flex;
-  flex-wrap: wrap;
+.scenario-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 8px;
-  justify-content: flex-end;
-}
-
-.upload-button {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  width: 100%;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 9px 12px;
-  cursor: pointer;
-  font-weight: 600;
+  border-radius: 12px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card) 94%, var(--primary));
+  color: var(--text);
+  text-align: left;
 }
 
-.upload-button input { display: none; }
-
-.scenario summary { grid-template-columns: 1fr auto; }
-
-.result-list {
-  display: grid;
-  gap: 8px;
+.scenario-card:hover {
+  background: color-mix(in srgb, var(--card) 84%, var(--primary));
 }
 
-.result-block {
-  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
-  border-radius: 8px;
-  padding: 8px;
-  background: color-mix(in srgb, var(--card) 55%, transparent);
-}
-
-.result-block summary {
-  display: grid;
-  gap: 4px;
-  cursor: pointer;
-  font-size: 12px;
+.scenario-card-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 700;
 }
 
-.result-meta {
+.scenario-card-meta {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.58);
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal {
+  width: min(100%, 560px);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.28);
+}
+
+.modal form {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.modal-header,
+.modal-rules-header,
+.modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-header,
+.modal-rules-header {
+  justify-content: space-between;
+}
+
+.modal-header h2,
+.modal-rules-header h3 {
+  margin: 0;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+}
+
+.modal-rules-header h3 {
+  font-size: 15px;
+}
+
+.modal-close {
+  position: static;
+  flex: 0 0 auto;
+}
+
+.modal-rules {
+  max-height: 50vh;
+  overflow: auto;
+  padding: 0;
+}
+
+.modal-actions {
+  justify-content: flex-end;
+}
+
+.modal-actions-spacer {
+  flex: 1;
 }
