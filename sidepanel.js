@@ -1,7 +1,11 @@
 const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '' };
+const DEFAULT_SCENARIO = {
+  name: 'Сценарий 1',
+  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
+};
 const DEFAULT_SETTINGS = {
   requestPath: '',
-  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
+  scenarios: [DEFAULT_SCENARIO],
   blockExternal: false,
 };
 
@@ -13,9 +17,10 @@ const state = {
 
 const els = {
   requestPath: document.querySelector('#requestPath'),
-  rules: document.querySelector('#rules'),
+  scenarios: document.querySelector('#scenarios'),
+  scenarioTemplate: document.querySelector('#scenarioTemplate'),
   ruleTemplate: document.querySelector('#ruleTemplate'),
-  addRule: document.querySelector('#addRule'),
+  addScenario: document.querySelector('#addScenario'),
   saveSettings: document.querySelector('#saveSettings'),
   clearMatches: document.querySelector('#clearMatches'),
   clearHistory: document.querySelector('#clearHistory'),
@@ -42,7 +47,7 @@ async function init() {
 }
 
 function bindUi() {
-  els.addRule.addEventListener('click', () => addRule(DEFAULT_RULE));
+  els.addScenario.addEventListener('click', () => addScenario({ name: `Сценарий ${els.scenarios.children.length + 1}`, rules: [DEFAULT_RULE] }));
   els.saveSettings.addEventListener('click', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
   els.clearMatches.addEventListener('click', async () => {
@@ -66,29 +71,52 @@ function activateTab(name) {
 function renderSettings() {
   els.requestPath.value = state.settings.requestPath;
   els.blockExternal.checked = Boolean(state.settings.blockExternal);
-  els.rules.replaceChildren();
-  state.settings.rules.forEach(addRule);
+  els.scenarios.replaceChildren();
+  state.settings.scenarios.forEach(addScenario);
 }
 
-function addRule(rule) {
+function addScenario(scenario) {
+  const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
+  node.querySelector('.scenario-name').value = scenario.name || `Сценарий ${els.scenarios.children.length + 1}`;
+  node.querySelector('.add-rule').addEventListener('click', (event) => {
+    event.preventDefault();
+    addRule(node.querySelector('.scenario-rules'), DEFAULT_RULE);
+  });
+  node.querySelector('.remove-scenario').addEventListener('click', (event) => {
+    event.preventDefault();
+    node.remove();
+  });
+  const rulesContainer = node.querySelector('.scenario-rules');
+  (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rulesContainer, rule));
+  els.scenarios.append(node);
+}
+
+function addRule(container, rule) {
   const node = els.ruleTemplate.content.firstElementChild.cloneNode(true);
   node.querySelector('.rule-path').value = rule.keyPath || '';
   node.querySelector('.rule-mode').value = rule.mode || 'strict';
   node.querySelector('.rule-value').value = rule.expected || '';
   node.querySelector('.remove-rule').addEventListener('click', () => node.remove());
-  els.rules.append(node);
+  container.append(node);
 }
 
 async function saveSettings() {
-  const rules = [...els.rules.querySelectorAll('.rule')].map((rule) => ({
-    keyPath: rule.querySelector('.rule-path').value.trim(),
-    mode: rule.querySelector('.rule-mode').value,
-    expected: rule.querySelector('.rule-value').value.trim(),
-  })).filter((rule) => rule.keyPath && rule.expected);
+  const scenarios = [...els.scenarios.querySelectorAll('.scenario')].map((scenario, index) => {
+    const rules = [...scenario.querySelectorAll('.rule')].map((rule) => ({
+      keyPath: rule.querySelector('.rule-path').value.trim(),
+      mode: rule.querySelector('.rule-mode').value,
+      expected: rule.querySelector('.rule-value').value.trim(),
+    })).filter((rule) => rule.keyPath && rule.expected);
+
+    return {
+      name: scenario.querySelector('.scenario-name').value.trim() || `Сценарий ${index + 1}`,
+      rules,
+    };
+  }).filter((scenario) => scenario.rules.length);
 
   state.settings = {
     requestPath: els.requestPath.value.trim(),
-    rules: rules.length ? rules : [DEFAULT_RULE],
+    scenarios: scenarios.length ? scenarios : [DEFAULT_SCENARIO],
     blockExternal: els.blockExternal.checked,
   };
 
@@ -141,7 +169,7 @@ function renderList(container, records, emptyText) {
 function formatResults(results) {
   return results.map((result) => {
     const lines = [
-      `${result.keyPath} | ${result.mode === 'strict' ? 'строго' : 'не строго'}`,
+      `${result.scenarioName || 'Сценарий'} → ${result.keyPath} | ${result.mode === 'strict' ? 'строго' : 'не строго'}`,
       `ожидали: ${result.expected.join(', ')}`,
       `получили: ${result.actual.length ? result.actual.join(', ') : 'путь не найден'}`,
       `путь: ${result.found ? 'найден' : 'не найден'}`,
@@ -158,7 +186,7 @@ function normalizeSettings(settings) {
   return {
     ...DEFAULT_SETTINGS,
     ...(settings || {}),
-    rules: settings?.rules?.length ? settings.rules : DEFAULT_SETTINGS.rules,
+    scenarios: normalizeScenarios(settings),
   };
 }
 
@@ -166,4 +194,11 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, (char) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
   }[char]));
+}
+
+
+function normalizeScenarios(settings) {
+  if (settings?.scenarios?.length) return settings.scenarios;
+  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
+  return DEFAULT_SETTINGS.scenarios;
 }

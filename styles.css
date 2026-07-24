@@ -123,3 +123,40 @@ button:hover { background: var(--primary-dark); }
 .item-title { font-weight: 700; margin-bottom: 4px; }
 .item-meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
 pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
+
+.scenarios {
+  display: grid;
+  gap: 10px;
+}
+
+.scenario {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card) 94%, var(--primary));
+  overflow: hidden;
+}
+
+.scenario summary {
+  display: grid;
+  grid-template-columns: 1fr auto 32px;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.scenario summary::marker { color: var(--primary); }
+
+.scenario-name {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 10px;
+  background: var(--card);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.scenario-rules {
+  padding: 0 10px 10px;
+}

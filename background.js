@@ -1,6 +1,10 @@
+const DEFAULT_SCENARIO = {
+  name: 'Сценарий 1',
+  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
+};
 const DEFAULT_SETTINGS = {
   requestPath: '',
-  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
+  scenarios: [DEFAULT_SCENARIO],
   blockExternal: false,
 };
 
@@ -44,7 +48,9 @@ async function inspectOutgoingRequest(details) {
   const json = parseRequestBody(details.requestBody);
   if (!json) return;
 
-  const results = cachedSettings.rules.map((rule) => compareRule(rule, json));
+  const results = cachedSettings.scenarios.flatMap((scenario) =>
+    scenario.rules.map((rule) => compareRule(rule, json, scenario.name))
+  );
   const meaningfulResults = results.filter((result) => result.found || result.matched || result.mode === 'loose');
   if (!meaningfulResults.length) return;
 
@@ -104,7 +110,7 @@ function parseJsonLikeValue(value) {
   }
 }
 
-function compareRule(rule, json) {
+function compareRule(rule, json, scenarioName) {
   const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
   const expectedValues = parseExpected(rule.expected);
   const matched = rule.mode === 'strict'
@@ -112,6 +118,7 @@ function compareRule(rule, json) {
     : expectedValues.every((value) => actualValues.includes(value));
 
   return {
+    scenarioName,
     keyPath: rule.keyPath,
     mode: rule.mode,
     expected: expectedValues,
@@ -169,7 +176,7 @@ function normalizeSettings(settings) {
   return {
     ...DEFAULT_SETTINGS,
     ...(settings || {}),
-    rules: settings?.rules?.length ? settings.rules : DEFAULT_SETTINGS.rules,
+    scenarios: normalizeScenarios(settings),
   };
 }
 
@@ -179,4 +186,11 @@ function safeHost(url) {
   } catch {
     return '';
   }
+}
+
+
+function normalizeScenarios(settings) {
+  if (settings?.scenarios?.length) return settings.scenarios;
+  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
+  return DEFAULT_SETTINGS.scenarios;
 }

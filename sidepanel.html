@@ -29,10 +29,10 @@
 
         <div class="card">
           <div class="card-title-row">
-            <h2>Правила сравнения</h2>
-            <button id="addRule" class="secondary" type="button">Добавить блок</button>
+            <h2>Сценарии</h2>
+            <button id="addScenario" class="secondary" type="button">Добавить сценарий</button>
           </div>
-          <div id="rules"></div>
+          <div id="scenarios" class="scenarios"></div>
         </div>
 
         <div class="actions">
@@ -62,6 +62,17 @@
       </section>
     </main>
 
+    <template id="scenarioTemplate">
+      <details class="scenario" open>
+        <summary>
+          <input class="scenario-name" type="text" value="Сценарий" aria-label="Название сценария" />
+          <button class="secondary add-rule" type="button">Добавить правило</button>
+          <button class="icon remove-scenario" type="button" title="Удалить сценарий">×</button>
+        </summary>
+        <div class="scenario-rules"></div>
+      </details>
+    </template>
+
     <template id="ruleTemplate">
       <div class="rule">
         <label class="field compact">
@@ -79,7 +90,7 @@
           <span>Значение</span>
           <input class="rule-value" type="text" placeholder="auth_click или a,b,c" />
         </label>
-        <button class="icon remove-rule" type="button" title="Удалить блок">×</button>
+        <button class="icon remove-rule" type="button" title="Удалить правило">×</button>
       </div>
     </template>
 

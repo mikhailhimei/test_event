@@ -5,7 +5,7 @@ Chrome Manifest V3 extension that opens as a browser side panel and watches outg
 ## Features
 
 - Filters outgoing network requests by a URL/path fragment.
-- Supports multiple comparison blocks with:
+- Supports accordion scenarios; each scenario contains its own comparison rules with:
   - key path, for example `extra_data.visual_object.id`;
   - strict or non-strict comparison;
   - expected value list split by commas.
