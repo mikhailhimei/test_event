@@ -13,8 +13,10 @@ const DEFAULT_SETTINGS = {
 const tabHostById = new Map();
 let cachedSettings = DEFAULT_SETTINGS;
 const decoder = new TextDecoder('utf-8');
+const OPEN_SIDE_PANEL_MENU_ID = 'open-response-match-side-panel';
 
 chrome.runtime.onInstalled.addListener(async () => {
+  setupContextMenu();
   const { settings, matches, history } = await chrome.storage.local.get(['settings', 'matches', 'history']);
   cachedSettings = normalizeSettings(settings);
   await chrome.storage.local.set({
@@ -34,6 +36,32 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 chrome.tabs.onRemoved.addListener((tabId) => tabHostById.delete(tabId));
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId !== OPEN_SIDE_PANEL_MENU_ID) return;
+
+  void openSidePanelFromContextMenu(tab);
+});
+
+function setupContextMenu() {
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: OPEN_SIDE_PANEL_MENU_ID,
+      title: 'Открыть в сайдпанели',
+      contexts: ['action'],
+    });
+  });
+}
+
+async function openSidePanelFromContextMenu(tab) {
+  if (typeof tab?.id === 'number') {
+    await chrome.sidePanel.open({ tabId: tab.id });
+    return;
+  }
+
+  const currentWindow = await chrome.windows.getCurrent();
+  await chrome.sidePanel.open({ windowId: currentWindow.id });
+}
 
 async function initTabHosts() {
   const tabs = await chrome.tabs.query({});
