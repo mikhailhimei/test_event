@@ -1,7 +1,7 @@
 const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '' };
 const DEFAULT_SCENARIO = {
   name: 'Сценарий 1',
-  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
+  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click', required: true }],
 };
 const DEFAULT_SETTINGS = {
   requestPath: '',
@@ -96,6 +96,7 @@ function addRule(container, rule) {
   node.querySelector('.rule-path').value = rule.keyPath || '';
   node.querySelector('.rule-mode').value = rule.mode || 'strict';
   node.querySelector('.rule-value').value = rule.expected || '';
+  node.querySelector('.rule-required-input').checked = Boolean(rule.required);
   node.querySelector('.remove-rule').addEventListener('click', () => node.remove());
   container.append(node);
 }
@@ -106,6 +107,7 @@ async function saveSettings() {
       keyPath: rule.querySelector('.rule-path').value.trim(),
       mode: rule.querySelector('.rule-mode').value,
       expected: rule.querySelector('.rule-value').value.trim(),
+      required: rule.querySelector('.rule-required-input').checked,
     })).filter((rule) => rule.keyPath && rule.expected);
 
     return {
@@ -169,7 +171,7 @@ function renderList(container, records, emptyText) {
 function formatResults(results) {
   return results.map((result) => {
     const lines = [
-      `${result.scenarioName || 'Сценарий'} → ${result.keyPath} | ${result.mode === 'strict' ? 'строго' : 'не строго'}`,
+      `${result.scenarioName || 'Сценарий'} → ${result.keyPath} | ${result.mode === 'strict' ? 'строго' : 'не строго'}${result.required ? ' | 100%' : ''}`,
       `ожидали: ${result.expected.join(', ')}`,
       `получили: ${result.actual.length ? result.actual.join(', ') : 'путь не найден'}`,
       `путь: ${result.found ? 'найден' : 'не найден'}`,
