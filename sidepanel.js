@@ -101,7 +101,14 @@ function addRule(container, rule) {
   node.querySelector('.rule-mode').value = rule.mode || 'strict';
   node.querySelector('.rule-value').value = rule.expected || '';
   node.querySelector('.rule-required-input').checked = Boolean(rule.required);
-  node.querySelector('.remove-rule').addEventListener('click', () => node.remove());
+  node.querySelector('.remove-rule').addEventListener('click', () => {
+    const scenario = container.closest('.scenario');
+    node.remove();
+
+    if (scenario && !container.querySelector('.rule')) {
+      scenario.remove();
+    }
+  });
   container.append(node);
 }
 
