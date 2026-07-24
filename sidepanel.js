@@ -179,14 +179,8 @@ function renderVariables() {
         await saveSettings();
         renderVariables();
       });
-      node.querySelector('.variable-name').addEventListener('change', async (event) => {
-        state.settings.variables[index].name = event.target.value.trim();
-        await saveSettings();
-      });
-      node.querySelector('.variable-expression').addEventListener('change', async (event) => {
-        state.settings.variables[index].expression = event.target.value.trim();
-        await saveSettings();
-      });
+      node.querySelector('.variable-name').addEventListener('input', () => saveVariablesFromUi());
+      node.querySelector('.variable-expression').addEventListener('input', () => saveVariablesFromUi());
       node.querySelector('.apply-variable').addEventListener('click', async () => {
         readVariablesFromUi();
         await saveSettings();
@@ -203,6 +197,11 @@ function readVariablesFromUi() {
     name: node.querySelector('.variable-name').value.trim(),
     expression: node.querySelector('.variable-expression').value.trim(),
   }));
+}
+
+async function saveVariablesFromUi() {
+  readVariablesFromUi();
+  await saveSettings();
 }
 
 function createVariableDraft() {
@@ -314,6 +313,7 @@ function addRule(container, rule) {
 
 async function handleScenarioSubmit(event) {
   event.preventDefault();
+  readVariablesFromUi();
   const scenario = readScenarioFromModal();
   if (!scenario.rules.length && !scenario.commonElementId) return;
 
