@@ -223,12 +223,17 @@ function normalizeSettings(settings) {
   };
 }
 
-function escapeHtml(value) {
-  return String(value).replace(/[&<>'"]/g, (char) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
-  }[char]));
-}
-
+    const item = document.createElement('details');
+    item.open = true;
+      <summary class="item-summary">
+        <span class="item-title">${allMatched ? 'Совпало' : 'Есть несовпадения'}</span>
+        <span>${escapeHtml(record.url)}</span>
+        <span class="item-meta">${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}</span>
+      </summary>
+      <div class="item-details">
+        <pre>${escapeHtml(formatResults(record.results))}</pre>
+        ${formatRequestDetails(record.request)}
+      </div>
 
 function normalizeScenarios(settings) {
   if (settings?.scenarios?.length) return settings.scenarios;

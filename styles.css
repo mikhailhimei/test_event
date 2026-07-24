@@ -120,8 +120,14 @@ button:hover { background: var(--primary-dark); }
 }
 .item.match { background: var(--success-bg); color: var(--success-text); }
 .item.mismatch { background: var(--warn-bg); color: var(--warn-text); }
-.item-title { font-weight: 700; margin-bottom: 4px; }
-.item-meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.item-summary {
+  display: grid;
+  gap: 4px;
+  cursor: pointer;
+}
+.item-title { font-weight: 700; }
+.item-meta { color: var(--muted); font-size: 12px; }
+.item-details { margin-top: 8px; }
 pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 
 .scenarios {
