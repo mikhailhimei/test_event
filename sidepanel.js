@@ -1,7 +1,7 @@
-const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '', required: false };
+const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '' };
 const DEFAULT_SCENARIO = {
   name: 'Сценарий 1',
-  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click', required: true }],
+  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
 };
 const DEFAULT_SETTINGS = {
   requestPath: '',
@@ -17,7 +17,6 @@ const state = {
   history: [],
   editingScenarioIndex: null,
   scenariosCollapsed: true,
-  commonElementsCollapsed: false,
 };
 
 const els = {
@@ -208,9 +207,13 @@ function renderCommonElements() {
     return;
   }
   els.commonElements.replaceChildren(...state.settings.commonElements.map((element, index) => {
-    const node = document.createElement('div');
+    const node = document.createElement('details');
     node.className = 'common-card';
-    node.innerHTML = `<div class="variable-row"><label class="field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><div class="button-group"><button class="secondary save-common" type="button">Сохранить</button><button class="secondary danger-text remove-common" type="button">Удалить</button></div></div><div class="scenario-rules"></div><div class="actions"><button class="secondary add-common-rule" type="button">Добавить правило</button><span class="common-save-status hint" role="status"></span></div>`;
+    node.open = true;
+    node.innerHTML = `<summary class="common-card-summary"><label class="field common-name-field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><div class="button-group"><button class="secondary save-common" type="button">Сохранить</button><button class="secondary danger-text remove-common" type="button">Удалить</button></div></summary><div class="scenario-rules"></div><div class="actions"><button class="secondary add-common-rule" type="button">Добавить правило</button><span class="common-save-status hint" role="status"></span></div>`;
+    node.querySelector('.common-card-summary').addEventListener('click', (event) => {
+      if (event.target.closest('input, button')) event.preventDefault();
+    });
     const rules = node.querySelector('.scenario-rules');
     (element.rules?.length ? element.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rules, rule));
     // node.querySelector('.common-name').addEventListener('change', async (event) => { state.settings.commonElements[index].name = event.target.value.trim(); await saveCommonElement(index, node); });
@@ -293,7 +296,6 @@ function addRule(container, rule) {
   node.querySelector('.rule-path').value = rule.keyPath || '';
   node.querySelector('.rule-mode').value = rule.mode || 'strict';
   node.querySelector('.rule-value').value = rule.expected || '';
-  node.querySelector('.rule-required-input').checked = Boolean(rule.required);
   node.querySelector('.remove-rule').addEventListener('click', () => {
     node.remove();
 
@@ -338,7 +340,6 @@ function readRulesFromContainer(container) {
     keyPath: rule.querySelector('.rule-path').value.trim(),
     mode: rule.querySelector('.rule-mode').value,
     expected: rule.querySelector('.rule-value').value.trim(),
-    required: rule.querySelector('.rule-required-input').checked,
   })).filter((rule) => rule.keyPath && (rule.expected || rule.mode === 'exists'));
 }
 
@@ -560,7 +561,7 @@ function formatResults(results) {
       <div class="result-block ${result.matched ? 'match' : 'mismatch'}">
         <div class="result-block-header">
           <span>${escapeHtml(result.scenarioName || 'Сценарий')} → ${escapeHtml(result.keyPath)}</span>
-          <span class="result-meta">${mode}${result.required ? ' | 100%' : ''}</span>
+          <span class="result-meta">${mode}</span>
         </div>
         <div class="result-block-body">
           ${blocks.map((block) => `
@@ -690,7 +691,6 @@ function readScenariosFromForm() {
       keyPath: rule.querySelector('.rule-path').value.trim(),
       mode: rule.querySelector('.rule-mode').value,
       expected: rule.querySelector('.rule-value').value.trim(),
-      required: rule.querySelector('.rule-required-input').checked,
     })).filter((rule) => rule.keyPath && (rule.mode === 'exists' || rule.expected)),
   })).filter((scenario) => scenario.rules.length);
 }

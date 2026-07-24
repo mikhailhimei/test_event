@@ -264,18 +264,10 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
   border-color: color-mix(in srgb, var(--danger) 48%, var(--border));
 }
 
-.rule-required {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.rule-required input {
-  width: 16px;
-  height: 16px;
+.rule-mode-hint {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .scenario-toggle-hint {
@@ -429,9 +421,28 @@ body.modal-open {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 12px;
+  background: color-mix(in srgb, var(--card) 94%, var(--primary));
+}
+
+.common-card[open] {
   display: grid;
   gap: 10px;
-  background: color-mix(in srgb, var(--card) 94%, var(--primary));
+}
+
+.common-card-summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+  cursor: pointer;
+}
+
+.common-card-summary::marker {
+  color: var(--primary);
+}
+
+.common-name-field {
+  min-width: 0;
 }
 .upload-button input { display: none; }
 

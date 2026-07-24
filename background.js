@@ -1,6 +1,6 @@
 const DEFAULT_SCENARIO = {
   name: 'Сценарий 1',
-  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click', required: true }],
+  rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click' }],
 };
 const DEFAULT_SETTINGS = {
   requestPath: '',
@@ -83,12 +83,12 @@ async function inspectOutgoingRequest(details) {
       rules.map((rule) => compareRule(rule, json, details, scenario.name, variableValues))
     );
 
-    const requiredResults = results.filter((result) => result.required);
-    const requiredPassed = requiredResults.length
-      ? requiredResults.every((result) => result.matched)
-      : results.some((result) => result.found || result.matched || result.mode === 'loose');
+    const strictPassed = results
+      .filter((result) => result.mode === 'strict')
+      .every((result) => result.matched);
+    const hasVisibleResult = results.some((result) => result.found || result.matched || result.mode === 'loose');
 
-    if (requiredPassed) {
+    if (strictPassed && hasVisibleResult) {
       meaningfulResults.push(...results);
     }
   }
@@ -166,7 +166,6 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
   return {
     scenarioName,
     keyPath: rule.keyPath,
-    required: Boolean(rule.required),
     mode: rule.mode,
     expected: resolvedExpectedGroups.map((values) => values.join(' | ')),
     actual: actualValues,
