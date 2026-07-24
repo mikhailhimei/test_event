@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Response Match Panel</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Response Match</h1>
+      <p>Отлавливайте отправляемые JSON-запросы и сравнивайте значения по путям.</p>
+    </header>
+
+    <nav class="tabs" aria-label="Вкладки">
+      <button class="tab active" data-tab="search" type="button">Поиск</button>
+      <button class="tab" data-tab="history" type="button">История</button>
+    </nav>
+
+    <main>
+      <section id="searchTab" class="tab-panel active">
+        <div class="card">
+          <label class="field">
+            <span>Путь запроса</span>
+            <input id="requestPath" type="text" placeholder="/api/events или часть URL" />
+          </label>
+          <p class="hint">Расширение проверяет тело отправляемых запросов, URL которых содержит этот путь.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-title-row">
+            <h2>Сценарии</h2>
+            <button id="addScenario" class="secondary" type="button">Добавить сценарий</button>
+          </div>
+          <div id="scenarios" class="scenarios"></div>
+        </div>
+
+        <div class="actions">
+          <button id="saveSettings" type="button">Сохранить</button>
+          <button id="clearMatches" class="secondary" type="button">Очистить поиск</button>
+        </div>
+
+        <label class="toggle card">
+          <input id="blockExternal" type="checkbox" />
+          <span>Блокировать переход на сторонние ресурсы</span>
+        </label>
+
+        <section class="card">
+          <h2>Найденные совпадения</h2>
+          <div id="matches" class="list empty">Совпадений пока нет.</div>
+        </section>
+      </section>
+
+      <section id="historyTab" class="tab-panel">
+        <div class="actions top-actions">
+          <button id="clearHistory" class="danger" type="button">Удалить историю</button>
+        </div>
+        <section class="card">
+          <h2>История совпадений</h2>
+          <div id="history" class="list empty">История пуста.</div>
+        </section>
+      </section>
+    </main>
+
+    <template id="scenarioTemplate">
+      <details class="scenario" open>
+        <summary>
+          <input class="scenario-name" type="text" value="Сценарий" aria-label="Название сценария" />
+          <button class="secondary add-rule" type="button">Добавить правило</button>
+          <button class="icon remove-scenario" type="button" title="Удалить сценарий">×</button>
+        </summary>
+        <div class="scenario-rules"></div>
+      </details>
+    </template>
+
+    <template id="ruleTemplate">
+      <div class="rule">
+        <label class="field compact">
+          <span>Путь ключа</span>
+          <input class="rule-path" type="text" placeholder="extra_data.visual_object.id" />
+        </label>
+        <label class="field compact">
+          <span>Сравнение</span>
+          <select class="rule-mode">
+            <option value="strict">Строгое</option>
+            <option value="loose">Не строгое</option>
+          </select>
+        </label>
+        <label class="field compact">
+          <span>Значение</span>
+          <input class="rule-value" type="text" placeholder="auth_click или a,b,c" />
+        </label>
+        <label class="rule-required">
+          <input class="rule-required-input" type="checkbox" />
+          <span>100% обязательно</span>
+        </label>
+        <button class="icon remove-rule" type="button" title="Удалить правило">×</button>
+      </div>
+    </template>
+
+    <script src="sidepanel.js"></script>
+  </body>
+</html>
