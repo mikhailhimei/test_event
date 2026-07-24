@@ -131,6 +131,11 @@
             <input id="modalScenarioName" type="text" placeholder="Сценарий" />
           </label>
 
+          <label class="field">
+            <span>Общий элемент</span>
+            <select id="modalCommonElement"><option value="">Не использовать</option></select>
+          </label>
+
           <div class="modal-rules-header">
             <h3>Правила</h3>
             <button id="modalAddRule" class="secondary" type="button">Добавить правило</button>
@@ -181,7 +186,7 @@
             <span>Имя переменной</span>
             <input class="variable-name" type="text" placeholder="test" />
           </label>
-          <button class="secondary danger-text remove-variable" type="button">Удалить</button>
+          <div class="button-group"><button class="secondary apply-variable" type="button">Применить</button><button class="secondary danger-text remove-variable" type="button">Удалить</button></div>
         </div>
         <label class="field">
           <span>Выражение</span>

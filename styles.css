@@ -419,3 +419,51 @@ body.modal-open {
 .modal-actions-spacer {
   flex: 1;
 }
+
+.menu { position: relative; margin-bottom: 12px; }
+.burger { width: 100%; text-align: left; }
+.tabs { display: none; margin-top: 8px; }
+.menu.open .tabs { display: grid; }
+.button-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.common-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  background: color-mix(in srgb, var(--card) 94%, var(--primary));
+}
+.upload-button input { display: none; }
+
+.json-upload {
+  margin-top: 12px;
+}
+
+.field textarea {
+  width: 100%;
+  min-height: 110px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 10px;
+  background: var(--card);
+  color: var(--text);
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  resize: vertical;
+}
+
+.json-upload-list {
+  display: grid;
+  gap: 12px;
+}
+
+.json-upload-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+}
+
+.json-upload-card h3 {
+  margin: 0;
+  font-size: 15px;
+}

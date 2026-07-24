@@ -7,6 +7,7 @@ const DEFAULT_SETTINGS = {
   requestPath: '',
   scenarios: [DEFAULT_SCENARIO],
   variables: [],
+  commonElements: [],
   blockExternal: false,
 };
 
@@ -16,6 +17,7 @@ const state = {
   history: [],
   editingScenarioIndex: null,
   scenariosCollapsed: true,
+  commonElementsCollapsed: false,
 };
 
 const els = {
@@ -27,6 +29,18 @@ const els = {
   variableTemplate: document.querySelector('#variableTemplate'),
   addScenario: document.querySelector('#addScenario'),
   addVariable: document.querySelector('#addVariable'),
+  downloadVariables: document.querySelector('#downloadVariables'),
+  uploadVariables: document.querySelector('#uploadVariables'),
+  variablesJson: document.querySelector('#variablesJson'),
+  variablesUploadStatus: document.querySelector('#variablesUploadStatus'),
+  variablesStatus: document.querySelector('#variablesStatus'),
+  addCommonElement: document.querySelector('#addCommonElement'),
+  commonElements: document.querySelector('#commonElements'),
+  downloadCommonElements: document.querySelector('#downloadCommonElements'),
+  uploadCommonElements: document.querySelector('#uploadCommonElements'),
+  commonElementsJson: document.querySelector('#commonElementsJson'),
+  commonElementsUploadStatus: document.querySelector('#commonElementsUploadStatus'),
+  commonElementsStatus: document.querySelector('#commonElementsStatus'),
   toggleScenarios: document.querySelector('#toggleScenarios'),
   clearMatches: document.querySelector('#clearMatches'),
   clearHistory: document.querySelector('#clearHistory'),
@@ -35,6 +49,8 @@ const els = {
   blockExternal: document.querySelector('#blockExternal'),
   downloadScenarios: document.querySelector('#downloadScenarios'),
   uploadScenarios: document.querySelector('#uploadScenarios'),
+  scenariosJson: document.querySelector('#scenariosJson'),
+  scenariosUploadStatus: document.querySelector('#scenariosUploadStatus'),
   transferStatus: document.querySelector('#transferStatus'),
   openDocs: document.querySelector('#openDocs'),
   tabs: document.querySelectorAll('.tab'),
@@ -43,6 +59,7 @@ const els = {
   scenarioModalTitle: document.querySelector('#scenarioModalTitle'),
   scenarioForm: document.querySelector('#scenarioForm'),
   modalScenarioName: document.querySelector('#modalScenarioName'),
+  modalCommonElement: document.querySelector('#modalCommonElement'),
   modalScenarioRules: document.querySelector('#modalScenarioRules'),
   modalAddRule: document.querySelector('#modalAddRule'),
   modalSaveScenario: document.querySelector('#modalSaveScenario'),
@@ -62,6 +79,7 @@ async function init() {
   renderMatches();
   renderHistory();
   renderVariables();
+  renderCommonElements();
   bindUi();
   chrome.storage.onChanged.addListener(handleStorageChanges);
 }
@@ -69,11 +87,16 @@ async function init() {
 function bindUi() {
   els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
   els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
+  els.downloadVariables.addEventListener('click', downloadVariables);
+  els.uploadVariables.addEventListener('click', uploadVariables);
+  els.addCommonElement.addEventListener('click', () => addCommonElement());
+  els.downloadCommonElements.addEventListener('click', downloadCommonElements);
+  els.uploadCommonElements.addEventListener('click', uploadCommonElements);
   els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
   // els.requestPath.addEventListener('change', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
   els.downloadScenarios.addEventListener('click', downloadScenarios);
-  els.uploadScenarios.addEventListener('change', uploadScenarios);
+  els.uploadScenarios.addEventListener('click', uploadScenarios);
   els.toggleScenarios.addEventListener('click', handleToggleScenarios);
   els.clearMatches.addEventListener('click', async () => {
     state.matches = [];
@@ -86,6 +109,10 @@ function bindUi() {
     renderHistory();
   });
   els.tabs.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.tab)));
+  document.querySelector('#burgerButton').addEventListener('click', () => {
+    document.querySelector('.menu').classList.toggle('open');
+    document.querySelector('#burgerButton').setAttribute('aria-expanded', document.querySelector('.menu').classList.contains('open'));
+  });
   els.modalAddRule.addEventListener('click', () => addRule(els.modalScenarioRules, DEFAULT_RULE));
   els.scenarioForm.addEventListener('submit', handleScenarioSubmit);
   els.modalDeleteScenario.addEventListener('click', handleScenarioDelete);
@@ -99,6 +126,8 @@ function bindUi() {
 }
 
 function activateTab(name) {
+  document.querySelector('.menu').classList.remove('open');
+  document.querySelector('#burgerButton').setAttribute('aria-expanded', 'false');
   els.tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === name));
   els.panels.forEach((panel) => panel.classList.toggle('active', panel.id === `${name}Tab`));
 }
@@ -108,6 +137,7 @@ function renderSettings() {
   els.blockExternal.checked = Boolean(state.settings.blockExternal);
   renderScenarios();
   renderVariables();
+  renderCommonElements();
 }
 
 function renderScenarios() {
@@ -149,21 +179,69 @@ function renderVariables() {
         await saveSettings();
         renderVariables();
       });
-      node.querySelector('.variable-name').addEventListener('change', async (event) => {
-        state.settings.variables[index].name = event.target.value.trim();
+      node.querySelector('.variable-name').addEventListener('input', () => saveVariablesFromUi());
+      node.querySelector('.variable-expression').addEventListener('input', () => saveVariablesFromUi());
+      node.querySelector('.apply-variable').addEventListener('click', async () => {
+        readVariablesFromUi();
         await saveSettings();
-      });
-      node.querySelector('.variable-expression').addEventListener('change', async (event) => {
-        state.settings.variables[index].expression = event.target.value.trim();
-        await saveSettings();
+        renderVariables();
+        setVariablesStatus(`Переменная «${state.settings.variables[index]?.name || 'без имени'}» применена.`);
       });
       return node;
     })
   );
 }
 
+function readVariablesFromUi() {
+  state.settings.variables = [...els.variables.querySelectorAll('.variable-card')].map((node) => ({
+    name: node.querySelector('.variable-name').value.trim(),
+    expression: node.querySelector('.variable-expression').value.trim(),
+  }));
+}
+
+async function saveVariablesFromUi() {
+  readVariablesFromUi();
+  await saveSettings();
+}
+
 function createVariableDraft() {
   return { name: '', expression: '' };
+}
+
+function renderCommonElements() {
+  els.commonElements.classList.toggle('empty', state.settings.commonElements.length === 0);
+  if (!state.settings.commonElements.length) {
+    els.commonElements.textContent = 'Общие элементы пока не заданы.';
+    return;
+  }
+  els.commonElements.replaceChildren(...state.settings.commonElements.map((element, index) => {
+    const node = document.createElement('div');
+    node.className = 'common-card';
+    node.innerHTML = `<div class="variable-row"><label class="field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><div class="button-group"><button class="secondary save-common" type="button">Сохранить</button><button class="secondary danger-text remove-common" type="button">Удалить</button></div></div><div class="scenario-rules"></div><div class="actions"><button class="secondary add-common-rule" type="button">Добавить правило</button><span class="common-save-status hint" role="status"></span></div>`;
+    const rules = node.querySelector('.scenario-rules');
+    (element.rules?.length ? element.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rules, rule));
+    node.querySelector('.common-name').addEventListener('change', async (event) => { state.settings.commonElements[index].name = event.target.value.trim(); await saveCommonElement(index, node); });
+    node.querySelector('.add-common-rule').addEventListener('click', () => addRule(rules, DEFAULT_RULE));
+    node.querySelector('.save-common').addEventListener('click', async () => { await saveCommonElement(index, node); setCommonElementStatus(node, 'Общий элемент сохранен.'); });
+    node.querySelector('.remove-common').addEventListener('click', async () => { state.settings.commonElements.splice(index, 1); await saveSettings(); renderCommonElements(); });
+    node.addEventListener('change', async () => saveCommonElement(index, node));
+    return node;
+  }));
+}
+
+async function saveCommonElement(index, node) {
+  state.settings.commonElements[index] = { id: state.settings.commonElements[index]?.id || crypto.randomUUID(), name: node.querySelector('.common-name').value.trim() || `Общий элемент ${index + 1}`, rules: readRulesFromContainer(node.querySelector('.scenario-rules')) };
+  await saveSettings();
+}
+
+function setCommonElementStatus(node, message) {
+  node.querySelector('.common-save-status').textContent = message;
+}
+
+function addCommonElement() {
+  state.settings.commonElements = [...state.settings.commonElements, { id: crypto.randomUUID(), name: `Общий элемент ${state.settings.commonElements.length + 1}`, rules: [{ ...DEFAULT_RULE }] }];
+  renderCommonElements();
+  saveSettings();
 }
 
 function addVariable(variable) {
@@ -192,6 +270,7 @@ function openScenarioModal(scenario, index = null) {
   state.editingScenarioIndex = index;
   els.scenarioModalTitle.textContent = index === null ? 'Добавить сценарий' : 'Редактировать сценарий';
   els.modalScenarioName.value = scenario.name || `Сценарий ${state.settings.scenarios.length + 1}`;
+  renderCommonElementOptions(scenario.commonElementId || '');
   els.modalScenarioRules.replaceChildren();
   (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(els.modalScenarioRules, rule));
   els.modalDeleteScenario.hidden = index === null;
@@ -234,8 +313,9 @@ function addRule(container, rule) {
 
 async function handleScenarioSubmit(event) {
   event.preventDefault();
+  readVariablesFromUi();
   const scenario = readScenarioFromModal();
-  if (!scenario.rules.length) return;
+  if (!scenario.rules.length && !scenario.commonElementId) return;
 
   if (state.editingScenarioIndex === null) {
     state.settings.scenarios = [...state.settings.scenarios, { ...scenario, enabled: true }];
@@ -260,13 +340,17 @@ async function handleScenarioDelete() {
   await saveSettings();
 }
 
-function readScenarioFromModal() {
-  const rules = [...els.modalScenarioRules.querySelectorAll('.rule')].map((rule) => ({
+function readRulesFromContainer(container) {
+  return [...container.querySelectorAll('.rule')].map((rule) => ({
     keyPath: rule.querySelector('.rule-path').value.trim(),
     mode: rule.querySelector('.rule-mode').value,
     expected: rule.querySelector('.rule-value').value.trim(),
     required: rule.querySelector('.rule-required-input').checked,
   })).filter((rule) => rule.keyPath && (rule.expected || rule.mode === 'exists'));
+}
+
+function readScenarioFromModal() {
+  const rules = readRulesFromContainer(els.modalScenarioRules);
 
   const fallbackName = state.editingScenarioIndex === null
     ? `Сценарий ${state.settings.scenarios.length + 1}`
@@ -274,6 +358,7 @@ function readScenarioFromModal() {
 
   return {
     name: els.modalScenarioName.value.trim() || fallbackName,
+    commonElementId: els.modalCommonElement.value,
     rules,
   };
 }
@@ -283,6 +368,7 @@ async function saveSettings() {
     requestPath: els.requestPath.value.trim(),
     scenarios: state.settings.scenarios.length ? state.settings.scenarios : [DEFAULT_SCENARIO],
     variables: state.settings.variables || [],
+    commonElements: state.settings.commonElements || [],
     blockExternal: els.blockExternal.checked,
   };
 
@@ -292,7 +378,8 @@ async function saveSettings() {
 function formatScenarioMeta(scenario) {
   const rulesCount = scenario.rules?.length || 0;
   const word = rulesCount === 1 ? 'правило' : rulesCount > 1 && rulesCount < 5 ? 'правила' : 'правил';
-  return `${rulesCount} ${word}`;
+  const commonName = state.settings.commonElements.find((element) => element.id === scenario.commonElementId)?.name;
+  return commonName ? `${rulesCount} ${word} + ${commonName}` : `${rulesCount} ${word}`;
 }
 
 function handleStorageChanges(changes, areaName) {
@@ -434,26 +521,81 @@ function downloadScenarios() {
   setTransferStatus('Сценарии скачаны.');
 }
 
-async function uploadScenarios(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
+async function uploadScenarios() {
   try {
-    const data = JSON.parse(await file.text());
+    const data = parseJsonFromTextarea(els.scenariosJson, 'JSON сценариев не заполнен.');
     const scenarios = normalizeScenarios(data);
     state.settings = { ...state.settings, scenarios };
     await chrome.storage.local.set({ settings: state.settings });
     renderSettings();
-    setTransferStatus('Сценарии загружены. Нажмите «Сохранить», если измените их вручную.');
+    setUploadStatus(els.scenariosUploadStatus, 'Сценарии загружены из JSON.');
   } catch (error) {
-    setTransferStatus(`Не удалось загрузить сценарии: ${error.message}`);
-  } finally {
-    event.target.value = '';
+    setUploadStatus(els.scenariosUploadStatus, `Не удалось загрузить сценарии: ${error.message}`);
   }
 }
 
 function setTransferStatus(message) {
   els.transferStatus.textContent = message;
+}
+
+function setUploadStatus(element, message) {
+  element.textContent = message;
+}
+
+function parseJsonFromTextarea(textarea, emptyMessage) {
+  const rawJson = textarea.value.trim();
+  if (!rawJson) throw new Error(emptyMessage);
+  return JSON.parse(rawJson);
+}
+
+function setVariablesStatus(message) {
+  els.variablesStatus.textContent = message;
+}
+
+function downloadCommonElements() {
+  const blob = new Blob([JSON.stringify({ commonElements: state.settings.commonElements || [] }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `response-match-common-elements-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  els.commonElementsStatus.textContent = 'Общие элементы скачаны.';
+}
+
+async function uploadCommonElements() {
+  try {
+    const data = parseJsonFromTextarea(els.commonElementsJson, 'JSON общих элементов не заполнен.');
+    state.settings.commonElements = normalizeCommonElements(data);
+    await saveSettings();
+    renderCommonElements();
+    setUploadStatus(els.commonElementsUploadStatus, 'Общие элементы загружены из JSON.');
+  } catch (error) {
+    setUploadStatus(els.commonElementsUploadStatus, `Не удалось загрузить общие элементы: ${error.message}`);
+  }
+}
+
+function downloadVariables() {
+  const blob = new Blob([JSON.stringify({ variables: state.settings.variables || [] }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `response-match-variables-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  setVariablesStatus('Переменные скачаны.');
+}
+
+async function uploadVariables() {
+  try {
+    const data = parseJsonFromTextarea(els.variablesJson, 'JSON переменных не заполнен.');
+    state.settings.variables = normalizeVariables(data);
+    await saveSettings();
+    renderVariables();
+    setUploadStatus(els.variablesUploadStatus, 'Переменные загружены из JSON.');
+  } catch (error) {
+    setUploadStatus(els.variablesUploadStatus, `Не удалось загрузить переменные: ${error.message}`);
+  }
 }
 
 function readScenariosFromForm() {
@@ -474,14 +616,29 @@ function normalizeSettings(settings) {
     ...(settings || {}),
     scenarios: normalizeScenarios(settings),
     variables: normalizeVariables(settings),
+    commonElements: normalizeCommonElements(settings),
   };
 }
 
 function normalizeVariables(settings) {
-  if (Array.isArray(settings?.variables)) {
-    return settings.variables.map((variable) => ({ name: variable.name || '', expression: variable.expression || '' }));
+  const sourceVariables = Array.isArray(settings) ? settings : settings?.variables;
+  if (Array.isArray(sourceVariables)) {
+    return sourceVariables.map((variable) => ({ name: variable.name || '', expression: variable.expression || '' }));
   }
   return [];
+}
+
+function normalizeCommonElements(settings) {
+  const sourceCommonElements = Array.isArray(settings) ? settings : settings?.commonElements;
+  if (Array.isArray(sourceCommonElements)) {
+    return sourceCommonElements.map((element, index) => ({ id: element.id || `common-${Date.now()}-${index}`, name: element.name || `Общий элемент ${index + 1}`, rules: Array.isArray(element.rules) ? element.rules : [] }));
+  }
+  return [];
+}
+
+function renderCommonElementOptions(selectedId) {
+  els.modalCommonElement.replaceChildren(new Option('Не использовать', ''), ...state.settings.commonElements.map((element) => new Option(element.name, element.id)));
+  els.modalCommonElement.value = selectedId;
 }
 
 function normalizeScenarios(settings) {
