@@ -6,6 +6,7 @@ const DEFAULT_SETTINGS = {
   requestPath: '',
   scenarios: [DEFAULT_SCENARIO],
   variables: [],
+  commonElements: [],
   blockExternal: false,
 };
 
@@ -76,8 +77,10 @@ async function inspectOutgoingRequest(details) {
   for (const scenario of cachedSettings.scenarios) {
     if (scenario.enabled === false) continue;
 
+    const commonElement = cachedSettings.commonElements.find((element) => element.id === scenario.commonElementId);
+    const rules = [...(commonElement?.rules || []), ...(scenario.rules || [])];
     const results = await Promise.all(
-      scenario.rules.map((rule) => compareRule(rule, json, details, scenario.name, variableValues))
+      rules.map((rule) => compareRule(rule, json, details, scenario.name, variableValues))
     );
 
     const requiredResults = results.filter((result) => result.required);
@@ -324,8 +327,8 @@ async function evaluateComparison(expression, details, currentValues) {
   const left = await evaluateExpressionValue(leftRaw, details, currentValues);
   const right = await evaluateExpressionValue(rightRaw, details, currentValues);
 
-  if (operator === '==') return left === right;
-  if (operator === '!=') return left !== right;
+  if (operator === '==') return left === right || hasSimilarWord(left, right);
+  if (operator === '!=') return left !== right && !hasSimilarWord(left, right);
   if (operator === '>') return left > right;
   if (operator === '<') return left < right;
   if (operator === '>=') return left >= right;
@@ -444,6 +447,7 @@ function normalizeSettings(settings) {
     ...(settings || {}),
     scenarios: normalizeScenarios(settings),
     variables: normalizeVariables(settings),
+    commonElements: normalizeCommonElements(settings),
   };
 }
 
@@ -453,6 +457,23 @@ function normalizeVariables(settings) {
       name: variable.name?.trim() || '',
       expression: variable.expression?.trim() || '',
     })).filter((variable) => variable.name && variable.expression);
+  }
+  return [];
+}
+
+function hasSimilarWord(left, right) {
+  const leftWords = String(left).toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+  const rightWords = String(right).toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
+  return leftWords.some((leftWord) => rightWords.some((rightWord) => leftWord.includes(rightWord) || rightWord.includes(leftWord)));
+}
+
+function normalizeCommonElements(settings) {
+  if (Array.isArray(settings?.commonElements)) {
+    return settings.commonElements.map((element, index) => ({
+      id: element.id || `common-${index}`,
+      name: element.name?.trim() || `Общий элемент ${index + 1}`,
+      rules: Array.isArray(element.rules) ? element.rules : [],
+    }));
   }
   return [];
 }

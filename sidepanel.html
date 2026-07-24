@@ -12,12 +12,16 @@
       <p>Отлавливайте отправляемые JSON-запросы и сравнивайте значения по путям.</p>
     </header>
 
-    <nav class="tabs" aria-label="Вкладки">
-      <button class="tab active" data-tab="search" type="button">Поиск</button>
-      <button class="tab" data-tab="history" type="button">История</button>
-      <button class="tab" data-tab="variables" type="button">Переменные</button>
-      <button class="tab" data-tab="scenariosTransfer" type="button">Сценарии</button>
-    </nav>
+    <div class="menu">
+      <button id="burgerButton" class="burger" type="button" aria-expanded="false" aria-controls="tabs">☰ Меню</button>
+      <nav id="tabs" class="tabs" aria-label="Вкладки">
+        <button class="tab active" data-tab="search" type="button">Поиск</button>
+        <button class="tab" data-tab="history" type="button">История</button>
+        <button class="tab" data-tab="variables" type="button">Переменные</button>
+        <button class="tab" data-tab="common" type="button">Общие элементы</button>
+        <button class="tab" data-tab="scenariosTransfer" type="button">Сценарии</button>
+      </nav>
+    </div>
 
     <main>
       <section id="searchTab" class="tab-panel active">
@@ -67,10 +71,18 @@
         <div class="card">
           <div class="card-title-row">
             <h2>Переменные</h2>
-            <button id="addVariable" class="secondary" type="button">Добавить переменную</button>
+            <div class="button-group"><button id="downloadVariables" class="secondary" type="button">Скачать</button><label class="secondary upload-button"><input id="uploadVariables" type="file" accept="application/json,.json" /><span>Загрузить</span></label><button id="addVariable" class="secondary" type="button">Добавить переменную</button></div>
           </div>
           <p class="hint">Определите переменные и используйте их в правилах: <code>&lt;&lt;path&gt;&gt; == '/' : 1 || &lt;&lt;path&gt;&gt; == '/product' : 2</code></p>
-          <div id="variables" class="variables empty">Переменные пока не заданы.</div>
+          <div id="variables" class="variables empty">Переменные пока не заданы.</div><p id="variablesStatus" class="hint" role="status"></p>
+        </div>
+      </section>
+
+      <section id="commonTab" class="tab-panel">
+        <div class="card">
+          <div class="card-title-row"><h2>Общие элементы</h2><div class="button-group"><button id="downloadCommonElements" class="secondary" type="button">Скачать</button><label class="secondary upload-button"><input id="uploadCommonElements" type="file" accept="application/json,.json" /><span>Загрузить</span></label><button id="addCommonElement" class="secondary" type="button">Добавить общий элемент</button></div></div>
+          <p class="hint">Общий элемент содержит набор правил, который можно подключить к одному сценарию.</p>
+          <div id="commonElements" class="scenarios"></div><p id="commonElementsStatus" class="hint" role="status"></p>
         </div>
       </section>
 
@@ -111,6 +123,11 @@
           <label class="field">
             <span>Название сценария</span>
             <input id="modalScenarioName" type="text" placeholder="Сценарий" />
+          </label>
+
+          <label class="field">
+            <span>Общий элемент</span>
+            <select id="modalCommonElement"><option value="">Не использовать</option></select>
           </label>
 
           <div class="modal-rules-header">
@@ -163,7 +180,7 @@
             <span>Имя переменной</span>
             <input class="variable-name" type="text" placeholder="test" />
           </label>
-          <button class="secondary danger-text remove-variable" type="button">Удалить</button>
+          <div class="button-group"><button class="secondary apply-variable" type="button">Применить</button><button class="secondary danger-text remove-variable" type="button">Удалить</button></div>
         </div>
         <label class="field">
           <span>Выражение</span>

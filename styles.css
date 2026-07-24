@@ -419,3 +419,18 @@ body.modal-open {
 .modal-actions-spacer {
   flex: 1;
 }
+
+.menu { position: relative; margin-bottom: 12px; }
+.burger { width: 100%; text-align: left; }
+.tabs { display: none; margin-top: 8px; }
+.menu.open .tabs { display: grid; }
+.button-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+.common-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  background: color-mix(in srgb, var(--card) 94%, var(--primary));
+}
+.upload-button input { display: none; }
