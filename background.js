@@ -83,14 +83,11 @@ async function inspectOutgoingRequest(details) {
       rules.map((rule) => compareRule(rule, json, details, scenario.name, variableValues))
     );
 
-    const strictPassed = results
-      .filter((result) => result.mode === 'strict')
-      .every((result) => result.matched);
+    const hasStrictMismatch = results.some((result) => result.mode === 'strict' && !result.matched);
     const hasVisibleResult = results.some((result) => result.found || result.matched || result.mode === 'loose');
 
-    if (strictPassed && hasVisibleResult) {
-      meaningfulResults.push(...results);
-    }
+    if (hasStrictMismatch) continue;
+    if (hasVisibleResult) meaningfulResults.push(...results);
   }
 
   if (!meaningfulResults.length) return;
