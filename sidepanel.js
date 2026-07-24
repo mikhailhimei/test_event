@@ -31,11 +31,13 @@ const els = {
   addVariable: document.querySelector('#addVariable'),
   downloadVariables: document.querySelector('#downloadVariables'),
   uploadVariables: document.querySelector('#uploadVariables'),
+  variablesJson: document.querySelector('#variablesJson'),
   variablesStatus: document.querySelector('#variablesStatus'),
   addCommonElement: document.querySelector('#addCommonElement'),
   commonElements: document.querySelector('#commonElements'),
   downloadCommonElements: document.querySelector('#downloadCommonElements'),
   uploadCommonElements: document.querySelector('#uploadCommonElements'),
+  commonElementsJson: document.querySelector('#commonElementsJson'),
   commonElementsStatus: document.querySelector('#commonElementsStatus'),
   toggleScenarios: document.querySelector('#toggleScenarios'),
   clearMatches: document.querySelector('#clearMatches'),
@@ -45,6 +47,7 @@ const els = {
   blockExternal: document.querySelector('#blockExternal'),
   downloadScenarios: document.querySelector('#downloadScenarios'),
   uploadScenarios: document.querySelector('#uploadScenarios'),
+  scenariosJson: document.querySelector('#scenariosJson'),
   transferStatus: document.querySelector('#transferStatus'),
   openDocs: document.querySelector('#openDocs'),
   tabs: document.querySelectorAll('.tab'),
@@ -82,15 +85,15 @@ function bindUi() {
   els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
   els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
   els.downloadVariables.addEventListener('click', downloadVariables);
-  els.uploadVariables.addEventListener('change', uploadVariables);
+  els.uploadVariables.addEventListener('click', uploadVariables);
   els.addCommonElement.addEventListener('click', () => addCommonElement());
   els.downloadCommonElements.addEventListener('click', downloadCommonElements);
-  els.uploadCommonElements.addEventListener('change', uploadCommonElements);
+  els.uploadCommonElements.addEventListener('click', uploadCommonElements);
   els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
   // els.requestPath.addEventListener('change', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
   els.downloadScenarios.addEventListener('click', downloadScenarios);
-  els.uploadScenarios.addEventListener('change', uploadScenarios);
+  els.uploadScenarios.addEventListener('click', uploadScenarios);
   els.toggleScenarios.addEventListener('click', handleToggleScenarios);
   els.clearMatches.addEventListener('click', async () => {
     state.matches = [];
@@ -510,26 +513,27 @@ function downloadScenarios() {
   setTransferStatus('Сценарии скачаны.');
 }
 
-async function uploadScenarios(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
+async function uploadScenarios() {
   try {
-    const data = JSON.parse(await file.text());
+    const data = parseJsonFromTextarea(els.scenariosJson, 'JSON сценариев не заполнен.');
     const scenarios = normalizeScenarios(data);
     state.settings = { ...state.settings, scenarios };
     await chrome.storage.local.set({ settings: state.settings });
     renderSettings();
-    setTransferStatus('Сценарии загружены. Нажмите «Сохранить», если измените их вручную.');
+    setTransferStatus('Сценарии загружены из JSON.');
   } catch (error) {
     setTransferStatus(`Не удалось загрузить сценарии: ${error.message}`);
-  } finally {
-    event.target.value = '';
   }
 }
 
 function setTransferStatus(message) {
   els.transferStatus.textContent = message;
+}
+
+function parseJsonFromTextarea(textarea, emptyMessage) {
+  const rawJson = textarea.value.trim();
+  if (!rawJson) throw new Error(emptyMessage);
+  return JSON.parse(rawJson);
 }
 
 function setVariablesStatus(message) {
@@ -547,19 +551,15 @@ function downloadCommonElements() {
   els.commonElementsStatus.textContent = 'Общие элементы скачаны.';
 }
 
-async function uploadCommonElements(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
+async function uploadCommonElements() {
   try {
-    const data = JSON.parse(await file.text());
+    const data = parseJsonFromTextarea(els.commonElementsJson, 'JSON общих элементов не заполнен.');
     state.settings.commonElements = normalizeCommonElements(data);
     await saveSettings();
     renderCommonElements();
-    els.commonElementsStatus.textContent = 'Общие элементы загружены.';
+    els.commonElementsStatus.textContent = 'Общие элементы загружены из JSON.';
   } catch (error) {
     els.commonElementsStatus.textContent = `Не удалось загрузить общие элементы: ${error.message}`;
-  } finally {
-    event.target.value = '';
   }
 }
 
@@ -574,19 +574,15 @@ function downloadVariables() {
   setVariablesStatus('Переменные скачаны.');
 }
 
-async function uploadVariables(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
+async function uploadVariables() {
   try {
-    const data = JSON.parse(await file.text());
+    const data = parseJsonFromTextarea(els.variablesJson, 'JSON переменных не заполнен.');
     state.settings.variables = normalizeVariables(data);
     await saveSettings();
     renderVariables();
-    setVariablesStatus('Переменные загружены.');
+    setVariablesStatus('Переменные загружены из JSON.');
   } catch (error) {
     setVariablesStatus(`Не удалось загрузить переменные: ${error.message}`);
-  } finally {
-    event.target.value = '';
   }
 }
 
@@ -613,8 +609,9 @@ function normalizeSettings(settings) {
 }
 
 function normalizeVariables(settings) {
-  if (Array.isArray(settings?.variables)) {
-    return settings.variables.map((variable) => ({ name: variable.name || '', expression: variable.expression || '' }));
+  const sourceVariables = Array.isArray(settings) ? settings : settings?.variables;
+  if (Array.isArray(sourceVariables)) {
+    return sourceVariables.map((variable) => ({ name: variable.name || '', expression: variable.expression || '' }));
   }
   return [];
 }

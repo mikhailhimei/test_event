@@ -434,3 +434,19 @@ body.modal-open {
   background: color-mix(in srgb, var(--card) 94%, var(--primary));
 }
 .upload-button input { display: none; }
+
+.json-upload {
+  margin-top: 12px;
+}
+
+.field textarea {
+  width: 100%;
+  min-height: 110px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 10px;
+  background: var(--card);
+  color: var(--text);
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  resize: vertical;
+}
