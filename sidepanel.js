@@ -215,11 +215,12 @@ function renderCommonElements() {
   els.commonElements.replaceChildren(...state.settings.commonElements.map((element, index) => {
     const node = document.createElement('div');
     node.className = 'common-card';
-    node.innerHTML = `<div class="variable-row"><label class="field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><button class="secondary danger-text remove-common" type="button">Удалить</button></div><div class="scenario-rules"></div><button class="secondary add-common-rule" type="button">Добавить правило</button>`;
+    node.innerHTML = `<div class="variable-row"><label class="field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><div class="button-group"><button class="secondary save-common" type="button">Сохранить</button><button class="secondary danger-text remove-common" type="button">Удалить</button></div></div><div class="scenario-rules"></div><div class="actions"><button class="secondary add-common-rule" type="button">Добавить правило</button><span class="common-save-status hint" role="status"></span></div>`;
     const rules = node.querySelector('.scenario-rules');
     (element.rules?.length ? element.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rules, rule));
     node.querySelector('.common-name').addEventListener('change', async (event) => { state.settings.commonElements[index].name = event.target.value.trim(); await saveCommonElement(index, node); });
     node.querySelector('.add-common-rule').addEventListener('click', () => addRule(rules, DEFAULT_RULE));
+    node.querySelector('.save-common').addEventListener('click', async () => { await saveCommonElement(index, node); setCommonElementStatus(node, 'Общий элемент сохранен.'); });
     node.querySelector('.remove-common').addEventListener('click', async () => { state.settings.commonElements.splice(index, 1); await saveSettings(); renderCommonElements(); });
     node.addEventListener('change', async () => saveCommonElement(index, node));
     return node;
@@ -229,6 +230,10 @@ function renderCommonElements() {
 async function saveCommonElement(index, node) {
   state.settings.commonElements[index] = { id: state.settings.commonElements[index]?.id || crypto.randomUUID(), name: node.querySelector('.common-name').value.trim() || `Общий элемент ${index + 1}`, rules: readRulesFromContainer(node.querySelector('.scenario-rules')) };
   await saveSettings();
+}
+
+function setCommonElementStatus(node, message) {
+  node.querySelector('.common-save-status').textContent = message;
 }
 
 function addCommonElement() {
