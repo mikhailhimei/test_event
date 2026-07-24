@@ -29,6 +29,10 @@
           <input id="requestPath" type="text" placeholder="/api/events или часть URL" />
         </label>
         <p class="hint">Расширение проверяет тело отправляемых запросов, URL которых содержит этот путь.</p>
+        <div class="settings-actions">
+          <button id="saveRequestPath" type="button">Сохранить путь</button>
+          <p id="settingsStatus" class="hint" role="status"></p>
+        </div>
       </div>
       <label class="toggle card">
         <input id="blockExternal" type="checkbox" />

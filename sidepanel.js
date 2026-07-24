@@ -22,6 +22,8 @@ const state = {
 
 const els = {
   requestPath: document.querySelector('#requestPath'),
+  saveRequestPath: document.querySelector('#saveRequestPath'),
+  settingsStatus: document.querySelector('#settingsStatus'),
   scenarios: document.querySelector('#scenarios'),
   scenarioTemplate: document.querySelector('#scenarioTemplate'),
   ruleTemplate: document.querySelector('#ruleTemplate'),
@@ -106,7 +108,10 @@ function bindUi() {
   els.downloadCommonElements.addEventListener('click', downloadCommonElements);
   els.uploadCommonElements.addEventListener('click', uploadCommonElements);
   els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
-  // els.requestPath.addEventListener('change', saveSettings);
+  els.saveRequestPath.addEventListener('click', saveSettingsWithStatus);
+  els.requestPath.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') saveSettingsWithStatus();
+  });
   els.blockExternal.addEventListener('change', saveSettings);
   els.downloadScenarios.addEventListener('click', downloadScenarios);
   els.uploadScenarios.addEventListener('click', uploadScenarios);
@@ -456,6 +461,15 @@ function readCommonElementFromModal() {
     name: els.modalCommonElementName.value.trim() || fallbackName,
     rules: readRulesFromContainer(els.modalCommonElementRules),
   };
+}
+
+async function saveSettingsWithStatus() {
+  await saveSettings();
+  setSettingsStatus('Путь запроса сохранён.');
+}
+
+function setSettingsStatus(message) {
+  els.settingsStatus.textContent = message;
 }
 
 async function saveSettings() {
