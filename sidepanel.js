@@ -28,13 +28,16 @@ const els = {
   variables: document.querySelector('#variables'),
   variableTemplate: document.querySelector('#variableTemplate'),
   addScenario: document.querySelector('#addScenario'),
+  deleteAllScenarios: document.querySelector('#deleteAllScenarios'),
   addVariable: document.querySelector('#addVariable'),
+  deleteAllVariables: document.querySelector('#deleteAllVariables'),
   downloadVariables: document.querySelector('#downloadVariables'),
   uploadVariables: document.querySelector('#uploadVariables'),
   variablesJson: document.querySelector('#variablesJson'),
   variablesUploadStatus: document.querySelector('#variablesUploadStatus'),
   variablesStatus: document.querySelector('#variablesStatus'),
   addCommonElement: document.querySelector('#addCommonElement'),
+  deleteAllCommonElements: document.querySelector('#deleteAllCommonElements'),
   commonElements: document.querySelector('#commonElements'),
   downloadCommonElements: document.querySelector('#downloadCommonElements'),
   uploadCommonElements: document.querySelector('#uploadCommonElements'),
@@ -93,10 +96,13 @@ async function init() {
 
 function bindUi() {
   els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
+  els.deleteAllScenarios.addEventListener('click', deleteAllScenarios);
   els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
+  els.deleteAllVariables.addEventListener('click', deleteAllVariables);
   els.downloadVariables.addEventListener('click', downloadVariables);
   els.uploadVariables.addEventListener('click', uploadVariables);
   els.addCommonElement.addEventListener('click', () => openCommonElementModal(createCommonElementDraft()));
+  els.deleteAllCommonElements.addEventListener('click', deleteAllCommonElements);
   els.downloadCommonElements.addEventListener('click', downloadCommonElements);
   els.uploadCommonElements.addEventListener('click', uploadCommonElements);
   els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
@@ -151,6 +157,13 @@ function renderSettings() {
 }
 
 function renderScenarios() {
+  els.scenarios.classList.toggle('empty', state.settings.scenarios.length === 0);
+  if (!state.settings.scenarios.length) {
+    els.scenarios.textContent = 'Сценарии пока не заданы.';
+    updateScenarioVisibility();
+    return;
+  }
+
   els.scenarios.replaceChildren();
   state.settings.scenarios.forEach((scenario, index) => {
     const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
@@ -351,9 +364,30 @@ async function handleScenarioSubmit(event) {
 async function handleScenarioDelete() {
   if (state.editingScenarioIndex === null) return;
   state.settings.scenarios = state.settings.scenarios.filter((_, index) => index !== state.editingScenarioIndex);
-  if (!state.settings.scenarios.length) state.settings.scenarios = [DEFAULT_SCENARIO];
   renderScenarios();
   closeScenarioModal();
+  await saveSettings();
+}
+
+async function deleteAllScenarios() {
+  state.settings.scenarios = [];
+  renderScenarios();
+  await saveSettings();
+}
+
+async function deleteAllVariables() {
+  state.settings.variables = [];
+  renderVariables();
+  setVariablesStatus('Все переменные удалены.');
+  await saveSettings();
+}
+
+async function deleteAllCommonElements() {
+  state.settings.commonElements = [];
+  state.settings.scenarios = state.settings.scenarios.map((scenario) => ({ ...scenario, commonElementId: '' }));
+  renderCommonElements();
+  renderScenarios();
+  els.commonElementsStatus.textContent = 'Все общие элементы удалены.';
   await saveSettings();
 }
 
@@ -427,7 +461,7 @@ function readCommonElementFromModal() {
 async function saveSettings() {
   state.settings = {
     requestPath: els.requestPath.value.trim(),
-    scenarios: state.settings.scenarios.length ? state.settings.scenarios : [DEFAULT_SCENARIO],
+    scenarios: state.settings.scenarios || [],
     variables: state.settings.variables || [],
     commonElements: state.settings.commonElements || [],
     blockExternal: els.blockExternal.checked,
@@ -801,7 +835,7 @@ function normalizeScenarios(settings) {
   if (Array.isArray(settings) && settings.length) {
     return settings.map((scenario) => ({ enabled: true, ...scenario }));
   }
-  if (Array.isArray(settings?.scenarios) && settings.scenarios.length) {
+  if (Array.isArray(settings?.scenarios)) {
     return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
   }
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];

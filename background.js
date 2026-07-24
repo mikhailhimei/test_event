@@ -485,7 +485,7 @@ function safeHost(url) {
 
 
 function normalizeScenarios(settings) {
-  if (settings?.scenarios?.length) {
+  if (Array.isArray(settings?.scenarios)) {
     return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
   }
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];
