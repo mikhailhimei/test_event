@@ -85,11 +85,11 @@
           <h2>Сценарии</h2>
           <div class="button-group">
             <button id="toggleScenarios" class="secondary" type="button">Скрыть все</button>
-            <button id="deleteAllScenarios" class="secondary danger-text" type="button">Удалить все</button>
             <button id="addScenario" class="secondary" type="button">Добавить сценарий</button>
           </div>
         </div>
         <div id="scenarios" class="scenarios"></div>
+        <button id="deleteAllScenarios" class="secondary danger-text" type="button">Удалить все</button>
       </div>
     </section>
 
@@ -98,7 +98,6 @@
         <div class="card-title-row">
           <h2>Переменные</h2>
           <div class="button-group">
-            <button id="deleteAllVariables" class="secondary danger-text" type="button">Удалить все</button>
             <button id="addVariable" class="secondary" type="button">Добавить переменную</button>
           </div>
         </div>
@@ -107,6 +106,8 @@
         </p>
         <div id="variables" class="variables empty">Переменные пока не заданы.</div>
         <p id="variablesStatus" class="hint" role="status"></p>
+        <button id="deleteAllVariables" class="secondary danger-text" type="button">Удалить все</button>
+
       </div>
     </section>
 
@@ -115,13 +116,13 @@
         <div class="card-title-row">
           <h2>Общие элементы</h2>
           <div class="button-group">
-            <button id="deleteAllCommonElements" class="secondary danger-text" type="button">Удалить все</button>
             <button id="addCommonElement" class="secondary" type="button">Добавить общий элемент</button>
           </div>
         </div>
         <p class="hint">Общий элемент содержит набор правил, который можно подключить к одному сценарию.</p>
         <div id="commonElements" class="scenarios"></div>
         <p id="commonElementsStatus" class="hint" role="status"></p>
+        <button id="deleteAllCommonElements" class="secondary danger-text" type="button">Удалить все</button>
       </div>
     </section>
   </main>
