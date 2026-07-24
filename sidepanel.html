@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Response Match Panel</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <header class="header">
@@ -63,13 +63,16 @@
     </main>
 
     <template id="scenarioTemplate">
-      <details class="scenario" open>
+      <details class="scenario">
         <summary>
           <input class="scenario-name" type="text" value="Сценарий" aria-label="Название сценария" />
-          <button class="secondary add-rule" type="button">Добавить правило</button>
+          <span class="scenario-toggle-hint">свернуть/развернуть</span>
           <button class="icon remove-scenario" type="button" title="Удалить сценарий">×</button>
         </summary>
         <div class="scenario-rules"></div>
+        <div class="scenario-actions">
+          <button class="secondary add-rule" type="button">Добавить правило</button>
+        </div>
       </details>
     </template>
 
@@ -84,11 +87,11 @@
           <select class="rule-mode">
             <option value="strict">Строгое</option>
             <option value="loose">Не строгое</option>
-          </select>
+            <option value="exists">Должно быть</option>
         </label>
         <label class="field compact">
           <span>Значение</span>
-          <input class="rule-value" type="text" placeholder="auth_click или a,b,c" />
+          <input class="rule-value" type="text" placeholder="auth_click, a|b,c или пусто для «должно быть»" />
         </label>
         <label class="rule-required">
           <input class="rule-required-input" type="checkbox" />
@@ -98,6 +101,6 @@
       </div>
     </template>
 
-    <script src="sidepanel.js"></script>
+    <script src="./sidepanel.js" type="text/javascript"></script>
   </body>
 </html>

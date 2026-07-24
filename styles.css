@@ -120,8 +120,14 @@ button:hover { background: var(--primary-dark); }
 }
 .item.match { background: var(--success-bg); color: var(--success-text); }
 .item.mismatch { background: var(--warn-bg); color: var(--warn-text); }
-.item-title { font-weight: 700; margin-bottom: 4px; }
-.item-meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.item-summary {
+  display: grid;
+  gap: 4px;
+  cursor: pointer;
+}
+.item-title { font-weight: 700; }
+.item-meta { color: var(--muted); font-size: 12px; }
+.item-details { margin-top: 8px; }
 pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 
 .scenarios {
@@ -158,6 +164,12 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 }
 
 .scenario-rules {
+  padding: 0 10px;
+}
+
+.scenario-actions {
+  display: flex;
+  justify-content: flex-end;
   padding: 0 10px 10px;
 }
 
@@ -173,4 +185,34 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 .rule-required input {
   width: 16px;
   height: 16px;
+}
+
+.scenario-toggle-hint {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.request-details {
+  margin-top: 10px;
+  border-top: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  padding-top: 8px;
+}
+
+.request-details summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.request-payload {
+  max-height: 360px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  color: var(--text);
+  line-height: 1.45;
 }

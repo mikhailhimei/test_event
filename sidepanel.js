@@ -78,12 +78,16 @@ function renderSettings() {
 function addScenario(scenario) {
   const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
   node.querySelector('.scenario-name').value = scenario.name || `Сценарий ${els.scenarios.children.length + 1}`;
+  node.querySelector('.scenario-name').addEventListener('click', (event) => event.stopPropagation());
+  node.querySelector('.scenario-name').addEventListener('keydown', (event) => event.stopPropagation());
   node.querySelector('.add-rule').addEventListener('click', (event) => {
     event.preventDefault();
+    event.stopPropagation();
     addRule(node.querySelector('.scenario-rules'), DEFAULT_RULE);
   });
   node.querySelector('.remove-scenario').addEventListener('click', (event) => {
     event.preventDefault();
+    event.stopPropagation();
     node.remove();
   });
   const rulesContainer = node.querySelector('.scenario-rules');
@@ -97,7 +101,14 @@ function addRule(container, rule) {
   node.querySelector('.rule-mode').value = rule.mode || 'strict';
   node.querySelector('.rule-value').value = rule.expected || '';
   node.querySelector('.rule-required-input').checked = Boolean(rule.required);
-  node.querySelector('.remove-rule').addEventListener('click', () => node.remove());
+  node.querySelector('.remove-rule').addEventListener('click', () => {
+    const scenario = container.closest('.scenario');
+    node.remove();
+
+    if (scenario && !container.querySelector('.rule')) {
+      scenario.remove();
+    }
+  });
   container.append(node);
 }
 
@@ -147,27 +158,53 @@ function renderHistory() {
   renderList(els.history, state.history, 'История пуста.');
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderList(container, records, emptyText) {
   container.classList.toggle('empty', records.length === 0);
+
   if (!records.length) {
     container.textContent = emptyText;
     return;
   }
 
-  container.replaceChildren(...records.map((record) => {
-    const item = document.createElement('article');
-    const allMatched = record.results.every((result) => result.matched);
-    item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
-    item.innerHTML = `
-      <div class="item-title">${allMatched ? 'Совпало' : 'Есть несовпадения'}</div>
-      <div>${escapeHtml(record.url)}</div>
-      <div class="item-meta">${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}</div>
-      <pre>${escapeHtml(formatResults(record.results))}</pre>
-    `;
-    return item;
-  }));
-}
+  container.replaceChildren(
+    ...records.map((record) => {
+      const item = document.createElement('details');
+      item.open = true;
 
+      const allMatched = record.results.every((r) => r.matched);
+
+      item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
+
+      item.innerHTML = `
+        <summary class="item-summary">
+          <span class="item-title">
+            ${allMatched ? 'Совпало' : 'Есть несовпадения'}
+          </span>
+          <span>${escapeHtml(record.url)}</span>
+          <span class="item-meta">
+            ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
+          </span>
+        </summary>
+
+        <div class="item-details">
+          <pre>${escapeHtml(formatResults(record.results))}</pre>
+          ${formatRequestDetails(record.request)}
+        </div>
+      `;
+
+      return item;
+    })
+  );
+}
 function formatResults(results) {
   return results.map((result) => {
     const lines = [
@@ -184,6 +221,25 @@ function formatResults(results) {
   }).join('\n\n');
 }
 
+function formatRequestDetails(request) {
+  if (request === undefined) return '';
+
+  return `
+    <details class="request-details">
+      <summary>Весь запрос</summary>
+      <pre class="request-payload">${escapeHtml(formatJson(request))}</pre>
+    </details>
+  `;
+}
+
+function formatJson(value) {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
+}
+
 function normalizeSettings(settings) {
   return {
     ...DEFAULT_SETTINGS,
@@ -191,13 +247,6 @@ function normalizeSettings(settings) {
     scenarios: normalizeScenarios(settings),
   };
 }
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>'"]/g, (char) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
-  }[char]));
-}
-
 
 function normalizeScenarios(settings) {
   if (settings?.scenarios?.length) return settings.scenarios;

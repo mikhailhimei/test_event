@@ -67,6 +67,7 @@ async function inspectOutgoingRequest(details) {
     frameId: details.frameId,
     at: new Date().toISOString(),
     results: meaningfulResults,
+    request: json,
   };
 
   const { matches = [], history = [] } = await chrome.storage.local.get(['matches', 'history']);
@@ -117,21 +118,22 @@ function parseJsonLikeValue(value) {
 
 function compareRule(rule, json, scenarioName) {
   const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
-  const expectedValues = parseExpected(rule.expected);
+  const expectedGroups = parseExpected(rule.expected);
   const matched = rule.mode === 'strict'
-    ? actualValues.length === expectedValues.length && expectedValues.every((value, index) => actualValues[index] === value)
-    : expectedValues.every((value) => actualValues.includes(value));
+    ? actualValues.length === expectedGroups.length && expectedGroups.every((values, index) => values.includes(actualValues[index]))
+    : expectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
+  const expectedFlatValues = expectedGroups.flat();
 
   return {
     scenarioName,
     keyPath: rule.keyPath,
     required: Boolean(rule.required),
     mode: rule.mode,
-    expected: expectedValues,
+    expected: expectedGroups.map((values) => values.join(' | ')),
     actual: actualValues,
     found: actualValues.length > 0,
     matched,
-    extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedValues.includes(value)) : [],
+    extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedFlatValues.includes(value)) : [],
   };
 }
 
@@ -147,7 +149,10 @@ function getValuesByPath(source, path) {
 }
 
 function parseExpected(value) {
-  return value.split(',').map((part) => part.trim()).filter(Boolean).map(stringifyComparable);
+  return value
+    .split(',')
+    .map((part) => part.split('|').map((variant) => variant.trim()).filter(Boolean).map(stringifyComparable))
+    .filter((variants) => variants.length);
 }
 
 function stringifyComparable(value) {
