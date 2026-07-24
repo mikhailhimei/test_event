@@ -8,6 +8,7 @@ const DEFAULT_SETTINGS = {
   blockExternal: false,
 };
 
+const tabHostById = new Map();
 let cachedSettings = DEFAULT_SETTINGS;
 const decoder = new TextDecoder('utf-8');
 
@@ -20,7 +21,27 @@ chrome.runtime.onInstalled.addListener(async () => {
     matches: matches || [],
     history: history || [],
   });
+  await initTabHosts();
 });
+
+chrome.runtime.onStartup.addListener(initTabHosts);
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (typeof changeInfo.url === 'string') {
+    tabHostById.set(tabId, safeHost(changeInfo.url));
+  } else if (typeof tab.url === 'string') {
+    tabHostById.set(tabId, safeHost(tab.url));
+  }
+});
+chrome.tabs.onRemoved.addListener((tabId) => tabHostById.delete(tabId));
+
+async function initTabHosts() {
+  const tabs = await chrome.tabs.query({});
+  for (const tab of tabs) {
+    if (typeof tab.id === 'number') {
+      tabHostById.set(tab.id, safeHost(tab.url));
+    }
+  }
+}
 
 chrome.storage.local.get('settings').then(({ settings }) => {
   cachedSettings = normalizeSettings(settings);
@@ -34,12 +55,12 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
-    warnAboutExternalNavigation(details);
+    const blocked = warnAboutExternalNavigation(details);
     void inspectOutgoingRequest(details);
-    return {};
+    return blocked || {};
   },
   { urls: ['<all_urls>'] },
-  ['requestBody']
+  ['requestBody', 'blocking']
 );
 
 async function inspectOutgoingRequest(details) {
@@ -49,6 +70,8 @@ async function inspectOutgoingRequest(details) {
   if (!json) return;
 
   const meaningfulResults = cachedSettings.scenarios.flatMap((scenario) => {
+    if (scenario.enabled === false) return [];
+
     const results = scenario.rules.map((rule) => compareRule(rule, json, scenario.name));
     const requiredResults = results.filter((result) => result.required);
     const requiredPassed = requiredResults.length
@@ -57,6 +80,7 @@ async function inspectOutgoingRequest(details) {
 
     return requiredPassed ? results : [];
   });
+
   if (!meaningfulResults.length) return;
 
   const record = {
@@ -151,10 +175,65 @@ function getValuesByPath(source, path) {
 }
 
 function parseExpected(value) {
-  return value
-    .split(',')
-    .map((part) => part.split('|').map((variant) => variant.trim()).filter(Boolean).map(stringifyComparable))
+  return splitTopLevel(value, ',')
+    .map((part) => splitTopLevel(part, '|')
+      .map((variant) => variant.trim())
+      .filter(Boolean)
+      .map((variant) => {
+        const parsed = parseJsonLikeValue(variant);
+        return stringifyComparable(parsed !== null ? parsed : variant);
+      }))
     .filter((variants) => variants.length);
+}
+
+function splitTopLevel(value, separator) {
+  const parts = [];
+  let current = '';
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+
+  for (const char of value) {
+    if (escape) {
+      current += char;
+      escape = false;
+      continue;
+    }
+
+    if (char === '\\' && inString) {
+      current += char;
+      escape = true;
+      continue;
+    }
+
+    if (char === '"') {
+      current += char;
+      inString = !inString;
+      continue;
+    }
+
+    if (!inString) {
+      if (char === '{' || char === '[') {
+        depth += 1;
+      } else if (char === '}' || char === ']') {
+        depth = Math.max(0, depth - 1);
+      }
+
+      if (depth === 0 && char === separator) {
+        parts.push(current.trim());
+        current = '';
+        continue;
+      }
+    }
+
+    current += char;
+  }
+
+  if (current.trim()) {
+    parts.push(current.trim());
+  }
+
+  return parts;
 }
 
 function stringifyComparable(value) {
@@ -165,24 +244,24 @@ function stringifyComparable(value) {
 
 function warnAboutExternalNavigation(details) {
   if (details.type !== 'main_frame' || !cachedSettings.blockExternal || details.tabId < 0) {
-    return;
+    return null;
   }
 
-  chrome.tabs.get(details.tabId, (tab) => {
-    if (chrome.runtime.lastError || !tab?.url) {
-      return;
-    }
+  const currentHost =
+    tabHostById.get(details.tabId) || safeHost(details.initiator || details.originUrl);
+  const nextHost = safeHost(details.url);
 
-    const currentHost = safeHost(tab.url);
-    const nextHost = safeHost(details.url);
-    if (currentHost && nextHost && currentHost !== nextHost) {
-      chrome.scripting.executeScript({
-        target: { tabId: details.tabId },
-        func: (from, to) => alert(`Переход на сторонний ресурс: ${from} → ${to}`),
-        args: [currentHost, nextHost],
-      });
-    }
+  if (!currentHost || !nextHost || currentHost === nextHost) {
+    return null;
+  }
+
+  chrome.scripting.executeScript({
+    target: { tabId: details.tabId },
+    func: (from, to) => alert(`Переход на сторонний ресурс: ${from} → ${to}`),
+    args: [currentHost, nextHost],
   });
+
+  return { cancel: true };
 }
 
 function normalizeSettings(settings) {
@@ -203,7 +282,9 @@ function safeHost(url) {
 
 
 function normalizeScenarios(settings) {
-  if (settings?.scenarios?.length) return settings.scenarios;
-  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
+  if (settings?.scenarios?.length) {
+    return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
+  }
+  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];
   return DEFAULT_SETTINGS.scenarios;
 }

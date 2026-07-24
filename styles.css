@@ -127,6 +127,42 @@ button:hover { background: var(--primary-dark); }
 .item-title { font-weight: 700; }
 .item-meta { color: var(--muted); font-size: 12px; }
 .item-details { margin-top: 8px; }
+.result-block {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+}
+.result-block.match { border-color: color-mix(in srgb, var(--success-text) 40%, var(--border)); }
+.result-block.mismatch { border-color: color-mix(in srgb, var(--warn-text) 40%, var(--border)); }
+.result-block-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.result-block-body {
+  display: grid;
+  gap: 8px;
+}
+.result-block-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+.result-block-label {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.result-block-value {
+  font-size: 13px;
+  word-break: break-word;
+}
 pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 
 .scenarios {
@@ -283,6 +319,10 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 
 .modal-backdrop[hidden] {
   display: none;
+}
+
+body.modal-open {
+  overflow: hidden;
 }
 
 .modal {

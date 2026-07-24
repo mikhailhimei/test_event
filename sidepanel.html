@@ -79,10 +79,13 @@
     </main>
 
     <template id="scenarioTemplate">
-      <button class="scenario-card" type="button">
-        <span class="scenario-card-name">Сценарий</span>
+      <div class="scenario-card" role="button" tabindex="0">
+        <span class="scenario-card-toggle">
+          <input class="scenario-enabled" type="checkbox" checked aria-label="Искать по сценарию" />
+          <span class="scenario-card-name">Сценарий</span>
+        </span>
         <span class="scenario-card-meta">0 правил</span>
-      </button>
+      </div>
     </template>
 
     <div id="scenarioModal" class="modal-backdrop" hidden>

@@ -14,6 +14,7 @@ const state = {
   matches: [],
   history: [],
   editingScenarioIndex: null,
+  scenariosCollapsed: true,
 };
 
 const els = {
@@ -23,7 +24,6 @@ const els = {
   ruleTemplate: document.querySelector('#ruleTemplate'),
   addScenario: document.querySelector('#addScenario'),
   toggleScenarios: document.querySelector('#toggleScenarios'),
-  saveSettings: document.querySelector('#saveSettings'),
   clearMatches: document.querySelector('#clearMatches'),
   clearHistory: document.querySelector('#clearHistory'),
   matches: document.querySelector('#matches'),
@@ -62,8 +62,11 @@ async function init() {
 
 function bindUi() {
   els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
-  els.saveSettings.addEventListener('click', saveSettings);
+  // els.requestPath.addEventListener('change', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
+  els.downloadScenarios.addEventListener('click', downloadScenarios);
+  els.uploadScenarios.addEventListener('change', uploadScenarios);
+  els.toggleScenarios.addEventListener('click', handleToggleScenarios);
   els.clearMatches.addEventListener('click', async () => {
     state.matches = [];
     await chrome.storage.local.set({ matches: [] });
@@ -104,10 +107,37 @@ function renderScenarios() {
     const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
     node.querySelector('.scenario-card-name').textContent = scenario.name || `Сценарий ${index + 1}`;
     node.querySelector('.scenario-card-meta').textContent = formatScenarioMeta(scenario);
+
+    const enabledToggle = node.querySelector('.scenario-enabled');
+    enabledToggle.checked = scenario.enabled !== false;
+    enabledToggle.addEventListener('click', (event) => event.stopPropagation());
+    enabledToggle.addEventListener('change', async (event) => {
+      event.stopPropagation();
+      await setScenarioEnabled(index, enabledToggle.checked);
+    });
+
     node.addEventListener('click', () => openScenarioModal(scenario, index));
+    node.classList.toggle('disabled', scenario.enabled === false);
     els.scenarios.append(node);
   });
+  updateScenarioVisibility();
 }
+
+function updateScenarioVisibility() {
+  els.scenarios.querySelectorAll('.scenario-card').forEach((card) => {
+    card.style.display = state.scenariosCollapsed ? 'none' : '';
+  });
+  els.toggleScenarios.textContent = state.scenariosCollapsed ? 'Показать все' : 'Скрыть все';
+}
+
+async function setScenarioEnabled(index, enabled) {
+  state.settings.scenarios = state.settings.scenarios.map((scenario, scenarioIndex) => (
+    scenarioIndex === index ? { ...scenario, enabled } : scenario
+  ));
+  await saveSettings();
+  renderScenarios();
+}
+
 
 function openScenarioModal(scenario, index = null) {
   state.editingScenarioIndex = index;
@@ -117,11 +147,13 @@ function openScenarioModal(scenario, index = null) {
   (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(els.modalScenarioRules, rule));
   els.modalDeleteScenario.hidden = index === null;
   els.scenarioModal.hidden = false;
+  document.body.classList.add('modal-open');
   els.modalScenarioName.focus();
 }
 
 function closeScenarioModal() {
   els.scenarioModal.hidden = true;
+  document.body.classList.remove('modal-open');
   state.editingScenarioIndex = null;
   els.scenarioForm.reset();
   els.modalScenarioRules.replaceChildren();
@@ -157,10 +189,11 @@ async function handleScenarioSubmit(event) {
   if (!scenario.rules.length) return;
 
   if (state.editingScenarioIndex === null) {
-    state.settings.scenarios = [...state.settings.scenarios, scenario];
+    state.settings.scenarios = [...state.settings.scenarios, { ...scenario, enabled: true }];
   } else {
+    const existingEnabled = state.settings.scenarios[state.editingScenarioIndex]?.enabled;
     state.settings.scenarios = state.settings.scenarios.map((item, index) => (
-      index === state.editingScenarioIndex ? scenario : item
+      index === state.editingScenarioIndex ? { ...scenario, enabled: existingEnabled !== false } : item
     ));
   }
 
@@ -289,24 +322,31 @@ function renderList(container, records, emptyText) {
 function formatResults(results) {
   return results.map((result) => {
     const mode = result.mode === 'strict' ? 'строго' : result.mode === 'exists' ? 'должно быть' : 'не строго';
-    const lines = [
-      `ожидали: ${result.expected?.length ? result.expected.join(', ') : 'любое значение'}`,
-      `получили: ${result.actual.length ? result.actual.join(', ') : 'путь не найден'}`,
-      `путь: ${result.found ? 'найден' : 'не найден'}`,
-      `результат: ${result.matched ? 'совпало' : 'не совпало'}`,
+    const blocks = [
+      { label: 'ожидали', value: result.expected?.length ? result.expected.join(', ') : 'любое значение' },
+      { label: 'получили', value: result.actual.length ? result.actual.join(', ') : 'путь не найден' },
+      { label: 'путь', value: result.found ? 'найден' : 'не найден' },
+      { label: 'результат', value: result.matched ? 'совпало' : 'не совпало' },
     ];
     if (result.extra.length) {
-      lines.push(`доп. поля: ${result.extra.join(', ')}`);
+      blocks.push({ label: 'доп. поля', value: result.extra.join(', ') });
     }
 
     return `
-      <details class="result-block" open>
-        <summary>
+      <div class="result-block ${result.matched ? 'match' : 'mismatch'}">
+        <div class="result-block-header">
           <span>${escapeHtml(result.scenarioName || 'Сценарий')} → ${escapeHtml(result.keyPath)}</span>
           <span class="result-meta">${mode}${result.required ? ' | 100%' : ''}</span>
-        </summary>
-        <pre>${escapeHtml(lines.join('\n'))}</pre>
-      </details>
+        </div>
+        <div class="result-block-body">
+          ${blocks.map((block) => `
+            <div class="result-block-row">
+              <span class="result-block-label">${escapeHtml(block.label)}</span>
+              <span class="result-block-value">${escapeHtml(block.value)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
     `;
   }).join('');
 }
@@ -331,7 +371,7 @@ function formatJson(value) {
 }
 
 function downloadScenarios() {
-  const scenarios = readScenariosFromForm();
+  const scenarios = state.settings.scenarios || [];
   const blob = new Blob([JSON.stringify({ scenarios }, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -385,8 +425,18 @@ function normalizeSettings(settings) {
 }
 
 function normalizeScenarios(settings) {
-  if (Array.isArray(settings) && settings.length) return settings;
-  if (Array.isArray(settings?.scenarios) && settings.scenarios.length) return settings.scenarios;
-  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
-  return DEFAULT_SETTINGS.scenarios;
+  if (Array.isArray(settings) && settings.length) {
+    return settings.map((scenario) => ({ enabled: true, ...scenario }));
+  }
+  if (Array.isArray(settings?.scenarios) && settings.scenarios.length) {
+    return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
+  }
+  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];
+  return DEFAULT_SETTINGS.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
+}
+
+function handleToggleScenarios() {
+  state.scenariosCollapsed = !state.scenariosCollapsed;
+  els.toggleScenarios.textContent = state.scenariosCollapsed ? 'Показать все' : 'Скрыть все';
+  updateScenarioVisibility();
 }
