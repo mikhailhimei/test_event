@@ -196,11 +196,14 @@ function formatResults(results) {
   }).join('\n\n');
 }
 
-function formatRequestDetails(request) {
-  if (request === undefined) return '';
+    syncRecordList('matches', changes.matches.newValue, renderMatches);
 
-  return `
-    <details class="request-details">
+    syncRecordList('history', changes.history.newValue, renderHistory);
+function syncRecordList(key, value, render) {
+  state[key] = Array.isArray(value) ? value : [];
+  render();
+}
+
       <summary>Весь запрос</summary>
       <pre class="request-payload">${escapeHtml(formatJson(request))}</pre>
     </details>
