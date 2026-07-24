@@ -20,6 +20,7 @@
         <button class="tab" data-tab="variables" type="button">Переменные</button>
         <button class="tab" data-tab="common" type="button">Общие элементы</button>
         <button class="tab" data-tab="scenariosTransfer" type="button">Сценарии</button>
+        <button class="tab" data-tab="uploads" type="button">Загрузки</button>
       </nav>
     </div>
 
@@ -71,34 +72,50 @@
         <div class="card">
           <div class="card-title-row">
             <h2>Переменные</h2>
-            <div class="button-group"><button id="downloadVariables" class="secondary" type="button">Скачать</button><button id="uploadVariables" class="secondary" type="button">Загрузить JSON</button><button id="addVariable" class="secondary" type="button">Добавить переменную</button></div>
+            <div class="button-group"><button id="downloadVariables" class="secondary" type="button">Скачать</button><button id="addVariable" class="secondary" type="button">Добавить переменную</button></div>
           </div>
           <p class="hint">Определите переменные и используйте их в правилах: <code>&lt;&lt;path&gt;&gt; == '/' : 1 || &lt;&lt;path&gt;&gt; == '/product' : 2</code></p>
-          <div id="variables" class="variables empty">Переменные пока не заданы.</div><label class="field json-upload"><span>JSON для загрузки переменных</span><textarea id="variablesJson" rows="5" placeholder='{"variables":[{"name":"test","expression":"<<path>> == \"/\" : 1"}]}'></textarea></label><p id="variablesStatus" class="hint" role="status"></p>
+          <div id="variables" class="variables empty">Переменные пока не заданы.</div><p id="variablesStatus" class="hint" role="status"></p>
         </div>
       </section>
 
       <section id="commonTab" class="tab-panel">
         <div class="card">
-          <div class="card-title-row"><h2>Общие элементы</h2><div class="button-group"><button id="downloadCommonElements" class="secondary" type="button">Скачать</button><button id="uploadCommonElements" class="secondary" type="button">Загрузить JSON</button><button id="addCommonElement" class="secondary" type="button">Добавить общий элемент</button></div></div>
+          <div class="card-title-row"><h2>Общие элементы</h2><div class="button-group"><button id="downloadCommonElements" class="secondary" type="button">Скачать</button><button id="addCommonElement" class="secondary" type="button">Добавить общий элемент</button></div></div>
           <p class="hint">Общий элемент содержит набор правил, который можно подключить к одному сценарию.</p>
-          <div id="commonElements" class="scenarios"></div><label class="field json-upload"><span>JSON для загрузки общих элементов</span><textarea id="commonElementsJson" rows="6" placeholder='{"commonElements":[{"name":"Общий элемент","rules":[]}]}'></textarea></label><p id="commonElementsStatus" class="hint" role="status"></p>
+          <div id="commonElements" class="scenarios"></div><p id="commonElementsStatus" class="hint" role="status"></p>
         </div>
       </section>
 
       <section id="scenariosTransferTab" class="tab-panel">
         <section class="card">
           <h2>Скачать и загрузить сценарии</h2>
-          <p class="hint">Экспортируйте текущие сценарии в JSON-файл или вставьте ранее сохраненный JSON ниже.</p>
+          <p class="hint">Экспортируйте текущие сценарии в JSON-файл. Загрузка JSON находится во вкладке «Загрузки».</p>
           <div class="actions transfer-actions">
             <button id="downloadScenarios" type="button">Скачать сценарии</button>
-            <button id="uploadScenarios" class="secondary" type="button">Загрузить JSON</button>
           </div>
-          <label class="field json-upload">
-            <span>JSON для загрузки сценариев</span>
-            <textarea id="scenariosJson" rows="7" placeholder='{"scenarios":[{"name":"Сценарий","rules":[]}]}'></textarea>
-          </label>
           <p id="transferStatus" class="hint" role="status"></p>
+        </section>
+      </section>
+
+      <section id="uploadsTab" class="tab-panel">
+        <section class="card">
+          <h2>Загрузки JSON</h2>
+          <p class="hint">Вставьте JSON в нужный блок и нажмите «Загрузить JSON».</p>
+          <div class="json-upload-list">
+            <div class="json-upload-card">
+              <div class="card-title-row"><h3>Сценарии</h3><button id="uploadScenarios" class="secondary" type="button">Загрузить JSON</button></div>
+              <label class="field json-upload"><span>JSON сценариев</span><textarea id="scenariosJson" rows="7" placeholder='{"scenarios":[{"name":"Сценарий","rules":[]}]}'></textarea></label><p id="scenariosUploadStatus" class="hint" role="status"></p>
+            </div>
+            <div class="json-upload-card">
+              <div class="card-title-row"><h3>Переменные</h3><button id="uploadVariables" class="secondary" type="button">Загрузить JSON</button></div>
+              <label class="field json-upload"><span>JSON переменных</span><textarea id="variablesJson" rows="5" placeholder='{"variables":[{"name":"test","expression":"<<path>> == &quot;/&quot; : 1"}]}'></textarea></label><p id="variablesUploadStatus" class="hint" role="status"></p>
+            </div>
+            <div class="json-upload-card">
+              <div class="card-title-row"><h3>Общие элементы</h3><button id="uploadCommonElements" class="secondary" type="button">Загрузить JSON</button></div>
+              <label class="field json-upload"><span>JSON общих элементов</span><textarea id="commonElementsJson" rows="6" placeholder='{"commonElements":[{"name":"Общий элемент","rules":[]}]}'></textarea></label><p id="commonElementsUploadStatus" class="hint" role="status"></p>
+            </div>
+          </div>
         </section>
       </section>
     </main>

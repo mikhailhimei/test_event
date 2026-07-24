@@ -32,12 +32,14 @@ const els = {
   downloadVariables: document.querySelector('#downloadVariables'),
   uploadVariables: document.querySelector('#uploadVariables'),
   variablesJson: document.querySelector('#variablesJson'),
+  variablesUploadStatus: document.querySelector('#variablesUploadStatus'),
   variablesStatus: document.querySelector('#variablesStatus'),
   addCommonElement: document.querySelector('#addCommonElement'),
   commonElements: document.querySelector('#commonElements'),
   downloadCommonElements: document.querySelector('#downloadCommonElements'),
   uploadCommonElements: document.querySelector('#uploadCommonElements'),
   commonElementsJson: document.querySelector('#commonElementsJson'),
+  commonElementsUploadStatus: document.querySelector('#commonElementsUploadStatus'),
   commonElementsStatus: document.querySelector('#commonElementsStatus'),
   toggleScenarios: document.querySelector('#toggleScenarios'),
   clearMatches: document.querySelector('#clearMatches'),
@@ -48,6 +50,7 @@ const els = {
   downloadScenarios: document.querySelector('#downloadScenarios'),
   uploadScenarios: document.querySelector('#uploadScenarios'),
   scenariosJson: document.querySelector('#scenariosJson'),
+  scenariosUploadStatus: document.querySelector('#scenariosUploadStatus'),
   transferStatus: document.querySelector('#transferStatus'),
   openDocs: document.querySelector('#openDocs'),
   tabs: document.querySelectorAll('.tab'),
@@ -525,14 +528,18 @@ async function uploadScenarios() {
     state.settings = { ...state.settings, scenarios };
     await chrome.storage.local.set({ settings: state.settings });
     renderSettings();
-    setTransferStatus('Сценарии загружены из JSON.');
+    setUploadStatus(els.scenariosUploadStatus, 'Сценарии загружены из JSON.');
   } catch (error) {
-    setTransferStatus(`Не удалось загрузить сценарии: ${error.message}`);
+    setUploadStatus(els.scenariosUploadStatus, `Не удалось загрузить сценарии: ${error.message}`);
   }
 }
 
 function setTransferStatus(message) {
   els.transferStatus.textContent = message;
+}
+
+function setUploadStatus(element, message) {
+  element.textContent = message;
 }
 
 function parseJsonFromTextarea(textarea, emptyMessage) {
@@ -562,9 +569,9 @@ async function uploadCommonElements() {
     state.settings.commonElements = normalizeCommonElements(data);
     await saveSettings();
     renderCommonElements();
-    els.commonElementsStatus.textContent = 'Общие элементы загружены из JSON.';
+    setUploadStatus(els.commonElementsUploadStatus, 'Общие элементы загружены из JSON.');
   } catch (error) {
-    els.commonElementsStatus.textContent = `Не удалось загрузить общие элементы: ${error.message}`;
+    setUploadStatus(els.commonElementsUploadStatus, `Не удалось загрузить общие элементы: ${error.message}`);
   }
 }
 
@@ -585,9 +592,9 @@ async function uploadVariables() {
     state.settings.variables = normalizeVariables(data);
     await saveSettings();
     renderVariables();
-    setVariablesStatus('Переменные загружены из JSON.');
+    setUploadStatus(els.variablesUploadStatus, 'Переменные загружены из JSON.');
   } catch (error) {
-    setVariablesStatus(`Не удалось загрузить переменные: ${error.message}`);
+    setUploadStatus(els.variablesUploadStatus, `Не удалось загрузить переменные: ${error.message}`);
   }
 }
 
