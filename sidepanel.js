@@ -1,4 +1,4 @@
-const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '' };
+const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '', required: false };
 const DEFAULT_SCENARIO = {
   name: 'Сценарий 1',
   rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click', required: true }],
@@ -13,6 +13,7 @@ const state = {
   settings: DEFAULT_SETTINGS,
   matches: [],
   history: [],
+  editingScenarioIndex: null,
 };
 
 const els = {
@@ -29,6 +30,15 @@ const els = {
   blockExternal: document.querySelector('#blockExternal'),
   tabs: document.querySelectorAll('.tab'),
   panels: document.querySelectorAll('.tab-panel'),
+  scenarioModal: document.querySelector('#scenarioModal'),
+  scenarioModalTitle: document.querySelector('#scenarioModalTitle'),
+  scenarioForm: document.querySelector('#scenarioForm'),
+  modalScenarioName: document.querySelector('#modalScenarioName'),
+  modalScenarioRules: document.querySelector('#modalScenarioRules'),
+  modalAddRule: document.querySelector('#modalAddRule'),
+  modalSaveScenario: document.querySelector('#modalSaveScenario'),
+  modalDeleteScenario: document.querySelector('#modalDeleteScenario'),
+  modalCancelButtons: document.querySelectorAll('[data-close-scenario-modal]'),
 };
 
 init();
@@ -47,7 +57,7 @@ async function init() {
 }
 
 function bindUi() {
-  els.addScenario.addEventListener('click', () => addScenario({ name: `Сценарий ${els.scenarios.children.length + 1}`, rules: [DEFAULT_RULE] }));
+  els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
   els.saveSettings.addEventListener('click', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
   els.clearMatches.addEventListener('click', async () => {
@@ -61,6 +71,16 @@ function bindUi() {
     renderHistory();
   });
   els.tabs.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.tab)));
+  els.modalAddRule.addEventListener('click', () => addRule(els.modalScenarioRules, DEFAULT_RULE));
+  els.scenarioForm.addEventListener('submit', handleScenarioSubmit);
+  els.modalDeleteScenario.addEventListener('click', handleScenarioDelete);
+  els.modalCancelButtons.forEach((button) => button.addEventListener('click', closeScenarioModal));
+  els.scenarioModal.addEventListener('click', (event) => {
+    if (event.target === els.scenarioModal) closeScenarioModal();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !els.scenarioModal.hidden) closeScenarioModal();
+  });
 }
 
 function activateTab(name) {
@@ -71,28 +91,43 @@ function activateTab(name) {
 function renderSettings() {
   els.requestPath.value = state.settings.requestPath;
   els.blockExternal.checked = Boolean(state.settings.blockExternal);
-  els.scenarios.replaceChildren();
-  state.settings.scenarios.forEach(addScenario);
+  renderScenarios();
 }
 
-function addScenario(scenario) {
-  const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
-  node.querySelector('.scenario-name').value = scenario.name || `Сценарий ${els.scenarios.children.length + 1}`;
-  node.querySelector('.scenario-name').addEventListener('click', (event) => event.stopPropagation());
-  node.querySelector('.scenario-name').addEventListener('keydown', (event) => event.stopPropagation());
-  node.querySelector('.add-rule').addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    addRule(node.querySelector('.scenario-rules'), DEFAULT_RULE);
+function renderScenarios() {
+  els.scenarios.replaceChildren();
+  state.settings.scenarios.forEach((scenario, index) => {
+    const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
+    node.querySelector('.scenario-card-name').textContent = scenario.name || `Сценарий ${index + 1}`;
+    node.querySelector('.scenario-card-meta').textContent = formatScenarioMeta(scenario);
+    node.addEventListener('click', () => openScenarioModal(scenario, index));
+    els.scenarios.append(node);
   });
-  node.querySelector('.remove-scenario').addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    node.remove();
-  });
-  const rulesContainer = node.querySelector('.scenario-rules');
-  (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rulesContainer, rule));
-  els.scenarios.append(node);
+}
+
+function openScenarioModal(scenario, index = null) {
+  state.editingScenarioIndex = index;
+  els.scenarioModalTitle.textContent = index === null ? 'Добавить сценарий' : 'Редактировать сценарий';
+  els.modalScenarioName.value = scenario.name || `Сценарий ${state.settings.scenarios.length + 1}`;
+  els.modalScenarioRules.replaceChildren();
+  (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(els.modalScenarioRules, rule));
+  els.modalDeleteScenario.hidden = index === null;
+  els.scenarioModal.hidden = false;
+  els.modalScenarioName.focus();
+}
+
+function closeScenarioModal() {
+  els.scenarioModal.hidden = true;
+  state.editingScenarioIndex = null;
+  els.scenarioForm.reset();
+  els.modalScenarioRules.replaceChildren();
+}
+
+function createScenarioDraft() {
+  return {
+    name: `Сценарий ${state.settings.scenarios.length + 1}`,
+    rules: [{ ...DEFAULT_RULE }],
+  };
 }
 
 function addRule(container, rule) {
@@ -102,42 +137,83 @@ function addRule(container, rule) {
   node.querySelector('.rule-value').value = rule.expected || '';
   node.querySelector('.rule-required-input').checked = Boolean(rule.required);
   node.querySelector('.remove-rule').addEventListener('click', () => {
-    const scenario = container.closest('.scenario');
     node.remove();
 
-    if (scenario && !container.querySelector('.rule')) {
-      scenario.remove();
+    if (!container.querySelector('.rule')) {
+      addRule(container, DEFAULT_RULE);
     }
   });
   container.append(node);
 }
 
+async function handleScenarioSubmit(event) {
+  event.preventDefault();
+  const scenario = readScenarioFromModal();
+  if (!scenario.rules.length) return;
+
+  if (state.editingScenarioIndex === null) {
+    state.settings.scenarios = [...state.settings.scenarios, scenario];
+  } else {
+    state.settings.scenarios = state.settings.scenarios.map((item, index) => (
+      index === state.editingScenarioIndex ? scenario : item
+    ));
+  }
+
+  renderScenarios();
+  closeScenarioModal();
+  await saveSettings();
+}
+
+async function handleScenarioDelete() {
+  if (state.editingScenarioIndex === null) return;
+  state.settings.scenarios = state.settings.scenarios.filter((_, index) => index !== state.editingScenarioIndex);
+  if (!state.settings.scenarios.length) state.settings.scenarios = [DEFAULT_SCENARIO];
+  renderScenarios();
+  closeScenarioModal();
+  await saveSettings();
+}
+
+function readScenarioFromModal() {
+  const rules = [...els.modalScenarioRules.querySelectorAll('.rule')].map((rule) => ({
+    keyPath: rule.querySelector('.rule-path').value.trim(),
+    mode: rule.querySelector('.rule-mode').value,
+    expected: rule.querySelector('.rule-value').value.trim(),
+    required: rule.querySelector('.rule-required-input').checked,
+  })).filter((rule) => rule.keyPath && (rule.expected || rule.mode === 'exists'));
+
+  const fallbackName = state.editingScenarioIndex === null
+    ? `Сценарий ${state.settings.scenarios.length + 1}`
+    : `Сценарий ${state.editingScenarioIndex + 1}`;
+
+  return {
+    name: els.modalScenarioName.value.trim() || fallbackName,
+    rules,
+  };
+}
+
 async function saveSettings() {
-  const scenarios = [...els.scenarios.querySelectorAll('.scenario')].map((scenario, index) => {
-    const rules = [...scenario.querySelectorAll('.rule')].map((rule) => ({
-      keyPath: rule.querySelector('.rule-path').value.trim(),
-      mode: rule.querySelector('.rule-mode').value,
-      expected: rule.querySelector('.rule-value').value.trim(),
-      required: rule.querySelector('.rule-required-input').checked,
-    })).filter((rule) => rule.keyPath && rule.expected);
-
-    return {
-      name: scenario.querySelector('.scenario-name').value.trim() || `Сценарий ${index + 1}`,
-      rules,
-    };
-  }).filter((scenario) => scenario.rules.length);
-
   state.settings = {
     requestPath: els.requestPath.value.trim(),
-    scenarios: scenarios.length ? scenarios : [DEFAULT_SCENARIO],
+    scenarios: state.settings.scenarios.length ? state.settings.scenarios : [DEFAULT_SCENARIO],
     blockExternal: els.blockExternal.checked,
   };
 
   await chrome.storage.local.set({ settings: state.settings });
 }
 
+function formatScenarioMeta(scenario) {
+  const rulesCount = scenario.rules?.length || 0;
+  const word = rulesCount === 1 ? 'правило' : rulesCount > 1 && rulesCount < 5 ? 'правила' : 'правил';
+  return `${rulesCount} ${word}`;
+}
+
 function handleStorageChanges(changes, areaName) {
   if (areaName !== 'local') return;
+
+  if (changes.settings) {
+    state.settings = normalizeSettings(changes.settings.newValue);
+    renderSettings();
+  }
 
   if (changes.matches) {
     state.matches = changes.matches.newValue || [];

@@ -63,18 +63,40 @@
     </main>
 
     <template id="scenarioTemplate">
-      <details class="scenario">
-        <summary>
-          <input class="scenario-name" type="text" value="Сценарий" aria-label="Название сценария" />
-          <span class="scenario-toggle-hint">свернуть/развернуть</span>
-          <button class="icon remove-scenario" type="button" title="Удалить сценарий">×</button>
-        </summary>
-        <div class="scenario-rules"></div>
-        <div class="scenario-actions">
-          <button class="secondary add-rule" type="button">Добавить правило</button>
-        </div>
-      </details>
+      <button class="scenario-card" type="button">
+        <span class="scenario-card-name">Сценарий</span>
+        <span class="scenario-card-meta">0 правил</span>
+      </button>
     </template>
+
+    <div id="scenarioModal" class="modal-backdrop" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="scenarioModalTitle">
+        <form id="scenarioForm">
+          <div class="modal-header">
+            <h2 id="scenarioModalTitle">Добавить сценарий</h2>
+            <button class="icon modal-close" type="button" title="Закрыть" data-close-scenario-modal>×</button>
+          </div>
+
+          <label class="field">
+            <span>Название сценария</span>
+            <input id="modalScenarioName" type="text" placeholder="Сценарий" />
+          </label>
+
+          <div class="modal-rules-header">
+            <h3>Правила</h3>
+            <button id="modalAddRule" class="secondary" type="button">Добавить правило</button>
+          </div>
+          <div id="modalScenarioRules" class="scenario-rules modal-rules"></div>
+
+          <div class="modal-actions">
+            <button id="modalDeleteScenario" class="danger" type="button" hidden>Удалить</button>
+            <span class="modal-actions-spacer"></span>
+            <button class="secondary" type="button" data-close-scenario-modal>Отмена</button>
+            <button id="modalSaveScenario" type="submit">Сохранить сценарий</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <template id="ruleTemplate">
       <div class="rule">
@@ -88,6 +110,7 @@
             <option value="strict">Строгое</option>
             <option value="loose">Не строгое</option>
             <option value="exists">Должно быть</option>
+          </select>
         </label>
         <label class="field compact">
           <span>Значение</span>
