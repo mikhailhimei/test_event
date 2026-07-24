@@ -418,31 +418,7 @@ body.modal-open {
 .menu.open .tabs { display: grid; }
 .button-group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
 .common-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  background: color-mix(in srgb, var(--card) 94%, var(--primary));
-}
-
-.common-card[open] {
-  display: grid;
-  gap: 10px;
-}
-
-.common-card-summary {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: end;
   cursor: pointer;
-}
-
-.common-card-summary::marker {
-  color: var(--primary);
-}
-
-.common-name-field {
-  min-width: 0;
 }
 .upload-button input { display: none; }
 

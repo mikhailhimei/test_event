@@ -16,6 +16,7 @@ const state = {
   matches: [],
   history: [],
   editingScenarioIndex: null,
+  editingCommonElementIndex: null,
   scenariosCollapsed: true,
 };
 
@@ -63,6 +64,15 @@ const els = {
   modalSaveScenario: document.querySelector('#modalSaveScenario'),
   modalDeleteScenario: document.querySelector('#modalDeleteScenario'),
   modalCancelButtons: document.querySelectorAll('[data-close-scenario-modal]'),
+  commonElementModal: document.querySelector('#commonElementModal'),
+  commonElementModalTitle: document.querySelector('#commonElementModalTitle'),
+  commonElementForm: document.querySelector('#commonElementForm'),
+  modalCommonElementName: document.querySelector('#modalCommonElementName'),
+  modalCommonElementRules: document.querySelector('#modalCommonElementRules'),
+  modalAddCommonElementRule: document.querySelector('#modalAddCommonElementRule'),
+  modalSaveCommonElement: document.querySelector('#modalSaveCommonElement'),
+  modalDeleteCommonElement: document.querySelector('#modalDeleteCommonElement'),
+  commonElementModalCancelButtons: document.querySelectorAll('[data-close-common-element-modal]'),
 };
 
 init();
@@ -86,7 +96,7 @@ function bindUi() {
   els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
   els.downloadVariables.addEventListener('click', downloadVariables);
   els.uploadVariables.addEventListener('click', uploadVariables);
-  els.addCommonElement.addEventListener('click', () => addCommonElement());
+  els.addCommonElement.addEventListener('click', () => openCommonElementModal(createCommonElementDraft()));
   els.downloadCommonElements.addEventListener('click', downloadCommonElements);
   els.uploadCommonElements.addEventListener('click', uploadCommonElements);
   els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
@@ -112,8 +122,16 @@ function bindUi() {
   els.scenarioModal.addEventListener('click', (event) => {
     if (event.target === els.scenarioModal) closeScenarioModal();
   });
+  els.modalAddCommonElementRule.addEventListener('click', () => addRule(els.modalCommonElementRules, DEFAULT_RULE));
+  els.commonElementForm.addEventListener('submit', handleCommonElementSubmit);
+  els.modalDeleteCommonElement.addEventListener('click', handleCommonElementDelete);
+  els.commonElementModalCancelButtons.forEach((button) => button.addEventListener('click', closeCommonElementModal));
+  els.commonElementModal.addEventListener('click', (event) => {
+    if (event.target === els.commonElementModal) closeCommonElementModal();
+  });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !els.scenarioModal.hidden) closeScenarioModal();
+    if (event.key === 'Escape' && !els.commonElementModal.hidden) closeCommonElementModal();
   });
 }
 
@@ -207,37 +225,21 @@ function renderCommonElements() {
     return;
   }
   els.commonElements.replaceChildren(...state.settings.commonElements.map((element, index) => {
-    const node = document.createElement('details');
-    node.className = 'common-card';
-    node.open = true;
-    node.innerHTML = `<summary class="common-card-summary"><label class="field common-name-field"><span>Название</span><input class="common-name" value="${escapeHtml(element.name || '')}" placeholder="Общий элемент" /></label><div class="button-group"><button class="secondary save-common" type="button">Сохранить</button><button class="secondary danger-text remove-common" type="button">Удалить</button></div></summary><div class="scenario-rules"></div><div class="actions"><button class="secondary add-common-rule" type="button">Добавить правило</button><span class="common-save-status hint" role="status"></span></div>`;
-    node.querySelector('.common-card-summary').addEventListener('click', (event) => {
-      if (event.target.closest('input, button')) event.preventDefault();
-    });
-    const rules = node.querySelector('.scenario-rules');
-    (element.rules?.length ? element.rules : [DEFAULT_RULE]).forEach((rule) => addRule(rules, rule));
-    // node.querySelector('.common-name').addEventListener('change', async (event) => { state.settings.commonElements[index].name = event.target.value.trim(); await saveCommonElement(index, node); });
-    node.querySelector('.add-common-rule').addEventListener('click', () => addRule(rules, DEFAULT_RULE));
-    node.querySelector('.save-common').addEventListener('click', async () => { await saveCommonElement(index, node); setCommonElementStatus(node, 'Общий элемент сохранен.'); });
-    node.querySelector('.remove-common').addEventListener('click', async () => { state.settings.commonElements.splice(index, 1); await saveSettings(); renderCommonElements(); });
-    // node.addEventListener('change', async () => saveCommonElement(index, node));
+    const node = document.createElement('button');
+    node.className = 'scenario-card common-card';
+    node.type = 'button';
+    node.innerHTML = `<span class="scenario-card-name">${escapeHtml(element.name || `Общий элемент ${index + 1}`)}</span><span class="scenario-card-meta">${formatRulesCount(element.rules?.length || 0)}</span>`;
+    node.addEventListener('click', () => openCommonElementModal(element, index));
     return node;
   }));
 }
 
-async function saveCommonElement(index, node) {
-  state.settings.commonElements[index] = { id: state.settings.commonElements[index]?.id || crypto.randomUUID(), name: node.querySelector('.common-name').value.trim() || `Общий элемент ${index + 1}`, rules: readRulesFromContainer(node.querySelector('.scenario-rules')) };
-  await saveSettings();
-}
-
-function setCommonElementStatus(node, message) {
-  node.querySelector('.common-save-status').textContent = message;
-}
-
-function addCommonElement() {
-  state.settings.commonElements = [...state.settings.commonElements, { id: crypto.randomUUID(), name: `Общий элемент ${state.settings.commonElements.length + 1}`, rules: [{ ...DEFAULT_RULE }] }];
-  renderCommonElements();
-  saveSettings();
+function createCommonElementDraft() {
+  return {
+    id: crypto.randomUUID(),
+    name: `Общий элемент ${state.settings.commonElements.length + 1}`,
+    rules: [{ ...DEFAULT_RULE }],
+  };
 }
 
 function addVariable(variable) {
@@ -281,6 +283,26 @@ function closeScenarioModal() {
   state.editingScenarioIndex = null;
   els.scenarioForm.reset();
   els.modalScenarioRules.replaceChildren();
+}
+
+function openCommonElementModal(element, index = null) {
+  state.editingCommonElementIndex = index;
+  els.commonElementModalTitle.textContent = index === null ? 'Добавить общий элемент' : 'Редактировать общий элемент';
+  els.modalCommonElementName.value = element.name || `Общий элемент ${state.settings.commonElements.length + 1}`;
+  els.modalCommonElementRules.replaceChildren();
+  (element.rules?.length ? element.rules : [DEFAULT_RULE]).forEach((rule) => addRule(els.modalCommonElementRules, rule));
+  els.modalDeleteCommonElement.hidden = index === null;
+  els.commonElementModal.hidden = false;
+  document.body.classList.add('modal-open');
+  els.modalCommonElementName.focus();
+}
+
+function closeCommonElementModal() {
+  els.commonElementModal.hidden = true;
+  document.body.classList.remove('modal-open');
+  state.editingCommonElementIndex = null;
+  els.commonElementForm.reset();
+  els.modalCommonElementRules.replaceChildren();
 }
 
 function createScenarioDraft() {
@@ -335,6 +357,37 @@ async function handleScenarioDelete() {
   await saveSettings();
 }
 
+async function handleCommonElementSubmit(event) {
+  event.preventDefault();
+  const commonElement = readCommonElementFromModal();
+  if (!commonElement.rules.length) return;
+
+  if (state.editingCommonElementIndex === null) {
+    state.settings.commonElements = [...state.settings.commonElements, commonElement];
+  } else {
+    state.settings.commonElements = state.settings.commonElements.map((item, index) => (
+      index === state.editingCommonElementIndex ? { ...commonElement, id: item.id || commonElement.id } : item
+    ));
+  }
+
+  renderCommonElements();
+  closeCommonElementModal();
+  await saveSettings();
+}
+
+async function handleCommonElementDelete() {
+  if (state.editingCommonElementIndex === null) return;
+  const removedElementId = state.settings.commonElements[state.editingCommonElementIndex]?.id;
+  state.settings.commonElements = state.settings.commonElements.filter((_, index) => index !== state.editingCommonElementIndex);
+  state.settings.scenarios = state.settings.scenarios.map((scenario) => (
+    scenario.commonElementId === removedElementId ? { ...scenario, commonElementId: '' } : scenario
+  ));
+  renderCommonElements();
+  renderScenarios();
+  closeCommonElementModal();
+  await saveSettings();
+}
+
 function readRulesFromContainer(container) {
   return [...container.querySelectorAll('.rule')].map((rule) => ({
     keyPath: rule.querySelector('.rule-path').value.trim(),
@@ -357,6 +410,20 @@ function readScenarioFromModal() {
   };
 }
 
+function readCommonElementFromModal() {
+  const fallbackName = state.editingCommonElementIndex === null
+    ? `Общий элемент ${state.settings.commonElements.length + 1}`
+    : `Общий элемент ${state.editingCommonElementIndex + 1}`;
+
+  return {
+    id: state.editingCommonElementIndex === null
+      ? crypto.randomUUID()
+      : state.settings.commonElements[state.editingCommonElementIndex]?.id || crypto.randomUUID(),
+    name: els.modalCommonElementName.value.trim() || fallbackName,
+    rules: readRulesFromContainer(els.modalCommonElementRules),
+  };
+}
+
 async function saveSettings() {
   state.settings = {
     requestPath: els.requestPath.value.trim(),
@@ -371,9 +438,13 @@ async function saveSettings() {
 
 function formatScenarioMeta(scenario) {
   const rulesCount = scenario.rules?.length || 0;
-  const word = rulesCount === 1 ? 'правило' : rulesCount > 1 && rulesCount < 5 ? 'правила' : 'правил';
   const commonName = state.settings.commonElements.find((element) => element.id === scenario.commonElementId)?.name;
-  return commonName ? `${rulesCount} ${word} + ${commonName}` : `${rulesCount} ${word}`;
+  return commonName ? `${formatRulesCount(rulesCount)} + ${commonName}` : formatRulesCount(rulesCount);
+}
+
+function formatRulesCount(rulesCount) {
+  const word = rulesCount === 1 ? 'правило' : rulesCount > 1 && rulesCount < 5 ? 'правила' : 'правил';
+  return `${rulesCount} ${word}`;
 }
 
 function handleStorageChanges(changes, areaName) {
