@@ -8,17 +8,24 @@ const DEFAULT_SETTINGS = {
   variables: [],
   commonElements: [],
   blockExternal: false,
+  uiMode: 'popup',
 };
 
 const tabHostById = new Map();
 let cachedSettings = DEFAULT_SETTINGS;
 const decoder = new TextDecoder('utf-8');
-const OPEN_SIDE_PANEL_MENU_ID = 'open-response-match-side-panel';
+const POPUP_UI_MODE = 'popup';
+const SIDE_PANEL_UI_MODE = 'sidePanel';
+const UI_MODE_MENU_IDS = {
+  [POPUP_UI_MODE]: 'open-response-match-popup',
+  [SIDE_PANEL_UI_MODE]: 'open-response-match-side-panel',
+};
 
 chrome.runtime.onInstalled.addListener(async () => {
-  setupContextMenu();
   const { settings, matches, history } = await chrome.storage.local.get(['settings', 'matches', 'history']);
   cachedSettings = normalizeSettings(settings);
+  setupContextMenu(cachedSettings.uiMode);
+  await applyUiMode(cachedSettings.uiMode);
   await chrome.storage.local.set({
     settings: cachedSettings,
     matches: matches || [],
@@ -27,7 +34,13 @@ chrome.runtime.onInstalled.addListener(async () => {
   await initTabHosts();
 });
 
-chrome.runtime.onStartup.addListener(initTabHosts);
+chrome.runtime.onStartup.addListener(async () => {
+  await initTabHosts();
+  const { settings } = await chrome.storage.local.get('settings');
+  cachedSettings = normalizeSettings(settings);
+  setupContextMenu(cachedSettings.uiMode);
+  await applyUiMode(cachedSettings.uiMode);
+});
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (typeof changeInfo.url === 'string') {
     tabHostById.set(tabId, safeHost(changeInfo.url));
@@ -37,19 +50,53 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 chrome.tabs.onRemoved.addListener((tabId) => tabHostById.delete(tabId));
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId !== OPEN_SIDE_PANEL_MENU_ID) return;
-
-  void openSidePanelFromContextMenu(tab);
+chrome.action.onClicked.addListener((tab) => {
+  if (cachedSettings.uiMode === SIDE_PANEL_UI_MODE) {
+    void openSidePanelFromContextMenu(tab);
+  }
 });
 
-function setupContextMenu() {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  const selectedMode = Object.entries(UI_MODE_MENU_IDS)
+    .find(([, menuId]) => menuId === info.menuItemId)?.[0];
+
+  if (!selectedMode) return;
+
+  void setPreferredUiMode(selectedMode, tab);
+});
+
+function setupContextMenu(uiMode = POPUP_UI_MODE) {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
-      id: OPEN_SIDE_PANEL_MENU_ID,
-      title: 'Открыть в сайдпанели',
+      id: UI_MODE_MENU_IDS[POPUP_UI_MODE],
+      title: 'Открывать как попап',
       contexts: ['action'],
+      type: 'radio',
+      checked: uiMode !== SIDE_PANEL_UI_MODE,
     });
+    chrome.contextMenus.create({
+      id: UI_MODE_MENU_IDS[SIDE_PANEL_UI_MODE],
+      title: 'Открывать как сайдпанель',
+      contexts: ['action'],
+      type: 'radio',
+      checked: uiMode === SIDE_PANEL_UI_MODE,
+    });
+  });
+}
+
+async function setPreferredUiMode(uiMode, tab) {
+  cachedSettings = { ...cachedSettings, uiMode };
+  await chrome.storage.local.set({ settings: cachedSettings });
+  await applyUiMode(uiMode);
+
+  if (uiMode === SIDE_PANEL_UI_MODE) {
+    await openSidePanelFromContextMenu(tab);
+  }
+}
+
+async function applyUiMode(uiMode) {
+  await chrome.action.setPopup({
+    popup: uiMode === SIDE_PANEL_UI_MODE ? '' : 'sidepanel.html',
   });
 }
 
@@ -79,6 +126,7 @@ chrome.storage.local.get('settings').then(({ settings }) => {
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'local' && changes.settings) {
     cachedSettings = normalizeSettings(changes.settings.newValue);
+    void applyUiMode(cachedSettings.uiMode);
   }
 });
 
@@ -490,7 +538,12 @@ function normalizeSettings(settings) {
     scenarios: normalizeScenarios(settings),
     variables: normalizeVariables(settings),
     commonElements: normalizeCommonElements(settings),
+    uiMode: normalizeUiMode(settings?.uiMode),
   };
+}
+
+function normalizeUiMode(uiMode) {
+  return uiMode === 'sidePanel' ? 'sidePanel' : 'popup';
 }
 
 function normalizeVariables(settings) {

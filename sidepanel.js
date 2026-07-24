@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
   variables: [],
   commonElements: [],
   blockExternal: false,
+  uiMode: 'popup',
 };
 
 const state = {
@@ -479,6 +480,7 @@ async function saveSettings() {
     variables: state.settings.variables || [],
     commonElements: state.settings.commonElements || [],
     blockExternal: els.blockExternal.checked,
+    uiMode: state.settings.uiMode || 'popup',
   };
 
   await chrome.storage.local.set({ settings: state.settings });
@@ -818,7 +820,12 @@ function normalizeSettings(settings) {
     scenarios: normalizeScenarios(settings),
     variables: normalizeVariables(settings),
     commonElements: normalizeCommonElements(settings),
+    uiMode: normalizeUiMode(settings?.uiMode),
   };
+}
+
+function normalizeUiMode(uiMode) {
+  return uiMode === 'sidePanel' ? 'sidePanel' : 'popup';
 }
 
 function normalizeVariables(settings) {
