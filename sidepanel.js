@@ -658,9 +658,6 @@ function formatResults(results) {
       { label: 'путь', value: result.found ? 'найден' : 'не найден' },
       { label: 'результат', value: result.matched ? 'совпало' : 'не совпало' },
     ];
-    if (result.extra.length) {
-      blocks.push({ label: 'доп. поля', value: result.extra.join(', ') });
-    }
 
     return `
       <div class="result-block ${result.matched ? 'match' : 'mismatch'}">
