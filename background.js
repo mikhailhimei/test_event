@@ -156,7 +156,7 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
   const matched = rule.mode === 'exists'
     ? actualValues.length > 0
     : rule.mode === 'strict'
-      ? actualValues.length === resolvedExpectedGroups.length && resolvedExpectedGroups.every((values, index) => values.includes(actualValues[index]))
+      ? matchStrictValues(actualValues, resolvedExpectedGroups)
       : resolvedExpectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
   const expectedFlatValues = resolvedExpectedGroups.flat();
 
@@ -170,6 +170,21 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
     matched,
     extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedFlatValues.includes(value)) : [],
   };
+}
+
+
+function matchStrictValues(actualValues, expectedGroups) {
+  if (!actualValues.length || !expectedGroups.length) return false;
+
+  const hasSingleExpectedGroup = expectedGroups.length === 1;
+  if (hasSingleExpectedGroup) {
+    return actualValues.every((actualValue) => expectedGroups[0].includes(actualValue));
+  }
+
+  const hasSameValuesCount = actualValues.length === expectedGroups.length;
+  if (!hasSameValuesCount) return false;
+
+  return expectedGroups.every((values, index) => values.includes(actualValues[index]));
 }
 
 async function resolveExpectedGroups(expectedGroups, details, variableValues) {
