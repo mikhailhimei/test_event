@@ -155,9 +155,7 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
   const resolvedExpectedGroups = await resolveExpectedGroups(expectedGroups, details, variableValues);
   const matched = rule.mode === 'exists'
     ? actualValues.length > 0
-    : rule.mode === 'strict'
-      ? actualValues.length === resolvedExpectedGroups.length && resolvedExpectedGroups.every((values, index) => values.includes(actualValues[index]))
-      : resolvedExpectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
+      : matchExpectedValues(actualValues, resolvedExpectedGroups, rule.mode);
   const expectedFlatValues = resolvedExpectedGroups.flat();
 
   return {
@@ -170,6 +168,26 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
     matched,
     extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedFlatValues.includes(value)) : [],
   };
+}
+
+
+function matchExpectedValues(actualValues, expectedGroups, mode) {
+  if (!actualValues.length || !expectedGroups.length) return false;
+
+  if (expectedGroups.length > 1) {
+    return matchPositionally(actualValues, expectedGroups);
+  }
+
+  return mode === 'strict'
+    ? actualValues.every((actualValue) => expectedGroups[0].includes(actualValue))
+    : actualValues.some((actualValue) => expectedGroups[0].includes(actualValue));
+}
+
+function matchPositionally(actualValues, expectedGroups) {
+  const hasSameValuesCount = actualValues.length === expectedGroups.length;
+  if (!hasSameValuesCount) return false;
+
+  return expectedGroups.every((values, index) => values.includes(actualValues[index]));
 }
 
 async function resolveExpectedGroups(expectedGroups, details, variableValues) {
