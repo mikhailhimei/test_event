@@ -235,3 +235,5 @@ function normalizeScenarios(settings) {
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules }];
   return DEFAULT_SETTINGS.scenarios;
 }
+  if (mode === 'exists') return 'должно быть';
+  return result.mode === 'exists' ? 'должно быть' : result.expected.join(', ');
