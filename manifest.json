@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Response Match Side Panel",
-  "description": "Side panel extension that watches JSON responses and compares expected values by key paths.",
+  "description": "Side panel extension that watches outgoing JSON requests and compares expected values by key paths.",
   "version": "1.0.0",
   "permissions": [
     "storage",

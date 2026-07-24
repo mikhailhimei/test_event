@@ -103,51 +103,61 @@ async function attachDebuggerToActiveTab() {
   const target = { tabId: tab.id };
   chrome.debugger.attach(target, '1.3', () => {
     if (chrome.runtime.lastError) return;
-    chrome.debugger.sendCommand(target, 'Network.enable');
+    chrome.debugger.sendCommand(target, 'Network.enable', { maxPostDataSize: 1048576 });
   });
 
   chrome.debugger.onEvent.addListener((source, method, params) => {
-    if (source.tabId !== tab.id || method !== 'Network.responseReceived') return;
-    void handleResponse(target, params);
+    if (source.tabId !== tab.id || method !== 'Network.requestWillBeSent') return;
+    void handleRequest(params);
   });
 }
 
-async function handleResponse(target, params) {
-  if (!state.settings.requestPath || !params.response.url.includes(state.settings.requestPath)) return;
+async function handleRequest(params) {
+  if (!state.settings.requestPath || !params.request.url.includes(state.settings.requestPath)) return;
   if (state.seenRequests.has(params.requestId)) return;
   state.seenRequests.add(params.requestId);
 
-  chrome.debugger.sendCommand(target, 'Network.getResponseBody', { requestId: params.requestId }, async (body) => {
-    if (chrome.runtime.lastError || !body?.body) return;
+  const json = parseRequestPayload(params.request.postData);
+  if (!json) return;
 
-    let json;
+  const results = state.settings.rules.map((rule) => compareRule(rule, json));
+  const meaningfulResults = results.filter((result) => result.matched || result.mode === 'loose');
+  if (!meaningfulResults.length) return;
+
+  const record = {
+    id: crypto.randomUUID(),
+    url: params.request.url,
+    method: params.request.method,
+    at: new Date().toISOString(),
+    results: meaningfulResults,
+  };
+
+  state.matches = [record, ...state.matches].slice(0, 100);
+  if (meaningfulResults.some((result) => result.matched)) {
+    state.history = [record, ...state.history].slice(0, 300);
+  }
+
+  await chrome.storage.local.set({ matches: state.matches, history: state.history });
+  renderMatches();
+  renderHistory();
+}
+
+function parseRequestPayload(postData) {
+  if (!postData) return null;
+
+  try {
+    return JSON.parse(postData);
+  } catch {
+    const formData = new URLSearchParams(postData);
+    const jsonLikePayload = formData.get('payload') || formData.get('data') || formData.get('json');
+    if (!jsonLikePayload) return null;
+
     try {
-      json = JSON.parse(body.base64Encoded ? atob(body.body) : body.body);
+      return JSON.parse(jsonLikePayload);
     } catch {
-      return;
+      return null;
     }
-
-    const results = state.settings.rules.map((rule) => compareRule(rule, json));
-    const meaningfulResults = results.filter((result) => result.matched || result.mode === 'loose');
-    if (!meaningfulResults.length) return;
-
-    const record = {
-      id: crypto.randomUUID(),
-      url: params.response.url,
-      status: params.response.status,
-      at: new Date().toISOString(),
-      results: meaningfulResults,
-    };
-
-    state.matches = [record, ...state.matches].slice(0, 100);
-    if (meaningfulResults.some((result) => result.matched)) {
-      state.history = [record, ...state.history].slice(0, 300);
-    }
-
-    await chrome.storage.local.set({ matches: state.matches, history: state.history });
-    renderMatches();
-    renderHistory();
-  });
+  }
 }
 
 function compareRule(rule, json) {
@@ -204,7 +214,7 @@ function renderList(container, records, emptyText) {
     item.innerHTML = `
       <div class="item-title">${allMatched ? 'Совпало' : 'Есть несовпадения'}</div>
       <div>${escapeHtml(record.url)}</div>
-      <div class="item-meta">${new Date(record.at).toLocaleString()} · HTTP ${record.status}</div>
+      <div class="item-meta">${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}</div>
       <pre>${escapeHtml(formatResults(record.results))}</pre>
     `;
     return item;
