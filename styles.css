@@ -72,6 +72,40 @@ button:hover { background: var(--primary-dark); }
 }
 .card h2 { margin: 0 0 10px; font-size: 16px; }
 .card-title-row, .actions { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.variable-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+}
+.variable-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: flex-end;
+}
+.variable-card .field {
+  margin: 0;
+}
+.doc-button {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--primary);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.doc-button:hover {
+  background: var(--primary-dark);
+}
 .top-actions { margin-bottom: 12px; justify-content: flex-end; }
 
 .field { display: grid; gap: 6px; font-size: 13px; font-weight: 600; }

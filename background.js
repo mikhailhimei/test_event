@@ -5,6 +5,7 @@ const DEFAULT_SCENARIO = {
 const DEFAULT_SETTINGS = {
   requestPath: '',
   scenarios: [DEFAULT_SCENARIO],
+  variables: [],
   blockExternal: false,
 };
 
@@ -55,12 +56,12 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
-    const blocked = warnAboutExternalNavigation(details);
+    warnAboutExternalNavigation(details);
     void inspectOutgoingRequest(details);
-    return blocked || {};
+    return {};
   },
   { urls: ['<all_urls>'] },
-  ['requestBody', 'blocking']
+  ['requestBody']
 );
 
 async function inspectOutgoingRequest(details) {
@@ -69,17 +70,25 @@ async function inspectOutgoingRequest(details) {
   const json = parseRequestBody(details.requestBody);
   if (!json) return;
 
-  const meaningfulResults = cachedSettings.scenarios.flatMap((scenario) => {
-    if (scenario.enabled === false) return [];
+  const meaningfulResults = [];
+  const variableValues = await evaluateVariables(details);
 
-    const results = scenario.rules.map((rule) => compareRule(rule, json, scenario.name));
+  for (const scenario of cachedSettings.scenarios) {
+    if (scenario.enabled === false) continue;
+
+    const results = await Promise.all(
+      scenario.rules.map((rule) => compareRule(rule, json, details, scenario.name, variableValues))
+    );
+
     const requiredResults = results.filter((result) => result.required);
     const requiredPassed = requiredResults.length
       ? requiredResults.every((result) => result.matched)
       : results.some((result) => result.found || result.matched || result.mode === 'loose');
 
-    return requiredPassed ? results : [];
-  });
+    if (requiredPassed) {
+      meaningfulResults.push(...results);
+    }
+  }
 
   if (!meaningfulResults.length) return;
 
@@ -140,27 +149,53 @@ function parseJsonLikeValue(value) {
   }
 }
 
-function compareRule(rule, json, scenarioName) {
+async function compareRule(rule, json, details, scenarioName, variableValues) {
   const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
   const expectedGroups = parseExpected(rule.expected);
+  const resolvedExpectedGroups = await resolveExpectedGroups(expectedGroups, details, variableValues);
   const matched = rule.mode === 'exists'
     ? actualValues.length > 0
     : rule.mode === 'strict'
-      ? actualValues.length === expectedGroups.length && expectedGroups.every((values, index) => values.includes(actualValues[index]))
-      : expectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
-  const expectedFlatValues = expectedGroups.flat();
+      ? actualValues.length === resolvedExpectedGroups.length && resolvedExpectedGroups.every((values, index) => values.includes(actualValues[index]))
+      : resolvedExpectedGroups.every((values) => actualValues.some((actualValue) => values.includes(actualValue)));
+  const expectedFlatValues = resolvedExpectedGroups.flat();
 
   return {
     scenarioName,
     keyPath: rule.keyPath,
     required: Boolean(rule.required),
     mode: rule.mode,
-    expected: expectedGroups.map((values) => values.join(' | ')),
+    expected: resolvedExpectedGroups.map((values) => values.join(' | ')),
     actual: actualValues,
     found: actualValues.length > 0,
     matched,
     extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedFlatValues.includes(value)) : [],
   };
+}
+
+async function resolveExpectedGroups(expectedGroups, details, variableValues) {
+  return await Promise.all(expectedGroups.map(async (variants) => {
+    return await Promise.all(variants.map(async (entry) => {
+      if (entry.type === 'cookie') {
+        const cookie = await chrome.cookies.get({ url: details.url, name: entry.name });
+        return stringifyComparable(cookie?.value ?? '');
+      }
+      if (entry.type === 'url') {
+        return stringifyComparable(details.url || '');
+      }
+      if (entry.type === 'path') {
+        try {
+          return stringifyComparable(new URL(details.url).pathname || '');
+        } catch {
+          return '';
+        }
+      }
+      if (entry.type === 'variable') {
+        return stringifyComparable(variableValues[entry.name] ?? '');
+      }
+      return stringifyComparable(entry.value);
+    }));
+  }));
 }
 
 function getValuesByPath(source, path) {
@@ -180,50 +215,195 @@ function parseExpected(value) {
       .map((variant) => variant.trim())
       .filter(Boolean)
       .map((variant) => {
+        const token = parseDynamicToken(variant);
+        if (token) return token;
         const parsed = parseJsonLikeValue(variant);
-        return stringifyComparable(parsed !== null ? parsed : variant);
+        return { type: 'literal', value: parsed !== null ? parsed : variant };
       }))
     .filter((variants) => variants.length);
+}
+
+function parseDynamicToken(value) {
+  const cookieMatch = value.match(/^<<\s*cookie\(\s*([^\)]+?)\s*\)\s*>>$/i);
+  if (cookieMatch) {
+    return { type: 'cookie', name: cookieMatch[1] };
+  }
+
+  if (/^<<\s*url\s*>>$/i.test(value)) {
+    return { type: 'url' };
+  }
+
+  if (/^<<\s*path\s*>>$/i.test(value)) {
+    return { type: 'path' };
+  }
+
+  const variableMatch = value.match(/^<<\s*([a-zA-Z0-9_]+)\s*>>$/);
+  if (variableMatch) {
+    return { type: 'variable', name: variableMatch[1] };
+  }
+
+  return null;
+}
+
+function stringifyComparable(value) {
+  if (value == null) return '';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
+}
+
+async function evaluateVariables(details) {
+  const variableValues = {};
+
+  for (const variable of cachedSettings.variables || []) {
+    const name = variable.name?.trim();
+    if (!name) continue;
+    variableValues[name] = await evaluateVariableExpression(variable.expression, details, variableValues);
+  }
+
+  return variableValues;
+}
+
+async function evaluateVariableExpression(expression, details, currentValues) {
+  if (!expression) return '';
+
+  const branches = splitTopLevel(expression, '||').map((branch) => branch.trim()).filter(Boolean);
+  for (const branch of branches) {
+    const [conditionPiece, valuePiece] = splitOnce(branch, ':');
+    if (valuePiece === undefined) {
+      return evaluateExpressionValue(conditionPiece.trim(), details, currentValues);
+    }
+
+    const condition = conditionPiece.trim();
+    if (!condition || evaluateCondition(condition, details, currentValues)) {
+      return evaluateExpressionValue(valuePiece.trim(), details, currentValues);
+    }
+  }
+
+  return '';
+}
+
+function splitOnce(value, separator) {
+  let quote = null;
+  for (let i = 0; i < value.length; i += 1) {
+    const char = value[i];
+    if (quote) {
+      if (char === quote && value[i - 1] !== '\\') quote = null;
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      continue;
+    }
+    if (value.slice(i, i + separator.length) === separator) {
+      return [value.slice(0, i), value.slice(i + separator.length)];
+    }
+  }
+  return [value];
+}
+
+async function evaluateCondition(condition, details, currentValues) {
+  const orParts = splitTopLevel(condition, '||').map((part) => part.trim()).filter(Boolean);
+  for (const part of orParts) {
+    const andParts = splitTopLevel(part, '&&').map((operand) => operand.trim()).filter(Boolean);
+    const allTrue = await Promise.all(andParts.map((subPart) => evaluateComparison(subPart, details, currentValues)));
+    if (allTrue.every(Boolean)) return true;
+  }
+  return false;
+}
+
+async function evaluateComparison(expression, details, currentValues) {
+  const operatorMatch = expression.match(/(==|!=|>=|<=|>|<)/);
+  if (!operatorMatch) {
+    return Boolean(await evaluateExpressionValue(expression, details, currentValues));
+  }
+
+  const operator = operatorMatch[1];
+  const index = expression.indexOf(operator);
+  const leftRaw = expression.slice(0, index).trim();
+  const rightRaw = expression.slice(index + operator.length).trim();
+  const left = await evaluateExpressionValue(leftRaw, details, currentValues);
+  const right = await evaluateExpressionValue(rightRaw, details, currentValues);
+
+  if (operator === '==') return left === right;
+  if (operator === '!=') return left !== right;
+  if (operator === '>') return left > right;
+  if (operator === '<') return left < right;
+  if (operator === '>=') return left >= right;
+  if (operator === '<=') return left <= right;
+  return false;
+}
+
+async function evaluateExpressionValue(value, details, currentValues) {
+  const token = parseDynamicToken(value);
+  if (token) {
+    if (token.type === 'url') return details.url || '';
+    if (token.type === 'path') {
+      try {
+        return new URL(details.url).pathname || '';
+      } catch {
+        return '';
+      }
+    }
+    if (token.type === 'cookie') {
+      try {
+        const cookie = await chrome.cookies.get({ url: details.url, name: token.name });
+        return stringifyComparable(cookie?.value ?? '');
+      } catch {
+        return '';
+      }
+    }
+    if (token.type === 'variable') {
+      return currentValues[token.name] ?? '';
+    }
+  }
+
+  const literal = parseJsonLikeValue(value);
+  if (literal !== null) return stringifyComparable(literal);
+
+  const stringMatch = value.match(/^(['"])(.*)\1$/);
+  if (stringMatch) return stringMatch[2];
+
+  return value;
 }
 
 function splitTopLevel(value, separator) {
   const parts = [];
   let current = '';
   let depth = 0;
-  let inString = false;
-  let escape = false;
+  let quote = null;
 
-  for (const char of value) {
-    if (escape) {
+  for (let i = 0; i < value.length; i += 1) {
+    const char = value[i];
+
+    if (quote) {
       current += char;
-      escape = false;
+      if (char === quote && value[i - 1] !== '\\') quote = null;
       continue;
     }
 
-    if (char === '\\' && inString) {
+    if (char === '"' || char === "'") {
+      quote = char;
       current += char;
-      escape = true;
       continue;
     }
 
-    if (char === '"') {
+    if (char === '{' || char === '[' || char === '(') {
+      depth += 1;
       current += char;
-      inString = !inString;
       continue;
     }
 
-    if (!inString) {
-      if (char === '{' || char === '[') {
-        depth += 1;
-      } else if (char === '}' || char === ']') {
-        depth = Math.max(0, depth - 1);
-      }
+    if (char === '}' || char === ']' || char === ')') {
+      depth = Math.max(0, depth - 1);
+      current += char;
+      continue;
+    }
 
-      if (depth === 0 && char === separator) {
-        parts.push(current.trim());
-        current = '';
-        continue;
-      }
+    if (depth === 0 && value.slice(i, i + separator.length) === separator) {
+      parts.push(current.trim());
+      current = '';
+      i += separator.length - 1;
+      continue;
     }
 
     current += char;
@@ -234,12 +414,6 @@ function splitTopLevel(value, separator) {
   }
 
   return parts;
-}
-
-function stringifyComparable(value) {
-  if (value == null) return '';
-  if (typeof value === 'object') return JSON.stringify(value);
-  return String(value);
 }
 
 function warnAboutExternalNavigation(details) {
@@ -261,7 +435,7 @@ function warnAboutExternalNavigation(details) {
     args: [currentHost, nextHost],
   });
 
-  return { cancel: true };
+  return null;
 }
 
 function normalizeSettings(settings) {
@@ -269,7 +443,18 @@ function normalizeSettings(settings) {
     ...DEFAULT_SETTINGS,
     ...(settings || {}),
     scenarios: normalizeScenarios(settings),
+    variables: normalizeVariables(settings),
   };
+}
+
+function normalizeVariables(settings) {
+  if (Array.isArray(settings?.variables)) {
+    return settings.variables.map((variable) => ({
+      name: variable.name?.trim() || '',
+      expression: variable.expression?.trim() || '',
+    })).filter((variable) => variable.name && variable.expression);
+  }
+  return [];
 }
 
 function safeHost(url) {

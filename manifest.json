@@ -5,8 +5,8 @@
   "version": "1.0.0",
   "permissions": [
     "storage",
+    "cookies",
     "webRequest",
-    "webRequestBlocking",
     "sidePanel",
     "tabs",
     "scripting"

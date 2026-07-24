@@ -6,6 +6,7 @@ const DEFAULT_SCENARIO = {
 const DEFAULT_SETTINGS = {
   requestPath: '',
   scenarios: [DEFAULT_SCENARIO],
+  variables: [],
   blockExternal: false,
 };
 
@@ -22,7 +23,10 @@ const els = {
   scenarios: document.querySelector('#scenarios'),
   scenarioTemplate: document.querySelector('#scenarioTemplate'),
   ruleTemplate: document.querySelector('#ruleTemplate'),
+  variables: document.querySelector('#variables'),
+  variableTemplate: document.querySelector('#variableTemplate'),
   addScenario: document.querySelector('#addScenario'),
+  addVariable: document.querySelector('#addVariable'),
   toggleScenarios: document.querySelector('#toggleScenarios'),
   clearMatches: document.querySelector('#clearMatches'),
   clearHistory: document.querySelector('#clearHistory'),
@@ -32,6 +36,7 @@ const els = {
   downloadScenarios: document.querySelector('#downloadScenarios'),
   uploadScenarios: document.querySelector('#uploadScenarios'),
   transferStatus: document.querySelector('#transferStatus'),
+  openDocs: document.querySelector('#openDocs'),
   tabs: document.querySelectorAll('.tab'),
   panels: document.querySelectorAll('.tab-panel'),
   scenarioModal: document.querySelector('#scenarioModal'),
@@ -56,12 +61,15 @@ async function init() {
   renderSettings();
   renderMatches();
   renderHistory();
+  renderVariables();
   bindUi();
   chrome.storage.onChanged.addListener(handleStorageChanges);
 }
 
 function bindUi() {
   els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
+  els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
+  els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
   // els.requestPath.addEventListener('change', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
   els.downloadScenarios.addEventListener('click', downloadScenarios);
@@ -99,6 +107,7 @@ function renderSettings() {
   els.requestPath.value = state.settings.requestPath;
   els.blockExternal.checked = Boolean(state.settings.blockExternal);
   renderScenarios();
+  renderVariables();
 }
 
 function renderScenarios() {
@@ -121,6 +130,46 @@ function renderScenarios() {
     els.scenarios.append(node);
   });
   updateScenarioVisibility();
+}
+
+function renderVariables() {
+  els.variables.classList.toggle('empty', state.settings.variables.length === 0);
+  if (!state.settings.variables.length) {
+    els.variables.textContent = 'Переменные пока не заданы.';
+    return;
+  }
+
+  els.variables.replaceChildren(
+    ...state.settings.variables.map((variable, index) => {
+      const node = els.variableTemplate.content.firstElementChild.cloneNode(true);
+      node.querySelector('.variable-name').value = variable.name || '';
+      node.querySelector('.variable-expression').value = variable.expression || '';
+      node.querySelector('.remove-variable').addEventListener('click', async () => {
+        state.settings.variables.splice(index, 1);
+        await saveSettings();
+        renderVariables();
+      });
+      node.querySelector('.variable-name').addEventListener('change', async (event) => {
+        state.settings.variables[index].name = event.target.value.trim();
+        await saveSettings();
+      });
+      node.querySelector('.variable-expression').addEventListener('change', async (event) => {
+        state.settings.variables[index].expression = event.target.value.trim();
+        await saveSettings();
+      });
+      return node;
+    })
+  );
+}
+
+function createVariableDraft() {
+  return { name: '', expression: '' };
+}
+
+function addVariable(variable) {
+  state.settings.variables = [...state.settings.variables, variable];
+  renderVariables();
+  saveSettings();
 }
 
 function updateScenarioVisibility() {
@@ -233,6 +282,7 @@ async function saveSettings() {
   state.settings = {
     requestPath: els.requestPath.value.trim(),
     scenarios: state.settings.scenarios.length ? state.settings.scenarios : [DEFAULT_SCENARIO],
+    variables: state.settings.variables || [],
     blockExternal: els.blockExternal.checked,
   };
 
@@ -292,28 +342,30 @@ function renderList(container, records, emptyText) {
   container.replaceChildren(
     ...records.map((record) => {
       const item = document.createElement('details');
-      item.open = true;
 
       const allMatched = record.results.every((r) => r.matched);
 
-      item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
+        const scenarioNames = Array.from(new Set(record.results.map((r) => r.scenarioName).filter(Boolean)));
+        const titleText = allMatched ? `Совпало — ${scenarioNames.join(', ') || 'Сценарий'}` : 'Есть несовпадения';
 
-      item.innerHTML = `
-        <summary class="item-summary">
-          <span class="item-title">
-            ${allMatched ? 'Совпало' : 'Есть несовпадения'}
-          </span>
-          <span>${escapeHtml(record.url)}</span>
-          <span class="item-meta">
-            ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
-          </span>
-        </summary>
+        item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
 
-        <div class="item-details">
-          <div class="result-list">${formatResults(record.results)}</div>
-          ${formatRequestDetails(record.request)}
-        </div>
-      `;
+        item.innerHTML = `
+          <summary class="item-summary">
+            <span class="item-title">
+              ${escapeHtml(titleText)}
+            </span>
+            <span>${escapeHtml(record.url)}</span>
+            <span class="item-meta">
+              ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
+            </span>
+          </summary>
+
+          <div class="item-details">
+            <div class="result-list">${formatResults(record.results)}</div>
+            ${formatRequestDetails(record.request)}
+          </div>
+        `;
 
       return item;
     })
@@ -421,7 +473,15 @@ function normalizeSettings(settings) {
     ...DEFAULT_SETTINGS,
     ...(settings || {}),
     scenarios: normalizeScenarios(settings),
+    variables: normalizeVariables(settings),
   };
+}
+
+function normalizeVariables(settings) {
+  if (Array.isArray(settings?.variables)) {
+    return settings.variables.map((variable) => ({ name: variable.name || '', expression: variable.expression || '' }));
+  }
+  return [];
 }
 
 function normalizeScenarios(settings) {

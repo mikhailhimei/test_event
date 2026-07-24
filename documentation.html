@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Response Match Documentation</title>
+    <style>
+      body { font-family: Inter, system-ui, sans-serif; margin: 24px; color: #111827; background: #f5f7fb; }
+      h1,h2,h3 { color: #111827; }
+      code { background: #eef2ff; color: #1d4ed8; padding: 2px 4px; border-radius: 4px; }
+      pre { background: #eef2ff; padding: 16px; border-radius: 12px; overflow: auto; }
+      section { margin-bottom: 20px; }
+    </style>
+  </head>
+  <body>
+    <h1>Документация Response Match</h1>
+    <section>
+      <h2>Переменные</h2>
+      <p>Создавайте переменные в вкладке «Переменные» для расчёта значений на основе URL, пути, cookie или других переменных.</p>
+      <p>Пример:</p>
+      <pre>&lt;&lt;test&gt;&gt; = &lt;&lt;path&gt;&gt; == '/' : 1 || &lt;&lt;path&gt;&gt; == '/product' : 2</pre>
+      <p>В этом выражении:</p>
+      <ul>
+        <li><code>&lt;&lt;path&gt;&gt;</code> — текущий путь URL</li>
+        <li><code>== '/'</code> — условие сравнения</li>
+        <li><code>: 1</code> — результат, если условие выполняется</li>
+        <li><code>||</code> — логическое «или»</li>
+        <li><code>&lt;&lt;test&gt;&gt;</code> — имя переменной</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Синтаксис выражений</h2>
+      <p>Можно использовать:</p>
+      <ul>
+        <li><code>&lt;&lt;url&gt;&gt;</code> — полный URL запроса</li>
+        <li><code>&lt;&lt;path&gt;&gt;</code> — путь URL</li>
+        <li><code>&lt;&lt;cookie(name)&gt;&gt;</code> — значение cookie</li>
+        <li><code>&lt;&lt;variable&gt;&gt;</code> — ссылка на ранее определённую переменную</li>
+      </ul>
+      <p>Условия:</p>
+      <ul>
+        <li><code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></li>
+      </ul>
+      <p>Логика:</p>
+      <ul>
+        <li><code>||</code> — «или»</li>
+        <li><code>&&</code> — «и»</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Пример переменной</h2>
+      <pre>&lt;&lt;pageType&gt;&gt; = &lt;&lt;path&gt;&gt; == '/' : home || &lt;&lt;path&gt;&gt; == '/product' : product || 404</pre>
+      <p>Если ни одно условие не выполнено, возвращается значение последнего выражения после <code>:</code>.</p>
+    </section>
+  </body>
+</html>

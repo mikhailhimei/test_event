@@ -15,6 +15,7 @@
     <nav class="tabs" aria-label="Вкладки">
       <button class="tab active" data-tab="search" type="button">Поиск</button>
       <button class="tab" data-tab="history" type="button">История</button>
+      <button class="tab" data-tab="variables" type="button">Переменные</button>
       <button class="tab" data-tab="scenariosTransfer" type="button">Сценарии</button>
     </nav>
 
@@ -60,6 +61,17 @@
           <h2>История совпадений</h2>
           <div id="history" class="list empty">История пуста.</div>
         </section>
+      </section>
+
+      <section id="variablesTab" class="tab-panel">
+        <div class="card">
+          <div class="card-title-row">
+            <h2>Переменные</h2>
+            <button id="addVariable" class="secondary" type="button">Добавить переменную</button>
+          </div>
+          <p class="hint">Определите переменные и используйте их в правилах: <code>&lt;&lt;path&gt;&gt; == '/' : 1 || &lt;&lt;path&gt;&gt; == '/product' : 2</code></p>
+          <div id="variables" class="variables empty">Переменные пока не заданы.</div>
+        </div>
       </section>
 
       <section id="scenariosTransferTab" class="tab-panel">
@@ -128,12 +140,11 @@
           <select class="rule-mode">
             <option value="strict">Строгое</option>
             <option value="loose">Не строгое</option>
-            <option value="exists">Должно быть</option>
           </select>
         </label>
         <label class="field compact">
           <span>Значение</span>
-          <input class="rule-value" type="text" placeholder="auth_click, a|b,c или пусто для «должно быть»" />
+          <input class="rule-value" type="text" placeholder="auth_click, a|b,c или <<cookie(name)>> / <<url>> / <<path>>" />
         </label>
         <div class="rule-footer">
           <label class="rule-required">
@@ -145,6 +156,23 @@
       </div>
     </template>
 
+    <template id="variableTemplate">
+      <div class="variable-card">
+        <div class="variable-row">
+          <label class="field">
+            <span>Имя переменной</span>
+            <input class="variable-name" type="text" placeholder="test" />
+          </label>
+          <button class="secondary danger-text remove-variable" type="button">Удалить</button>
+        </div>
+        <label class="field">
+          <span>Выражение</span>
+          <input class="variable-expression" type="text" placeholder="<<path>> == '/' : 1 || <<path>> == '/product' : 2" />
+        </label>
+      </div>
+    </template>
+
+    <button id="openDocs" class="doc-button" type="button" title="Документация">?</button>
     <script src="./sidepanel.js" type="text/javascript"></script>
   </body>
 </html>
