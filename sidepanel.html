@@ -89,6 +89,7 @@
           </div>
         </div>
         <div id="scenarios" class="scenarios"></div>
+        <button id="deleteAllScenarios" class="secondary danger-text" type="button">Удалить все</button>
       </div>
     </section>
 
@@ -96,14 +97,17 @@
       <div class="card">
         <div class="card-title-row">
           <h2>Переменные</h2>
-          <div class="button-group"><button id="addVariable" class="secondary" type="button">Добавить
-              переменную</button></div>
+          <div class="button-group">
+            <button id="addVariable" class="secondary" type="button">Добавить переменную</button>
+          </div>
         </div>
         <p class="hint">Определите переменные и используйте их в правилах:
           <code>&lt;&lt;path&gt;&gt; == '/' : 1 || &lt;&lt;path&gt;&gt; == '/product' : 2</code>
         </p>
         <div id="variables" class="variables empty">Переменные пока не заданы.</div>
         <p id="variablesStatus" class="hint" role="status"></p>
+        <button id="deleteAllVariables" class="secondary danger-text" type="button">Удалить все</button>
+
       </div>
     </section>
 
@@ -111,12 +115,14 @@
       <div class="card">
         <div class="card-title-row">
           <h2>Общие элементы</h2>
-          <div class="button-group"><button id="addCommonElement" class="secondary" type="button">Добавить общий
-              элемент</button></div>
+          <div class="button-group">
+            <button id="addCommonElement" class="secondary" type="button">Добавить общий элемент</button>
+          </div>
         </div>
         <p class="hint">Общий элемент содержит набор правил, который можно подключить к одному сценарию.</p>
         <div id="commonElements" class="scenarios"></div>
         <p id="commonElementsStatus" class="hint" role="status"></p>
+        <button id="deleteAllCommonElements" class="secondary danger-text" type="button">Удалить все</button>
       </div>
     </section>
   </main>
@@ -167,6 +173,35 @@
     </div>
   </div>
 
+  <div id="commonElementModal" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="commonElementModalTitle">
+      <form id="commonElementForm">
+        <div class="modal-header">
+          <h2 id="commonElementModalTitle">Добавить общий элемент</h2>
+          <button class="icon modal-close" type="button" title="Закрыть" data-close-common-element-modal>×</button>
+        </div>
+
+        <label class="field">
+          <span>Название общего элемента</span>
+          <input id="modalCommonElementName" type="text" placeholder="Общий элемент" />
+        </label>
+
+        <div class="modal-rules-header">
+          <h3>Правила</h3>
+          <button id="modalAddCommonElementRule" class="secondary" type="button">Добавить правило</button>
+        </div>
+        <div id="modalCommonElementRules" class="scenario-rules modal-rules"></div>
+
+        <div class="modal-actions">
+          <button id="modalDeleteCommonElement" class="danger" type="button" hidden>Удалить</button>
+          <span class="modal-actions-spacer"></span>
+          <button class="secondary" type="button" data-close-common-element-modal>Отмена</button>
+          <button id="modalSaveCommonElement" type="submit">Сохранить общий элемент</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <template id="ruleTemplate">
     <div class="rule">
       <label class="field compact">
@@ -186,10 +221,7 @@
           placeholder="auth_click, a|b,c или <<cookie(name)>> / <<url>> / <<path>>" />
       </label>
       <div class="rule-footer">
-        <label class="rule-required">
-          <input class="rule-required-input" type="checkbox" />
-          <span>100% обязательно</span>
-        </label>
+        <span class="rule-mode-hint">Строгое сравнение скрывает сценарий при неполном совпадении.</span>
         <button class="secondary danger-text remove-rule" type="button">Удалить правило</button>
       </div>
     </div>
