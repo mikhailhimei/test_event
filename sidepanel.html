@@ -15,6 +15,7 @@
     <nav class="tabs" aria-label="Вкладки">
       <button class="tab active" data-tab="search" type="button">Поиск</button>
       <button class="tab" data-tab="history" type="button">История</button>
+      <button class="tab" data-tab="scenariosTransfer" type="button">Сценарии</button>
     </nav>
 
     <main>
@@ -30,7 +31,10 @@
         <div class="card">
           <div class="card-title-row">
             <h2>Сценарии</h2>
-            <button id="addScenario" class="secondary" type="button">Добавить сценарий</button>
+            <div class="button-group">
+              <button id="toggleScenarios" class="secondary" type="button">Скрыть все</button>
+              <button id="addScenario" class="secondary" type="button">Добавить сценарий</button>
+            </div>
           </div>
           <div id="scenarios" class="scenarios"></div>
         </div>
@@ -60,6 +64,21 @@
           <div id="history" class="list empty">История пуста.</div>
         </section>
       </section>
+
+      <section id="scenariosTransferTab" class="tab-panel">
+        <section class="card">
+          <h2>Скачать и загрузить сценарии</h2>
+          <p class="hint">Экспортируйте текущие сценарии в JSON-файл или загрузите ранее сохраненный файл.</p>
+          <div class="actions transfer-actions">
+            <button id="downloadScenarios" type="button">Скачать сценарии</button>
+            <label class="secondary upload-button">
+              <input id="uploadScenarios" type="file" accept="application/json,.json" />
+              <span>Загрузить сценарии</span>
+            </label>
+          </div>
+          <p id="transferStatus" class="hint" role="status"></p>
+        </section>
+      </section>
     </main>
 
     <template id="scenarioTemplate">
@@ -67,7 +86,6 @@
         <summary>
           <input class="scenario-name" type="text" value="Сценарий" aria-label="Название сценария" />
           <span class="scenario-toggle-hint">свернуть/развернуть</span>
-          <button class="icon remove-scenario" type="button" title="Удалить сценарий">×</button>
         </summary>
         <div class="scenario-rules"></div>
         <div class="scenario-actions">
@@ -88,6 +106,7 @@
             <option value="strict">Строгое</option>
             <option value="loose">Не строгое</option>
             <option value="exists">Должно быть</option>
+          </select>
         </label>
         <label class="field compact">
           <span>Значение</span>
