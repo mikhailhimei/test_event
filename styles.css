@@ -419,3 +419,57 @@ body.modal-open {
 .modal-actions-spacer {
   flex: 1;
 }
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.burger {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.burger-button {
+  min-width: 42px;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.burger-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+  width: 190px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
+}
+
+.button-group,
+.transfer-actions,
+.variable-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.variable-actions select {
+  min-width: 180px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 10px;
+  background: var(--card);
+  color: var(--text);
+}
+
+.scenario-card.disabled {
+  opacity: 0.6;
+}

@@ -1,6 +1,10 @@
+const { useEffect, useMemo, useState } = React;
+const h = React.createElement;
+
 const DEFAULT_RULE = { keyPath: '', mode: 'strict', expected: '', required: false };
 const DEFAULT_SCENARIO = {
   name: 'Сценарий 1',
+  enabled: true,
   rules: [{ keyPath: 'extra_data.visual_object.id', mode: 'strict', expected: 'auth_click', required: true }],
 };
 const DEFAULT_SETTINGS = {
@@ -10,493 +14,258 @@ const DEFAULT_SETTINGS = {
   blockExternal: false,
 };
 
-const state = {
-  settings: DEFAULT_SETTINGS,
-  matches: [],
-  history: [],
-  editingScenarioIndex: null,
-  scenariosCollapsed: true,
-};
+const clone = (value) => JSON.parse(JSON.stringify(value));
 
-const els = {
-  requestPath: document.querySelector('#requestPath'),
-  scenarios: document.querySelector('#scenarios'),
-  scenarioTemplate: document.querySelector('#scenarioTemplate'),
-  ruleTemplate: document.querySelector('#ruleTemplate'),
-  variables: document.querySelector('#variables'),
-  variableTemplate: document.querySelector('#variableTemplate'),
-  addScenario: document.querySelector('#addScenario'),
-  addVariable: document.querySelector('#addVariable'),
-  toggleScenarios: document.querySelector('#toggleScenarios'),
-  clearMatches: document.querySelector('#clearMatches'),
-  clearHistory: document.querySelector('#clearHistory'),
-  matches: document.querySelector('#matches'),
-  history: document.querySelector('#history'),
-  blockExternal: document.querySelector('#blockExternal'),
-  downloadScenarios: document.querySelector('#downloadScenarios'),
-  uploadScenarios: document.querySelector('#uploadScenarios'),
-  transferStatus: document.querySelector('#transferStatus'),
-  openDocs: document.querySelector('#openDocs'),
-  tabs: document.querySelectorAll('.tab'),
-  panels: document.querySelectorAll('.tab-panel'),
-  scenarioModal: document.querySelector('#scenarioModal'),
-  scenarioModalTitle: document.querySelector('#scenarioModalTitle'),
-  scenarioForm: document.querySelector('#scenarioForm'),
-  modalScenarioName: document.querySelector('#modalScenarioName'),
-  modalScenarioRules: document.querySelector('#modalScenarioRules'),
-  modalAddRule: document.querySelector('#modalAddRule'),
-  modalSaveScenario: document.querySelector('#modalSaveScenario'),
-  modalDeleteScenario: document.querySelector('#modalDeleteScenario'),
-  modalCancelButtons: document.querySelectorAll('[data-close-scenario-modal]'),
-};
+function App() {
+  const [settings, setSettings] = useState(clone(DEFAULT_SETTINGS));
+  const [matches, setMatches] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [activeTab, setActiveTab] = useState('search');
+  const [collapsed, setCollapsed] = useState(true);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [draft, setDraft] = useState(null);
+  const [transferStatus, setTransferStatus] = useState('');
 
-init();
-
-async function init() {
-  const data = await chrome.storage.local.get(['settings', 'matches', 'history']);
-  state.settings = normalizeSettings(data.settings);
-  state.matches = data.matches || [];
-  state.history = data.history || [];
-
-  renderSettings();
-  renderMatches();
-  renderHistory();
-  renderVariables();
-  bindUi();
-  chrome.storage.onChanged.addListener(handleStorageChanges);
-}
-
-function bindUi() {
-  els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
-  els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
-  els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
-  // els.requestPath.addEventListener('change', saveSettings);
-  els.blockExternal.addEventListener('change', saveSettings);
-  els.downloadScenarios.addEventListener('click', downloadScenarios);
-  els.uploadScenarios.addEventListener('change', uploadScenarios);
-  els.toggleScenarios.addEventListener('click', handleToggleScenarios);
-  els.clearMatches.addEventListener('click', async () => {
-    state.matches = [];
-    await chrome.storage.local.set({ matches: [] });
-    renderMatches();
-  });
-  els.clearHistory.addEventListener('click', async () => {
-    state.history = [];
-    await chrome.storage.local.set({ history: [] });
-    renderHistory();
-  });
-  els.tabs.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.tab)));
-  els.modalAddRule.addEventListener('click', () => addRule(els.modalScenarioRules, DEFAULT_RULE));
-  els.scenarioForm.addEventListener('submit', handleScenarioSubmit);
-  els.modalDeleteScenario.addEventListener('click', handleScenarioDelete);
-  els.modalCancelButtons.forEach((button) => button.addEventListener('click', closeScenarioModal));
-  els.scenarioModal.addEventListener('click', (event) => {
-    if (event.target === els.scenarioModal) closeScenarioModal();
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !els.scenarioModal.hidden) closeScenarioModal();
-  });
-}
-
-function activateTab(name) {
-  els.tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === name));
-  els.panels.forEach((panel) => panel.classList.toggle('active', panel.id === `${name}Tab`));
-}
-
-function renderSettings() {
-  els.requestPath.value = state.settings.requestPath;
-  els.blockExternal.checked = Boolean(state.settings.blockExternal);
-  renderScenarios();
-  renderVariables();
-}
-
-function renderScenarios() {
-  els.scenarios.replaceChildren();
-  state.settings.scenarios.forEach((scenario, index) => {
-    const node = els.scenarioTemplate.content.firstElementChild.cloneNode(true);
-    node.querySelector('.scenario-card-name').textContent = scenario.name || `Сценарий ${index + 1}`;
-    node.querySelector('.scenario-card-meta').textContent = formatScenarioMeta(scenario);
-
-    const enabledToggle = node.querySelector('.scenario-enabled');
-    enabledToggle.checked = scenario.enabled !== false;
-    enabledToggle.addEventListener('click', (event) => event.stopPropagation());
-    enabledToggle.addEventListener('change', async (event) => {
-      event.stopPropagation();
-      await setScenarioEnabled(index, enabledToggle.checked);
+  useEffect(() => {
+    let mounted = true;
+    chrome.storage.local.get(['settings', 'matches', 'history']).then((data) => {
+      if (!mounted) return;
+      setSettings(normalizeSettings(data.settings));
+      setMatches(data.matches || []);
+      setHistory(data.history || []);
     });
 
-    node.addEventListener('click', () => openScenarioModal(scenario, index));
-    node.classList.toggle('disabled', scenario.enabled === false);
-    els.scenarios.append(node);
-  });
-  updateScenarioVisibility();
-}
+    const listener = (changes, areaName) => {
+      if (areaName !== 'local') return;
+      if (changes.settings) setSettings(normalizeSettings(changes.settings.newValue));
+      if (changes.matches) setMatches(changes.matches.newValue || []);
+      if (changes.history) setHistory(changes.history.newValue || []);
+    };
+    chrome.storage.onChanged.addListener(listener);
+    return () => {
+      mounted = false;
+      chrome.storage.onChanged.removeListener(listener);
+    };
+  }, []);
 
-function renderVariables() {
-  els.variables.classList.toggle('empty', state.settings.variables.length === 0);
-  if (!state.settings.variables.length) {
-    els.variables.textContent = 'Переменные пока не заданы.';
-    return;
-  }
+  useEffect(() => {
+    const docsButton = document.querySelector('#openDocs');
+    const openDocs = () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') });
+    docsButton?.addEventListener('click', openDocs);
+    return () => docsButton?.removeEventListener('click', openDocs);
+  }, []);
 
-  els.variables.replaceChildren(
-    ...state.settings.variables.map((variable, index) => {
-      const node = els.variableTemplate.content.firstElementChild.cloneNode(true);
-      node.querySelector('.variable-name').value = variable.name || '';
-      node.querySelector('.variable-expression').value = variable.expression || '';
-      node.querySelector('.remove-variable').addEventListener('click', async () => {
-        state.settings.variables.splice(index, 1);
-        await saveSettings();
-        renderVariables();
-      });
-      node.querySelector('.variable-name').addEventListener('change', async (event) => {
-        state.settings.variables[index].name = event.target.value.trim();
-        await saveSettings();
-      });
-      node.querySelector('.variable-expression').addEventListener('change', async (event) => {
-        state.settings.variables[index].expression = event.target.value.trim();
-        await saveSettings();
-      });
-      return node;
+  const saveSettings = async (nextSettings) => {
+    const normalized = normalizeSettings(nextSettings);
+    setSettings(normalized);
+    await chrome.storage.local.set({ settings: normalized });
+  };
+
+  const updateSettings = (patch) => saveSettings({ ...settings, ...patch });
+  const openScenarioModal = (scenario, index = null) => {
+    setEditingIndex(index);
+    setDraft(clone(scenario));
+  };
+  const closeScenarioModal = () => {
+    setEditingIndex(null);
+    setDraft(null);
+  };
+
+  return h(React.Fragment, null,
+    h('header', { className: 'header' },
+      h('div', null,
+        h('h1', null, 'Response Match'),
+        h('p', null, 'Отлавливайте отправляемые JSON-запросы и сравнивайте значения по путям.')
+      ),
+      h(BurgerMenu, { activeTab, onSelect: setActiveTab })
+    ),
+    h('main', null,
+      activeTab === 'search' && h(SearchTab, {
+        settings, matches, collapsed,
+        setCollapsed,
+        saveSettings,
+        updateSettings,
+        openScenarioModal,
+        setMatches,
+      }),
+      activeTab === 'history' && h(HistoryTab, { history, setHistory }),
+      activeTab === 'variables' && h(VariablesTab, { settings, saveSettings, setTransferStatus }),
+      activeTab === 'scenariosTransfer' && h(TransferTab, { settings, saveSettings, transferStatus, setTransferStatus })
+    ),
+    draft && h(ScenarioModal, {
+      draft,
+      setDraft,
+      editingIndex,
+      settings,
+      saveSettings,
+      closeScenarioModal,
     })
   );
 }
 
-function createVariableDraft() {
-  return { name: '', expression: '' };
+function BurgerMenu({ activeTab, onSelect }) {
+  const [open, setOpen] = useState(false);
+  const tabs = [
+    ['search', 'Поиск'],
+    ['history', 'История'],
+    ['variables', 'Переменные'],
+    ['scenariosTransfer', 'Сценарии'],
+  ];
+  return h('nav', { className: 'burger', 'aria-label': 'Меню вкладок' },
+    h('button', { className: 'burger-button', type: 'button', onClick: () => setOpen(!open), 'aria-expanded': open }, '☰'),
+    open && h('div', { className: 'burger-menu' }, tabs.map(([id, label]) =>
+      h('button', {
+        key: id,
+        className: `tab ${activeTab === id ? 'active' : ''}`,
+        type: 'button',
+        onClick: () => { onSelect(id); setOpen(false); },
+      }, label)
+    ))
+  );
 }
 
-function addVariable(variable) {
-  state.settings.variables = [...state.settings.variables, variable];
-  renderVariables();
-  saveSettings();
+function SearchTab({ settings, matches, collapsed, setCollapsed, saveSettings, updateSettings, openScenarioModal, setMatches }) {
+  return h('section', { className: 'tab-panel active' },
+    h('div', { className: 'card' },
+      h('label', { className: 'field' }, h('span', null, 'Путь запроса'),
+        h('input', { value: settings.requestPath, onChange: (e) => updateSettings({ requestPath: e.target.value.trim() }), placeholder: '/api/events или часть URL' })),
+      h('p', { className: 'hint' }, 'Расширение проверяет тело отправляемых запросов, URL которых содержит этот путь.')
+    ),
+    h('label', { className: 'toggle card' },
+      h('input', { type: 'checkbox', checked: Boolean(settings.blockExternal), onChange: (e) => updateSettings({ blockExternal: e.target.checked }) }),
+      h('span', null, 'Блокировать переход на сторонние ресурсы')
+    ),
+    h('div', { className: 'card' },
+      h('div', { className: 'card-title-row' }, h('h2', null, 'Сценарии'), h('div', { className: 'button-group' },
+        h('button', { className: 'secondary', type: 'button', onClick: () => setCollapsed(!collapsed) }, collapsed ? 'Показать все' : 'Скрыть все'),
+        h('button', { className: 'secondary', type: 'button', onClick: () => openScenarioModal(createScenarioDraft(settings)) }, 'Добавить сценарий'))),
+      h('div', { className: 'scenarios' }, !collapsed && settings.scenarios.map((scenario, index) =>
+        h('div', { key: index, className: `scenario-card ${scenario.enabled === false ? 'disabled' : ''}`, role: 'button', tabIndex: 0, onClick: () => openScenarioModal(scenario, index) },
+          h('span', { className: 'scenario-card-toggle' },
+            h('input', { className: 'scenario-enabled', type: 'checkbox', checked: scenario.enabled !== false, onClick: (e) => e.stopPropagation(), onChange: (e) => {
+              const scenarios = settings.scenarios.map((item, i) => i === index ? { ...item, enabled: e.target.checked } : item);
+              saveSettings({ ...settings, scenarios });
+            }}),
+            h('span', { className: 'scenario-card-name' }, scenario.name || `Сценарий ${index + 1}`)),
+          h('span', { className: 'scenario-card-meta' }, formatScenarioMeta(scenario))
+        )))
+    ),
+    h('section', { className: 'card' },
+      h('div', { className: 'actions' }, h('h2', null, 'Найденные совпадения'), h('button', { className: 'secondary', type: 'button', onClick: async () => { setMatches([]); await chrome.storage.local.set({ matches: [] }); } }, 'Очистить поиск')),
+      h(RecordList, { records: matches, emptyText: 'Совпадений пока нет.' })
+    )
+  );
 }
 
-function updateScenarioVisibility() {
-  els.scenarios.querySelectorAll('.scenario-card').forEach((card) => {
-    card.style.display = state.scenariosCollapsed ? 'none' : '';
-  });
-  els.toggleScenarios.textContent = state.scenariosCollapsed ? 'Показать все' : 'Скрыть все';
+function HistoryTab({ history, setHistory }) {
+  return h('section', { className: 'tab-panel active' },
+    h('div', { className: 'actions top-actions' }, h('button', { className: 'danger', type: 'button', onClick: async () => { setHistory([]); await chrome.storage.local.set({ history: [] }); } }, 'Удалить историю')),
+    h('section', { className: 'card' }, h('h2', null, 'История совпадений'), h(RecordList, { records: history, emptyText: 'История пуста.' }))
+  );
 }
 
-async function setScenarioEnabled(index, enabled) {
-  state.settings.scenarios = state.settings.scenarios.map((scenario, scenarioIndex) => (
-    scenarioIndex === index ? { ...scenario, enabled } : scenario
+function VariablesTab({ settings, saveSettings, setTransferStatus }) {
+  const [selectedVariable, setSelectedVariable] = useState('');
+  const applyVariable = () => {
+    const variable = settings.variables.find((item) => item.name === selectedVariable) || settings.variables.find((item) => item.name);
+    if (!variable?.name) return;
+    const scenarios = settings.scenarios.map((scenario, scenarioIndex) => scenarioIndex === 0 ? {
+      ...scenario,
+      rules: (scenario.rules || []).map((rule, ruleIndex) => ruleIndex === 0 ? { ...rule, expected: `<<${variable.name}>>` } : rule),
+    } : scenario);
+    saveSettings({ ...settings, scenarios });
+    setTransferStatus(`Переменная <<${variable.name}>> применена к первому правилу первого сценария.`);
+  };
+  return h('section', { className: 'tab-panel active' }, h('div', { className: 'card' },
+    h('div', { className: 'card-title-row' }, h('h2', null, 'Переменные'), h('button', { className: 'secondary', type: 'button', onClick: () => saveSettings({ ...settings, variables: [...settings.variables, { name: '', expression: '' }] }) }, 'Добавить переменную')),
+    h('p', { className: 'hint' }, 'Используйте строгую проверку == или мягкую проверку ~= / contains: ', h('code', null, '<<path>> == \'/\' : <<cookie(name)>> || : 1')),
+    h('div', { className: 'actions variable-actions' },
+      h('select', { value: selectedVariable, onChange: (e) => setSelectedVariable(e.target.value) }, h('option', { value: '' }, 'Выберите переменную'), settings.variables.map((v, i) => h('option', { key: i, value: v.name }, v.name || `Переменная ${i + 1}`))),
+      h('button', { type: 'button', onClick: applyVariable, disabled: !settings.variables.length }, 'Применить переменную')
+    ),
+    h('div', { className: `variables ${settings.variables.length ? '' : 'empty'}` }, settings.variables.length ? settings.variables.map((variable, index) =>
+      h('div', { className: 'variable-card', key: index },
+        h('div', { className: 'variable-row' },
+          h('label', { className: 'field' }, h('span', null, 'Имя переменной'), h('input', { value: variable.name || '', placeholder: 'test', onChange: (e) => updateVariable(settings, saveSettings, index, { name: e.target.value.trim() }) })),
+          h('button', { className: 'secondary danger-text remove-variable', type: 'button', onClick: () => saveSettings({ ...settings, variables: settings.variables.filter((_, i) => i !== index) }) }, 'Удалить')),
+        h('label', { className: 'field' }, h('span', null, 'Выражение'), h('input', { value: variable.expression || '', placeholder: "<<path>> == '/' : <<cookie(name)>> || : 1", onChange: (e) => updateVariable(settings, saveSettings, index, { expression: e.target.value.trim() }) }))
+      )) : 'Переменные пока не заданы.')
   ));
-  await saveSettings();
-  renderScenarios();
 }
 
-
-function openScenarioModal(scenario, index = null) {
-  state.editingScenarioIndex = index;
-  els.scenarioModalTitle.textContent = index === null ? 'Добавить сценарий' : 'Редактировать сценарий';
-  els.modalScenarioName.value = scenario.name || `Сценарий ${state.settings.scenarios.length + 1}`;
-  els.modalScenarioRules.replaceChildren();
-  (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(els.modalScenarioRules, rule));
-  els.modalDeleteScenario.hidden = index === null;
-  els.scenarioModal.hidden = false;
-  document.body.classList.add('modal-open');
-  els.modalScenarioName.focus();
+function updateVariable(settings, saveSettings, index, patch) {
+  const variables = settings.variables.map((variable, i) => i === index ? { ...variable, ...patch } : variable);
+  saveSettings({ ...settings, variables });
 }
 
-function closeScenarioModal() {
-  els.scenarioModal.hidden = true;
-  document.body.classList.remove('modal-open');
-  state.editingScenarioIndex = null;
-  els.scenarioForm.reset();
-  els.modalScenarioRules.replaceChildren();
+function TransferTab({ settings, saveSettings, transferStatus, setTransferStatus }) {
+  return h('section', { className: 'tab-panel active' }, h('section', { className: 'card' },
+    h('h2', null, 'Скачать и загрузить сценарии и переменные'),
+    h('p', { className: 'hint' }, 'Экспортируйте сценарии/переменные в JSON-файл или загрузите ранее сохраненный файл.'),
+    h('div', { className: 'actions transfer-actions' },
+      h('button', { type: 'button', onClick: () => downloadJson('scenarios', { scenarios: settings.scenarios }, setTransferStatus) }, 'Скачать сценарии'),
+      h(UploadButton, { label: 'Загрузить сценарии', onLoad: async (data) => { await saveSettings({ ...settings, scenarios: normalizeScenarios(data) }); setTransferStatus('Сценарии загружены.'); } }),
+      h('button', { type: 'button', onClick: () => downloadJson('variables', { variables: settings.variables }, setTransferStatus) }, 'Скачать переменные'),
+      h(UploadButton, { label: 'Загрузить переменные', onLoad: async (data) => { await saveSettings({ ...settings, variables: normalizeVariables(data) }); setTransferStatus('Переменные загружены.'); } })
+    ),
+    h('p', { className: 'hint', role: 'status' }, transferStatus)
+  ));
 }
 
-function createScenarioDraft() {
-  return {
-    name: `Сценарий ${state.settings.scenarios.length + 1}`,
-    rules: [{ ...DEFAULT_RULE }],
+function UploadButton({ label, onLoad }) {
+  return h('label', { className: 'secondary upload-button' },
+    h('input', { type: 'file', accept: 'application/json,.json', onChange: async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try { await onLoad(JSON.parse(await file.text())); } catch (error) { alert(`Не удалось загрузить файл: ${error.message}`); }
+      event.target.value = '';
+    }}), h('span', null, label));
+}
+
+function ScenarioModal({ draft, setDraft, editingIndex, settings, saveSettings, closeScenarioModal }) {
+  const save = async (event) => {
+    event.preventDefault();
+    const scenario = { ...draft, name: draft.name?.trim() || `Сценарий ${(editingIndex ?? settings.scenarios.length) + 1}`, rules: (draft.rules || []).filter((rule) => rule.keyPath && (rule.expected || rule.mode === 'exists')) };
+    if (!scenario.rules.length) return;
+    const scenarios = editingIndex === null ? [...settings.scenarios, { ...scenario, enabled: true }] : settings.scenarios.map((item, i) => i === editingIndex ? { ...scenario, enabled: item.enabled !== false } : item);
+    await saveSettings({ ...settings, scenarios });
+    closeScenarioModal();
   };
+  const updateRule = (index, patch) => setDraft({ ...draft, rules: draft.rules.map((rule, i) => i === index ? { ...rule, ...patch } : rule) });
+  return h('div', { className: 'modal-backdrop', onClick: (e) => { if (e.currentTarget === e.target) closeScenarioModal(); } }, h('div', { className: 'modal' }, h('form', { onSubmit: save },
+    h('div', { className: 'modal-header' }, h('h2', null, editingIndex === null ? 'Добавить сценарий' : 'Редактировать сценарий'), h('button', { className: 'icon modal-close', type: 'button', onClick: closeScenarioModal }, '×')),
+    h('label', { className: 'field' }, h('span', null, 'Название сценария'), h('input', { value: draft.name || '', onChange: (e) => setDraft({ ...draft, name: e.target.value }) })),
+    h('div', { className: 'modal-rules-header' }, h('h3', null, 'Правила'), h('button', { className: 'secondary', type: 'button', onClick: () => setDraft({ ...draft, rules: [...(draft.rules || []), { ...DEFAULT_RULE }] }) }, 'Добавить правило')),
+    h('div', { className: 'scenario-rules modal-rules' }, (draft.rules || [DEFAULT_RULE]).map((rule, index) => h('div', { className: 'rule', key: index },
+      h('label', { className: 'field compact' }, h('span', null, 'Путь ключа'), h('input', { value: rule.keyPath || '', onChange: (e) => updateRule(index, { keyPath: e.target.value.trim() }), placeholder: 'extra_data.visual_object.id' })),
+      h('label', { className: 'field compact' }, h('span', null, 'Сравнение'), h('select', { value: rule.mode || 'strict', onChange: (e) => updateRule(index, { mode: e.target.value }) }, h('option', { value: 'strict' }, 'Строгое'), h('option', { value: 'loose' }, 'Не строгое'))),
+      h('label', { className: 'field compact' }, h('span', null, 'Значение'), h('input', { value: rule.expected || '', onChange: (e) => updateRule(index, { expected: e.target.value.trim() }), placeholder: 'auth_click, a|b,c или <<cookie(name)>> / <<url>> / <<path>>' })),
+      h('div', { className: 'rule-footer' }, h('label', { className: 'rule-required' }, h('input', { type: 'checkbox', checked: Boolean(rule.required), onChange: (e) => updateRule(index, { required: e.target.checked }) }), h('span', null, '100% обязательно')), h('button', { className: 'secondary danger-text remove-rule', type: 'button', onClick: () => setDraft({ ...draft, rules: draft.rules.filter((_, i) => i !== index) }) }, 'Удалить правило'))
+    ))),
+    h('div', { className: 'modal-actions' }, editingIndex !== null && h('button', { className: 'danger', type: 'button', onClick: async () => { const scenarios = settings.scenarios.filter((_, i) => i !== editingIndex); await saveSettings({ ...settings, scenarios: scenarios.length ? scenarios : [DEFAULT_SCENARIO] }); closeScenarioModal(); } }, 'Удалить'), h('span', { className: 'modal-actions-spacer' }), h('button', { className: 'secondary', type: 'button', onClick: closeScenarioModal }, 'Отмена'), h('button', { type: 'submit' }, 'Сохранить сценарий'))
+  )));
 }
 
-
-function addRule(container, rule) {
-  const node = els.ruleTemplate.content.firstElementChild.cloneNode(true);
-  node.querySelector('.rule-path').value = rule.keyPath || '';
-  node.querySelector('.rule-mode').value = rule.mode || 'strict';
-  node.querySelector('.rule-value').value = rule.expected || '';
-  node.querySelector('.rule-required-input').checked = Boolean(rule.required);
-  node.querySelector('.remove-rule').addEventListener('click', () => {
-    node.remove();
-
-    if (!container.querySelector('.rule')) {
-      addRule(container, DEFAULT_RULE);
-    }
-  });
-  container.append(node);
+function RecordList({ records, emptyText }) {
+  if (!records.length) return h('div', { className: 'list empty' }, emptyText);
+  return h('div', { className: 'list' }, records.map((record) => h('details', { key: record.id, className: `item ${record.results.every((r) => r.matched) ? 'match' : 'mismatch'}` },
+    h('summary', { className: 'item-summary' }, h('span', { className: 'item-title' }, record.results.every((r) => r.matched) ? `Совпало — ${[...new Set(record.results.map((r) => r.scenarioName).filter(Boolean))].join(', ') || 'Сценарий'}` : 'Есть несовпадения'), h('span', null, record.url), h('span', { className: 'item-meta' }, `${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}`)),
+    h('div', { className: 'item-details' }, h('div', { className: 'result-list' }, record.results.map((result, i) => h(ResultBlock, { key: i, result }))), record.request !== undefined && h('details', { className: 'request-details' }, h('summary', null, 'Весь запрос'), h('pre', { className: 'request-payload' }, JSON.stringify(record.request, null, 2))))
+  )));
 }
 
-async function handleScenarioSubmit(event) {
-  event.preventDefault();
-  const scenario = readScenarioFromModal();
-  if (!scenario.rules.length) return;
-
-  if (state.editingScenarioIndex === null) {
-    state.settings.scenarios = [...state.settings.scenarios, { ...scenario, enabled: true }];
-  } else {
-    const existingEnabled = state.settings.scenarios[state.editingScenarioIndex]?.enabled;
-    state.settings.scenarios = state.settings.scenarios.map((item, index) => (
-      index === state.editingScenarioIndex ? { ...scenario, enabled: existingEnabled !== false } : item
-    ));
-  }
-
-  renderScenarios();
-  closeScenarioModal();
-  await saveSettings();
+function ResultBlock({ result }) {
+  const mode = result.mode === 'strict' ? 'строго' : result.mode === 'exists' ? 'должно быть' : 'не строго';
+  const rows = [['ожидали', result.expected?.length ? result.expected.join(', ') : 'любое значение'], ['получили', result.actual.length ? result.actual.join(', ') : 'путь не найден'], ['путь', result.found ? 'найден' : 'не найден'], ['результат', result.matched ? 'совпало' : 'не совпало']];
+  if (result.extra?.length) rows.push(['доп. поля', result.extra.join(', ')]);
+  return h('div', { className: `result-block ${result.matched ? 'match' : 'mismatch'}` }, h('div', { className: 'result-block-header' }, h('span', null, `${result.scenarioName || 'Сценарий'} → ${result.keyPath}`), h('span', { className: 'result-meta' }, `${mode}${result.required ? ' | 100%' : ''}`)), h('div', { className: 'result-block-body' }, rows.map(([label, value]) => h('div', { className: 'result-block-row', key: label }, h('span', { className: 'result-block-label' }, label), h('span', { className: 'result-block-value' }, value)))));
 }
 
-async function handleScenarioDelete() {
-  if (state.editingScenarioIndex === null) return;
-  state.settings.scenarios = state.settings.scenarios.filter((_, index) => index !== state.editingScenarioIndex);
-  if (!state.settings.scenarios.length) state.settings.scenarios = [DEFAULT_SCENARIO];
-  renderScenarios();
-  closeScenarioModal();
-  await saveSettings();
-}
+function createScenarioDraft(settings) { return { name: `Сценарий ${settings.scenarios.length + 1}`, enabled: true, rules: [{ ...DEFAULT_RULE }] }; }
+function formatScenarioMeta(scenario) { const count = scenario.rules?.length || 0; return `${count} ${count === 1 ? 'правило' : count > 1 && count < 5 ? 'правила' : 'правил'}`; }
+function normalizeSettings(settings) { return { ...DEFAULT_SETTINGS, ...(settings || {}), scenarios: normalizeScenarios(settings), variables: normalizeVariables(settings) }; }
+function normalizeVariables(settings) { return Array.isArray(settings?.variables) ? settings.variables.map((v) => ({ name: v.name || '', expression: v.expression || '' })) : []; }
+function normalizeScenarios(settings) { if (Array.isArray(settings) && settings.length) return settings.map((s) => ({ enabled: true, ...s })); if (Array.isArray(settings?.scenarios) && settings.scenarios.length) return settings.scenarios.map((s) => ({ enabled: true, ...s })); if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }]; return clone(DEFAULT_SETTINGS.scenarios); }
+function downloadJson(kind, payload, setTransferStatus) { const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `response-match-${kind}-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(url); setTransferStatus(kind === 'variables' ? 'Переменные скачаны.' : 'Сценарии скачаны.'); }
 
-function readScenarioFromModal() {
-  const rules = [...els.modalScenarioRules.querySelectorAll('.rule')].map((rule) => ({
-    keyPath: rule.querySelector('.rule-path').value.trim(),
-    mode: rule.querySelector('.rule-mode').value,
-    expected: rule.querySelector('.rule-value').value.trim(),
-    required: rule.querySelector('.rule-required-input').checked,
-  })).filter((rule) => rule.keyPath && (rule.expected || rule.mode === 'exists'));
-
-  const fallbackName = state.editingScenarioIndex === null
-    ? `Сценарий ${state.settings.scenarios.length + 1}`
-    : `Сценарий ${state.editingScenarioIndex + 1}`;
-
-  return {
-    name: els.modalScenarioName.value.trim() || fallbackName,
-    rules,
-  };
-}
-
-async function saveSettings() {
-  state.settings = {
-    requestPath: els.requestPath.value.trim(),
-    scenarios: state.settings.scenarios.length ? state.settings.scenarios : [DEFAULT_SCENARIO],
-    variables: state.settings.variables || [],
-    blockExternal: els.blockExternal.checked,
-  };
-
-  await chrome.storage.local.set({ settings: state.settings });
-}
-
-function formatScenarioMeta(scenario) {
-  const rulesCount = scenario.rules?.length || 0;
-  const word = rulesCount === 1 ? 'правило' : rulesCount > 1 && rulesCount < 5 ? 'правила' : 'правил';
-  return `${rulesCount} ${word}`;
-}
-
-function handleStorageChanges(changes, areaName) {
-  if (areaName !== 'local') return;
-
-  if (changes.settings) {
-    state.settings = normalizeSettings(changes.settings.newValue);
-    renderSettings();
-  }
-
-  if (changes.matches) {
-    state.matches = changes.matches.newValue || [];
-    renderMatches();
-  }
-
-  if (changes.history) {
-    state.history = changes.history.newValue || [];
-    renderHistory();
-  }
-}
-
-function renderMatches() {
-  renderList(els.matches, state.matches, 'Совпадений пока нет.');
-}
-
-function renderHistory() {
-  renderList(els.history, state.history, 'История пуста.');
-}
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-function renderList(container, records, emptyText) {
-  container.classList.toggle('empty', records.length === 0);
-
-  if (!records.length) {
-    container.textContent = emptyText;
-    return;
-  }
-
-  container.replaceChildren(
-    ...records.map((record) => {
-      const item = document.createElement('details');
-
-      const allMatched = record.results.every((r) => r.matched);
-
-        const scenarioNames = Array.from(new Set(record.results.map((r) => r.scenarioName).filter(Boolean)));
-        const titleText = allMatched ? `Совпало — ${scenarioNames.join(', ') || 'Сценарий'}` : 'Есть несовпадения';
-
-        item.className = `item ${allMatched ? 'match' : 'mismatch'}`;
-
-        item.innerHTML = `
-          <summary class="item-summary">
-            <span class="item-title">
-              ${escapeHtml(titleText)}
-            </span>
-            <span>${escapeHtml(record.url)}</span>
-            <span class="item-meta">
-              ${new Date(record.at).toLocaleString()} · ${record.method || 'REQUEST'}
-            </span>
-          </summary>
-
-          <div class="item-details">
-            <div class="result-list">${formatResults(record.results)}</div>
-            ${formatRequestDetails(record.request)}
-          </div>
-        `;
-
-      return item;
-    })
-  );
-}
-function formatResults(results) {
-  return results.map((result) => {
-    const mode = result.mode === 'strict' ? 'строго' : result.mode === 'exists' ? 'должно быть' : 'не строго';
-    const blocks = [
-      { label: 'ожидали', value: result.expected?.length ? result.expected.join(', ') : 'любое значение' },
-      { label: 'получили', value: result.actual.length ? result.actual.join(', ') : 'путь не найден' },
-      { label: 'путь', value: result.found ? 'найден' : 'не найден' },
-      { label: 'результат', value: result.matched ? 'совпало' : 'не совпало' },
-    ];
-    if (result.extra.length) {
-      blocks.push({ label: 'доп. поля', value: result.extra.join(', ') });
-    }
-
-    return `
-      <div class="result-block ${result.matched ? 'match' : 'mismatch'}">
-        <div class="result-block-header">
-          <span>${escapeHtml(result.scenarioName || 'Сценарий')} → ${escapeHtml(result.keyPath)}</span>
-          <span class="result-meta">${mode}${result.required ? ' | 100%' : ''}</span>
-        </div>
-        <div class="result-block-body">
-          ${blocks.map((block) => `
-            <div class="result-block-row">
-              <span class="result-block-label">${escapeHtml(block.label)}</span>
-              <span class="result-block-value">${escapeHtml(block.value)}</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function formatRequestDetails(request) {
-  if (request === undefined) return '';
-
-  return `
-    <details class="request-details">
-      <summary>Весь запрос</summary>
-      <pre class="request-payload">${escapeHtml(formatJson(request))}</pre>
-    </details>
-  `;
-}
-
-function formatJson(value) {
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return String(value);
-  }
-}
-
-function downloadScenarios() {
-  const scenarios = state.settings.scenarios || [];
-  const blob = new Blob([JSON.stringify({ scenarios }, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `response-match-scenarios-${new Date().toISOString().slice(0, 10)}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
-  setTransferStatus('Сценарии скачаны.');
-}
-
-async function uploadScenarios(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-  try {
-    const data = JSON.parse(await file.text());
-    const scenarios = normalizeScenarios(data);
-    state.settings = { ...state.settings, scenarios };
-    await chrome.storage.local.set({ settings: state.settings });
-    renderSettings();
-    setTransferStatus('Сценарии загружены. Нажмите «Сохранить», если измените их вручную.');
-  } catch (error) {
-    setTransferStatus(`Не удалось загрузить сценарии: ${error.message}`);
-  } finally {
-    event.target.value = '';
-  }
-}
-
-function setTransferStatus(message) {
-  els.transferStatus.textContent = message;
-}
-
-function readScenariosFromForm() {
-  return [...els.scenarios.querySelectorAll('.scenario')].map((scenario, index) => ({
-    name: scenario.querySelector('.scenario-name').value.trim() || `Сценарий ${index + 1}`,
-    rules: [...scenario.querySelectorAll('.rule')].map((rule) => ({
-      keyPath: rule.querySelector('.rule-path').value.trim(),
-      mode: rule.querySelector('.rule-mode').value,
-      expected: rule.querySelector('.rule-value').value.trim(),
-      required: rule.querySelector('.rule-required-input').checked,
-    })).filter((rule) => rule.keyPath && (rule.mode === 'exists' || rule.expected)),
-  })).filter((scenario) => scenario.rules.length);
-}
-
-function normalizeSettings(settings) {
-  return {
-    ...DEFAULT_SETTINGS,
-    ...(settings || {}),
-    scenarios: normalizeScenarios(settings),
-    variables: normalizeVariables(settings),
-  };
-}
-
-function normalizeVariables(settings) {
-  if (Array.isArray(settings?.variables)) {
-    return settings.variables.map((variable) => ({ name: variable.name || '', expression: variable.expression || '' }));
-  }
-  return [];
-}
-
-function normalizeScenarios(settings) {
-  if (Array.isArray(settings) && settings.length) {
-    return settings.map((scenario) => ({ enabled: true, ...scenario }));
-  }
-  if (Array.isArray(settings?.scenarios) && settings.scenarios.length) {
-    return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
-  }
-  if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];
-  return DEFAULT_SETTINGS.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
-}
-
-function handleToggleScenarios() {
-  state.scenariosCollapsed = !state.scenariosCollapsed;
-  els.toggleScenarios.textContent = state.scenariosCollapsed ? 'Показать все' : 'Скрыть все';
-  updateScenarioVisibility();
-}
+ReactDOM.createRoot(document.querySelector('#root')).render(h(App));

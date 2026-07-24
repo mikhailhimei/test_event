@@ -274,7 +274,7 @@ async function evaluateVariableExpression(expression, details, currentValues) {
     }
 
     const condition = conditionPiece.trim();
-    if (!condition || evaluateCondition(condition, details, currentValues)) {
+    if (!condition || await evaluateCondition(condition, details, currentValues)) {
       return evaluateExpressionValue(valuePiece.trim(), details, currentValues);
     }
   }
@@ -312,7 +312,7 @@ async function evaluateCondition(condition, details, currentValues) {
 }
 
 async function evaluateComparison(expression, details, currentValues) {
-  const operatorMatch = expression.match(/(==|!=|>=|<=|>|<)/);
+  const operatorMatch = expression.match(/(contains|~=|==|!=|>=|<=|>|<)/i);
   if (!operatorMatch) {
     return Boolean(await evaluateExpressionValue(expression, details, currentValues));
   }
@@ -325,6 +325,7 @@ async function evaluateComparison(expression, details, currentValues) {
   const right = await evaluateExpressionValue(rightRaw, details, currentValues);
 
   if (operator === '==') return left === right;
+  if (operator === '~=' || operator.toLowerCase() === 'contains') return hasSimilarWord(left, right);
   if (operator === '!=') return left !== right;
   if (operator === '>') return left > right;
   if (operator === '<') return left < right;
@@ -414,6 +415,40 @@ function splitTopLevel(value, separator) {
   }
 
   return parts;
+}
+
+
+function hasSimilarWord(left, right) {
+  const leftText = normalizeComparableText(left);
+  const rightText = normalizeComparableText(right);
+  if (!leftText || !rightText) return false;
+  if (leftText.includes(rightText) || rightText.includes(leftText)) return true;
+
+  const leftWords = leftText.split(/\s+/).filter(Boolean);
+  const rightWords = rightText.split(/\s+/).filter(Boolean);
+  return rightWords.some((expectedWord) => leftWords.some((actualWord) => (
+    actualWord.includes(expectedWord) || expectedWord.includes(actualWord) || levenshteinDistance(actualWord, expectedWord) <= Math.max(1, Math.floor(expectedWord.length * 0.25))
+  )));
+}
+
+function normalizeComparableText(value) {
+  return stringifyComparable(value).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+
+function levenshteinDistance(a, b) {
+  const previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= a.length; i += 1) {
+    let last = i - 1;
+    previous[0] = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      const old = previous[j];
+      previous[j] = a[i - 1] === b[j - 1]
+        ? last
+        : Math.min(previous[j - 1], previous[j], last) + 1;
+      last = old;
+    }
+  }
+  return previous[b.length];
 }
 
 function warnAboutExternalNavigation(details) {
