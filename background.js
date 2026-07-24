@@ -45,7 +45,7 @@ async function inspectOutgoingRequest(details) {
   if (!json) return;
 
   const results = cachedSettings.rules.map((rule) => compareRule(rule, json));
-  const meaningfulResults = results.filter((result) => result.matched || result.mode === 'loose');
+  const meaningfulResults = results.filter((result) => result.found || result.matched || result.mode === 'loose');
   if (!meaningfulResults.length) return;
 
   const record = {
@@ -105,9 +105,8 @@ function parseJsonLikeValue(value) {
 }
 
 function compareRule(rule, json) {
-  const actual = getByPath(json, rule.keyPath);
+  const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
   const expectedValues = parseExpected(rule.expected);
-  const actualValues = Array.isArray(actual) ? actual.map(stringifyComparable) : [stringifyComparable(actual)];
   const matched = rule.mode === 'strict'
     ? actualValues.length === expectedValues.length && expectedValues.every((value, index) => actualValues[index] === value)
     : expectedValues.every((value) => actualValues.includes(value));
@@ -117,13 +116,21 @@ function compareRule(rule, json) {
     mode: rule.mode,
     expected: expectedValues,
     actual: actualValues,
+    found: actualValues.length > 0,
     matched,
     extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedValues.includes(value)) : [],
   };
 }
 
-function getByPath(source, path) {
-  return path.split('.').reduce((value, key) => value == null ? undefined : value[key], source);
+function getValuesByPath(source, path) {
+  return path.split('.').reduce((values, key) => values.flatMap((value) => {
+    if (Array.isArray(value)) {
+      return value.map((item) => item?.[key]).filter((item) => item !== undefined);
+    }
+
+    const nextValue = value?.[key];
+    return nextValue === undefined ? [] : [nextValue];
+  }), [source]).flatMap((value) => Array.isArray(value) ? value : [value]);
 }
 
 function parseExpected(value) {

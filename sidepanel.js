@@ -143,7 +143,8 @@ function formatResults(results) {
     const lines = [
       `${result.keyPath} | ${result.mode === 'strict' ? 'строго' : 'не строго'}`,
       `ожидали: ${result.expected.join(', ')}`,
-      `получили: ${result.actual.join(', ')}`,
+      `получили: ${result.actual.length ? result.actual.join(', ') : 'путь не найден'}`,
+      `путь: ${result.found ? 'найден' : 'не найден'}`,
       `результат: ${result.matched ? 'совпало' : 'не совпало'}`,
     ];
     if (result.extra.length) {
