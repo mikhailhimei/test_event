@@ -405,7 +405,7 @@ async function evaluateCondition(condition, details, currentValues) {
 }
 
 async function evaluateComparison(expression, details, currentValues) {
-  const operatorMatch = expression.match(/(==|!=|>=|<=|>|<)/);
+  const operatorMatch = expression.match(/(===|!==|==|!=|>=|<=|>|<)/);
   if (!operatorMatch) {
     return Boolean(await evaluateExpressionValue(expression, details, currentValues));
   }
@@ -417,6 +417,7 @@ async function evaluateComparison(expression, details, currentValues) {
   const left = await evaluateExpressionValue(leftRaw, details, currentValues);
   const right = await evaluateExpressionValue(rightRaw, details, currentValues);
 
+  if (operator === '===') return left === right;
   if (operator === '==') return left === right || hasSimilarWord(left, right);
   if (operator === '!=') return left !== right && !hasSimilarWord(left, right);
   if (operator === '>') return left > right;
