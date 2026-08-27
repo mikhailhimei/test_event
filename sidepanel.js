@@ -96,7 +96,6 @@ async function init() {
 
   renderSettings();
   renderMatches();
-  renderVariables();
   renderCommonElements();
   bindUi();
   chrome.storage.onChanged.addListener(handleStorageChanges);
@@ -105,10 +104,8 @@ async function init() {
 function bindUi() {
   els.addScenario.addEventListener('click', () => openScenarioModal(createScenarioDraft()));
   els.deleteAllScenarios.addEventListener('click', deleteAllScenarios);
-  els.addVariable.addEventListener('click', () => addVariable(createVariableDraft()));
-  els.deleteAllVariables.addEventListener('click', deleteAllVariables);
-  els.downloadVariables.addEventListener('click', downloadVariables);
-  els.uploadVariables.addEventListener('click', uploadVariables);
+  els.addVariable?.addEventListener('click', () => addVariable(createVariableDraft()));
+  els.deleteAllVariables?.addEventListener('click', deleteAllVariables);
   els.addCommonElement.addEventListener('click', () => openCommonElementModal(createCommonElementDraft()));
   els.deleteAllCommonElements.addEventListener('click', deleteAllCommonElements);
   els.downloadCommonElements.addEventListener('click', downloadCommonElements);
@@ -162,7 +159,6 @@ function renderSettings() {
   els.blockExternal.checked = Boolean(state.settings.blockExternal);
   renderSearchScenarios();
   renderScenarios();
-  renderVariables();
   renderCommonElements();
 }
 
@@ -325,6 +321,8 @@ function renderScenarios() {
 }
 
 function renderVariables() {
+  if (!els.variables) return;
+
   els.variables.classList.toggle('empty', state.settings.variables.length === 0);
   if (!state.settings.variables.length) {
     els.variables.textContent = 'Переменные пока не заданы.';
@@ -511,7 +509,6 @@ function addRule(container, rule) {
 
 async function handleScenarioSubmit(event) {
   event.preventDefault();
-  readVariablesFromUi();
   const scenario = readScenarioFromModal();
   if (!scenario.rules.length && !scenario.commonElementIds.length) return;
 
@@ -959,6 +956,8 @@ function parseJsonFromTextarea(textarea, emptyMessage) {
 }
 
 function setVariablesStatus(message) {
+  if (!els.variablesStatus) return;
+
   els.variablesStatus.textContent = message;
 }
 

@@ -11,6 +11,8 @@ const DEFAULT_SETTINGS = {
 };
 
 const tabHostById = new Map();
+const tabUrlById = new Map();
+const pendingRequests = new Map();
 let cachedSettings = DEFAULT_SETTINGS;
 const decoder = new TextDecoder('utf-8');
 
@@ -30,17 +32,21 @@ chrome.runtime.onStartup.addListener(initTabHosts);
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (typeof changeInfo.url === 'string') {
     tabHostById.set(tabId, safeHost(changeInfo.url));
+    tabUrlById.set(tabId, changeInfo.url);
   } else if (typeof tab.url === 'string') {
     tabHostById.set(tabId, safeHost(tab.url));
+    tabUrlById.set(tabId, tab.url);
   }
 });
 chrome.tabs.onRemoved.addListener((tabId) => tabHostById.delete(tabId));
+chrome.tabs.onRemoved.addListener((tabId) => tabUrlById.delete(tabId));
 
 async function initTabHosts() {
   const tabs = await chrome.tabs.query({});
   for (const tab of tabs) {
     if (typeof tab.id === 'number') {
       tabHostById.set(tab.id, safeHost(tab.url));
+      if (typeof tab.url === 'string') tabUrlById.set(tab.id, tab.url);
     }
   }
 }
@@ -58,18 +64,37 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     warnAboutExternalNavigation(details);
-    void inspectOutgoingRequest(details);
+    if (cachedSettings.requestPath && details.url.includes(cachedSettings.requestPath)) {
+      const json = parseRequestBody(details.requestBody);
+      if (json) pendingRequests.set(details.requestId, { details, json });
+    }
     return {};
   },
   { urls: ['<all_urls>'] },
   ['requestBody']
 );
 
-async function inspectOutgoingRequest(details) {
-  if (!cachedSettings.requestPath || !details.url.includes(cachedSettings.requestPath)) return;
+chrome.webRequest.onCompleted.addListener((details) => {
+  const pendingRequest = pendingRequests.get(details.requestId);
+  pendingRequests.delete(details.requestId);
+  if (!pendingRequest) return;
 
-  const json = parseRequestBody(details.requestBody);
-  if (!json) return;
+  void inspectOutgoingRequest(pendingRequest.details, pendingRequest.json, details.statusCode);
+}, { urls: ['<all_urls>'] });
+
+chrome.webRequest.onErrorOccurred.addListener((details) => {
+  const pendingRequest = pendingRequests.get(details.requestId);
+  pendingRequests.delete(details.requestId);
+  if (!pendingRequest) return;
+
+  void saveErrorRecord(pendingRequest.details, pendingRequest.json, details.error);
+}, { urls: ['<all_urls>'] });
+
+async function inspectOutgoingRequest(details, json, statusCode) {
+  if (statusCode !== 200) {
+    await saveErrorRecord(details, json, `HTTP ${statusCode}`);
+    return;
+  }
 
   const meaningfulResults = [];
   const variableValues = await evaluateVariables(details);
@@ -117,6 +142,22 @@ async function inspectOutgoingRequest(details) {
     : history;
 
   await chrome.storage.local.set({ matches: nextMatches, history: nextHistory });
+}
+
+async function saveErrorRecord(details, json, error) {
+  const record = {
+    id: crypto.randomUUID(),
+    url: details.url,
+    method: details.method,
+    tabId: details.tabId,
+    frameId: details.frameId,
+    at: new Date().toISOString(),
+    error: `Запрос завершился с ошибкой: ${error}`,
+    request: json,
+    results: [],
+  };
+  const { matches = [] } = await chrome.storage.local.get('matches');
+  await chrome.storage.local.set({ matches: [record, ...matches].slice(0, 100) });
 }
 
 function parseRequestBody(requestBody) {
@@ -219,11 +260,11 @@ async function resolveExpectedGroups(expectedGroups, details, variableValues) {
         return stringifyComparable(cookie?.value ?? '');
       }
       if (entry.type === 'url') {
-        return stringifyComparable(details.url || '');
+        return stringifyComparable(getPageUrl(details));
       }
       if (entry.type === 'path') {
         try {
-          return stringifyComparable(new URL(details.url).pathname || '');
+          return stringifyComparable(new URL(getPageUrl(details)).pathname || '');
         } catch {
           return '';
         }
@@ -267,7 +308,7 @@ function parseDynamicToken(value) {
     return { type: 'cookie', name: cookieMatch[1] };
   }
 
-  if (/^<<\s*url\s*>>$/i.test(value)) {
+  if (/^<<\s*(?:url|full_url)\s*>>$/i.test(value)) {
     return { type: 'url' };
   }
 
@@ -374,10 +415,10 @@ async function evaluateComparison(expression, details, currentValues) {
 async function evaluateExpressionValue(value, details, currentValues) {
   const token = parseDynamicToken(value);
   if (token) {
-    if (token.type === 'url') return details.url || '';
+    if (token.type === 'url') return getPageUrl(details);
     if (token.type === 'path') {
       try {
-        return new URL(details.url).pathname || '';
+        return new URL(getPageUrl(details)).pathname || '';
       } catch {
         return '';
       }
@@ -519,6 +560,10 @@ function safeHost(url) {
   } catch {
     return '';
   }
+}
+
+function getPageUrl(details) {
+  return details.documentUrl || tabUrlById.get(details.tabId) || details.initiator || '';
 }
 
 
