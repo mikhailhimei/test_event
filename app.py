@@ -3,7 +3,6 @@
 
 import json
 import shutil
-import sqlite3
 import subprocess
 import sys
 import threading
@@ -16,7 +15,7 @@ import eel
 
 
 ROOT = Path(__file__).parent
-DATABASE = ROOT / "mobile_traffic_check.db"
+SETTINGS_FILE = ROOT / "settings.json"
 CAPTURE_HOST, CAPTURE_PORT = "127.0.0.1", 8787
 UI_HOST, UI_PORT = "127.0.0.1", 8000
 DEFAULT_SETTINGS = {
@@ -24,23 +23,16 @@ DEFAULT_SETTINGS = {
     "scenarios": [{"name": "Сценарий 1", "rules": [{"keyPath": "event", "mode": "strict", "expected": "auth_click"}]}],
 }
 proxy_process = None
+results = []
 
 
-def connection():
-    return sqlite3.connect(DATABASE)
-
-
-def initialize_database():
-    with connection() as db:
-        db.execute("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY CHECK(id = 1), value TEXT NOT NULL)")
-        db.execute("CREATE TABLE IF NOT EXISTS results (id TEXT PRIMARY KEY, created_at TEXT NOT NULL, value TEXT NOT NULL)")
-        db.execute("INSERT OR IGNORE INTO settings(id, value) VALUES(1, ?)", (json.dumps(DEFAULT_SETTINGS),))
+def initialize_storage():
+    if not SETTINGS_FILE.exists():
+        SETTINGS_FILE.write_text(json.dumps(DEFAULT_SETTINGS, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def get_settings():
-    with connection() as db:
-        row = db.execute("SELECT value FROM settings WHERE id = 1").fetchone()
-    return json.loads(row[0])
+    return json.loads(SETTINGS_FILE.read_text(encoding="utf-8"))
 
 
 def save_settings(settings):
@@ -48,8 +40,7 @@ def save_settings(settings):
         "requestPath": str(settings.get("requestPath", "")),
         "scenarios": settings.get("scenarios", []) if isinstance(settings.get("scenarios"), list) else [],
     }
-    with connection() as db:
-        db.execute("UPDATE settings SET value = ? WHERE id = 1", (json.dumps(normalized),))
+    SETTINGS_FILE.write_text(json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8")
     return normalized
 
 
@@ -108,9 +99,8 @@ def store_captures(payload):
     if not isinstance(entries, list):
         entries = [entries]
     records = [record for entry in entries if isinstance(entry, dict) and (record := evaluate_capture(entry))]
-    with connection() as db:
-        db.executemany("INSERT INTO results(id, created_at, value) VALUES(?, ?, ?)", [(record["id"], record["at"], json.dumps(record, ensure_ascii=False)) for record in records])
-        db.execute("DELETE FROM results WHERE id NOT IN (SELECT id FROM results ORDER BY created_at DESC LIMIT 300)")
+    results[0:0] = records
+    del results[300:]
     return len(records)
 
 
@@ -155,15 +145,12 @@ def ui_save_settings(settings):
 
 @eel.expose
 def ui_results():
-    with connection() as db:
-        rows = db.execute("SELECT value FROM results ORDER BY created_at DESC").fetchall()
-    return [json.loads(row[0]) for row in rows]
+    return results
 
 
 @eel.expose
 def ui_clear_results():
-    with connection() as db:
-        db.execute("DELETE FROM results")
+    results.clear()
 
 
 @eel.expose
@@ -184,7 +171,7 @@ def ui_start_proxy():
 
 
 def main():
-    initialize_database()
+    initialize_storage()
     start_capture_server()
     eel.init(str(ROOT / "web"))
     eel.start("index.html", host=UI_HOST, port=UI_PORT, block=True)
