@@ -1,13 +1,6 @@
-<!doctype html>
-<html lang="ru">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mobile Traffic Check</title><link rel="stylesheet" href="/styles.css"></head>
-<body>
-  <header><div><h1>Mobile Traffic Check</h1><p>Онлайн-проверка трафика мобильных приложений</p></div><span id="connection">Подключение…</span></header>
-  <main>
-    <section class="card"><h2>Поток трафика</h2><p>Запустите <code>node server.js</code> и настройте Charles/Fiddler на отправку каждой расшифрованной JSON-записи в <code>POST /api/captures</code>. Эта страница обновляется автоматически.</p></section>
-    <section class="card"><h2>Фильтр и сценарии</h2><label>Фильтр URL <input id="requestPath" placeholder="/api/events или часть URL"></label><div class="actions"><button id="addScenario">Добавить сценарий</button><button id="saveSettings">Сохранить правила</button></div><div id="scenarios"></div></section>
-    <section class="card"><div class="title-row"><h2>Поступившие запросы</h2><button id="clearResults" class="secondary">Очистить</button></div><div id="results" class="results">Ожидание трафика…</div></section>
-  </main><template id="scenarioTemplate"><article class="scenario"><div class="title-row"><input class="scenario-name" placeholder="Название сценария"><button class="remove-scenario secondary">Удалить</button></div><div class="rules"></div><button class="add-rule secondary">Добавить правило</button></article></template>
-  <template id="ruleTemplate"><div class="rule"><input class="rule-path" placeholder="Путь: event.name"><select class="rule-mode"><option value="strict">Строго</option><option value="loose">Любое совпадение</option><option value="exists">Поле существует</option></select><input class="rule-expected" placeholder="Ожидаемое значение: auth_click"><button class="remove-rule secondary">×</button></div></template>
-  <script src="/app.js"></script>
-</body></html>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mobile Traffic Check</title><link rel="stylesheet" href="styles.css"></head><body>
+<header><div><h1>Mobile Traffic Check</h1><p>Локальная проверка мобильного трафика</p></div><span id="proxyStatus">Проверка proxy…</span></header>
+<main><section class="card"><div class="title-row"><h2>mitmproxy</h2><button id="startProxy">Запустить proxy</button></div><p>Подключите телефон или эмулятор к IP этого компьютера, порт <b>8080</b>. Charles и Fiddler можно использовать отдельно — они не блокируются.</p><p id="proxyMessage" class="hint"></p></section>
+<section class="card"><h2>Фильтр и сценарии</h2><label>Фильтр URL <input id="requestPath" placeholder="/api/events или часть URL"></label><div class="actions"><button id="addScenario">Добавить сценарий</button><button id="saveSettings">Сохранить правила</button></div><div id="scenarios"></div></section>
+<section class="card"><div class="title-row"><h2>Поступившие запросы</h2><button id="clearResults" class="secondary">Очистить</button></div><div id="results">Ожидание трафика…</div></section></main>
+<template id="scenarioTemplate"><article class="scenario"><div class="title-row"><input class="scenario-name" placeholder="Название сценария"><button class="remove-scenario secondary">Удалить</button></div><div class="rules"></div><button class="add-rule secondary">Добавить правило</button></article></template><template id="ruleTemplate"><div class="rule"><input class="rule-path" placeholder="Путь: event.name"><select class="rule-mode"><option value="strict">Строго</option><option value="loose">Любое совпадение</option><option value="exists">Поле существует</option></select><input class="rule-expected" placeholder="Значение: auth_click"><button class="remove-rule secondary">×</button></div></template><script src="/eel.js"></script><script src="app.js"></script></body></html>
