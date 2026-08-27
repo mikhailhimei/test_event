@@ -157,26 +157,12 @@ function parseJsonLikeValue(value) {
 }
 
 async function compareRule(rule, json, details, scenarioName, variableValues) {
-  if (/^<<\s*json\s*!=\s*null\s*>>$/i.test(String(rule.expected || '').trim())) {
-    const hasJsonData = isNonEmptyJson(json);
-    return {
-      scenarioName,
-      keyPath: rule.keyPath,
-      mode: rule.mode,
-      expected: ['непустой JSON'],
-      actual: hasJsonData ? [stringifyComparable(json)] : [],
-      actualDescriptions: [],
-      found: hasJsonData,
-      matched: hasJsonData,
-      extra: [],
-    };
-  }
-
-  const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
+  const actualRawValues = getValuesByPath(json, rule.keyPath);
+  const actualValues = actualRawValues.map(stringifyComparable);
   const expectedGroups = parseExpected(rule.expected);
   const resolvedExpectedGroups = await resolveExpectedGroups(expectedGroups, details, variableValues);
   const matched = rule.mode === 'exists'
-    ? actualValues.length > 0
+    ? actualRawValues.some(isNonEmptyValue)
       : matchExpectedValues(actualValues, resolvedExpectedGroups, rule.mode);
   const expectedFlatValues = resolvedExpectedGroups.flat();
   const descriptions = String(rule.description || '').split('|').map((description) => description.trim());
@@ -197,14 +183,13 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
   };
 }
 
-function isNonEmptyJson(value) {
+function isNonEmptyValue(value) {
   if (value == null) return false;
   if (typeof value === 'string') return value.trim().length > 0;
   if (Array.isArray(value)) return value.length > 0;
   if (typeof value === 'object') return Object.keys(value).length > 0;
   return true;
 }
-
 
 function matchExpectedValues(actualValues, expectedGroups, mode) {
   if (!actualValues.length || !expectedGroups.length) return false;

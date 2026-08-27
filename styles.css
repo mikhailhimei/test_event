@@ -102,12 +102,12 @@ button:hover { background: var(--primary-dark); }
   height: 17px;
   flex: 0 0 auto;
 }
-.search-scenario-option span {
+.search-scenario-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.search-scenario-option > span:nth-child(2) {
+.search-scenario-name {
   cursor: pointer;
 }
 .search-scenario-description {
@@ -115,12 +115,25 @@ button:hover { background: var(--primary-dark); }
   color: var(--muted);
   font-size: 12px;
   line-height: 1.4;
+  overflow: visible;
+  text-overflow: clip;
   white-space: pre-wrap;
 }
 .search-scenario-rules {
   grid-column: 2;
   display: grid;
   gap: 5px;
+}
+.search-scenario-rules[hidden],
+.search-scenario-description[hidden],
+.search-description-toggle[hidden] {
+  display: none;
+}
+.search-description-toggle {
+  grid-column: 2;
+  justify-self: start;
+  padding: 5px 8px;
+  font-size: 12px;
 }
 .search-rule-option {
   display: flex;

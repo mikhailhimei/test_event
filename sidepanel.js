@@ -21,6 +21,8 @@ const state = {
 };
 
 const checkedSearchRules = new Set();
+const expandedSearchScenarios = new Set();
+const expandedSearchDescriptions = new Set();
 
 const els = {
   requestPath: document.querySelector('#requestPath'),
@@ -182,22 +184,40 @@ function renderSearchScenarios() {
     checkbox.addEventListener('change', () => setScenarioEnabled(index, checkbox.checked));
 
     const name = document.createElement('span');
+    name.className = 'search-scenario-name';
     name.textContent = scenario.name || `Сценарий ${index + 1}`;
 
     const description = document.createElement('span');
     description.className = 'search-scenario-description';
     description.textContent = scenario.description || 'Описание не задано.';
-    description.hidden = true;
+    description.hidden = !expandedSearchDescriptions.has(index);
 
-    name.addEventListener('click', () => {
+    const descriptionToggle = document.createElement('button');
+    descriptionToggle.type = 'button';
+    descriptionToggle.className = 'secondary search-description-toggle';
+    descriptionToggle.textContent = description.hidden ? 'Описание' : 'Скрыть описание';
+    descriptionToggle.hidden = !expandedSearchScenarios.has(index);
+    descriptionToggle.addEventListener('click', () => {
       description.hidden = !description.hidden;
+      if (description.hidden) expandedSearchDescriptions.delete(index);
+      else expandedSearchDescriptions.add(index);
+      descriptionToggle.textContent = description.hidden ? 'Описание' : 'Скрыть описание';
     });
 
     const rules = getScenarioRules(scenario);
     const searchRules = document.createElement('div');
     searchRules.className = 'search-scenario-rules';
+    searchRules.hidden = !expandedSearchScenarios.has(index);
+
+    name.addEventListener('click', () => {
+      searchRules.hidden = !searchRules.hidden;
+      if (searchRules.hidden) expandedSearchScenarios.delete(index);
+      else expandedSearchScenarios.add(index);
+      descriptionToggle.hidden = searchRules.hidden;
+    });
+
     rules.forEach((rule, ruleIndex) => {
-      if (!rule.showInSearch) return;
+      if (rule.showInSearch !== true) return;
 
       const values = rule.expected
         ? rule.expected.split('|').map((value) => value.trim()).filter(Boolean)
@@ -231,7 +251,7 @@ function renderSearchScenarios() {
       });
     });
 
-    option.append(checkbox, name, description, searchRules);
+    option.append(checkbox, name, searchRules, descriptionToggle, description);
     return option;
   }));
 }
@@ -244,7 +264,7 @@ function syncAutomaticSearchChecks(matches) {
 
       const scenario = state.settings.scenarios[result.scenarioIndex];
       const rule = scenario && getScenarioRules(scenario)[result.ruleIndex];
-      if (!rule?.showInSearch) return;
+      if (rule?.showInSearch !== true) return;
 
       const values = rule.expected
         ? rule.expected.split('|').map((value) => value.trim()).filter(Boolean)
@@ -388,6 +408,11 @@ function updateScenarioVisibility() {
 }
 
 async function setScenarioEnabled(index, enabled) {
+  [...checkedSearchRules]
+    .filter((key) => key.startsWith(`${index}:`))
+    .forEach((key) => checkedSearchRules.delete(key));
+  await saveSearchChecks();
+
   state.settings.scenarios = state.settings.scenarios.map((scenario, scenarioIndex) => (
     scenarioIndex === index ? { ...scenario, enabled } : scenario
   ));
@@ -701,9 +726,9 @@ function appendNewHistory(newHistory) {
       .map(el => el.dataset.key)
   );
 
-  const key = (record) => `${record.at}|${record.url}|${record.method}`;
-
-  const added = newHistory.filter(record => !existingKeys.has(key(record)));
+  const added = getDisplayRecords(newHistory).filter(
+    (record) => !existingKeys.has(getDisplayRecordKey(record))
+  );
 
   if (!added.length) {
     return;
@@ -715,14 +740,38 @@ function appendNewHistory(newHistory) {
   }
 
   for (let i = added.length - 1; i >= 0; i--) {
-    const item = createMatchItem(added[i]);
-    item.dataset.key = key(added[i]);
-    els.history.prepend(item);
+    getDisplayRecords(added[i]).reverse().forEach((displayRecord) => {
+      const item = createMatchItem(displayRecord);
+      item.dataset.key = getDisplayRecordKey(displayRecord);
+      els.history.prepend(item);
+    });
   }
 
-  while (els.history.children.length > newHistory.length) {
+  while (els.history.children.length > getDisplayRecords(newHistory).length) {
     els.history.lastElementChild.remove();
   }
+}
+
+function getDisplayRecords(records) {
+  if (Array.isArray(records)) return records.flatMap(getDisplayRecords);
+
+  const results = Array.isArray(records.results) ? records.results : [];
+  const groups = new Map();
+  results.forEach((result) => {
+    const groupKey = result.scenarioIndex ?? result.scenarioName ?? 'scenario';
+    if (!groups.has(groupKey)) groups.set(groupKey, []);
+    groups.get(groupKey).push(result);
+  });
+
+  return [...groups.entries()].map(([scenarioKey, scenarioResults]) => ({
+    ...records,
+    results: scenarioResults,
+    displayScenarioKey: scenarioKey,
+  }));
+}
+
+function getDisplayRecordKey(record) {
+  return `${record.at}|${record.url}|${record.method}|${record.displayScenarioKey ?? 'scenario'}`;
 }
 
 function createMatchItem(record) {
@@ -766,16 +815,13 @@ function createMatchItem(record) {
 }
 
 function appendNewMatches(newMatches) {
-  const getKey = (record) =>
-    `${record.at}|${record.url}|${record.method}`;
-
   const existingKeys = new Set(
     [...els.matches.querySelectorAll(".item")]
       .map(el => el.dataset.key)
   );
 
-  const added = newMatches.filter(
-    record => !existingKeys.has(getKey(record))
+  const added = getDisplayRecords(newMatches).filter(
+    record => !existingKeys.has(getDisplayRecordKey(record))
   );
 
   if (!added.length) {
@@ -789,11 +835,11 @@ function appendNewMatches(newMatches) {
 
   for (let i = added.length - 1; i >= 0; i--) {
     const item = createMatchItem(added[i]);
-    item.dataset.key = getKey(added[i]);
+    item.dataset.key = getDisplayRecordKey(added[i]);
     els.matches.prepend(item);
   }
 
-  while (els.matches.children.length > newMatches.length) {
+  while (els.matches.children.length > getDisplayRecords(newMatches).length) {
     els.matches.lastElementChild.remove();
   }
 }
@@ -806,9 +852,11 @@ function renderList(container, records, emptyText) {
     return;
   }
 
-  container.replaceChildren(
-    ...records.map(createMatchItem)
-  );
+  container.replaceChildren(...getDisplayRecords(records).map((record) => {
+    const item = createMatchItem(record);
+    item.dataset.key = getDisplayRecordKey(record);
+    return item;
+  }));
 }
 
 function formatResults(results) {
