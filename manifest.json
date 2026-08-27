@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Response Match Side Panel",
-  "description": "Side panel extension that watches outgoing JSON requests and compares expected values by key paths.",
+  "name": "RequestCheck — проверка запроса",
+  "description": "Проверяйте JSON-запросы по сценариям, сравнивайте поля ответов API и отслеживайте ошибки прямо в боковой панели браузера.",
   "version": "1.0.0",
   "permissions": [
     "storage",
@@ -14,6 +14,9 @@
   "host_permissions": [
     "<all_urls>"
   ],
+  "icons": {
+    "128": "asset/icon.png"
+  },
   "background": {
     "service_worker": "background.js"
   },
@@ -21,7 +24,10 @@
     "default_path": "sidepanel.html"
   },
   "action": {
-    "default_title": "Open Response Match Panel"
+    "default_title": "Open Response Match Panel",
+    "default_icon": {
+      "128": "asset/icon.png"
+    }
   },
   "incognito": "split"
 }

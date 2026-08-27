@@ -259,6 +259,9 @@ async function resolveExpectedGroups(expectedGroups, details, variableValues) {
         const cookie = await chrome.cookies.get({ url: details.initiator, name: entry.name });
         return stringifyComparable(cookie?.value ?? '');
       }
+      if (entry.type === 'httpBody') {
+        return stringifyComparable(await fetchHttpBody(entry.url, details, entry.responsePath));
+      }
       if (entry.type === 'url') {
         return stringifyComparable(getPageUrl(details));
       }
@@ -306,6 +309,16 @@ function parseDynamicToken(value) {
   const cookieMatch = value.match(/^<<\s*cookie\(\s*([^\)]+?)\s*\)\s*>>$/i);
   if (cookieMatch) {
     return { type: 'cookie', name: cookieMatch[1] };
+  }
+
+  const httpBodyMatch = value.match(/^<<\s*http\(\s*(.+?)\s*\)\.body\s*>>$/i);
+  if (httpBodyMatch) {
+    return { type: 'httpBody', url: httpBodyMatch[1], responsePath: '' };
+  }
+
+  const httpValueMatch = value.match(/^<<\s*http\(\s*(.+?)\s*\)\.body\.([a-zA-Z0-9_.-]+)\s*>>$/i);
+  if (httpValueMatch) {
+    return { type: 'httpBody', url: httpValueMatch[1], responsePath: httpValueMatch[2] };
   }
 
   if (/^<<\s*(?:url|full_url)\s*>>$/i.test(value)) {
@@ -415,6 +428,9 @@ async function evaluateComparison(expression, details, currentValues) {
 async function evaluateExpressionValue(value, details, currentValues) {
   const token = parseDynamicToken(value);
   if (token) {
+    if (token.type === 'httpBody') {
+      return stringifyComparable(await fetchHttpBody(token.url, details, token.responsePath));
+    }
     if (token.type === 'url') return getPageUrl(details);
     if (token.type === 'path') {
       try {
@@ -443,6 +459,43 @@ async function evaluateExpressionValue(value, details, currentValues) {
   if (stringMatch) return stringMatch[2];
 
   return value;
+}
+
+async function fetchHttpBody(url, details, responsePath = '') {
+  try {
+    const requestUrl = resolveHttpUrl(url, details);
+    if (!requestUrl) return '';
+
+    const response = await fetch(requestUrl, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    if (!response.ok) return '';
+
+    const bodyText = await response.text();
+    const body = parseJsonLikeValue(bodyText) ?? bodyText;
+    if (!responsePath) return body;
+
+    let values = getValuesByPath(body, responsePath);
+    if (!values.length && body && typeof body === 'object' && body.body !== undefined) {
+      values = getValuesByPath(body.body, responsePath);
+    }
+    if (!values.length) return '';
+    return values.length === 1 ? values[0] : values;
+  } catch {
+    return '';
+  }
+}
+
+function resolveHttpUrl(url, details) {
+  try {
+    if (/^https?:\/\//i.test(url)) return url;
+
+    const pageUrl = new URL(getPageUrl(details));
+    return new URL(`/${url.replace(/^\/+/, '')}`, pageUrl.origin).toString();
+  } catch {
+    return '';
+  }
 }
 
 function splitTopLevel(value, separator) {
