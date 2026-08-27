@@ -74,6 +74,10 @@
           <h2>Найденные совпадения</h2>
           <button id="clearMatches" class="secondary" type="button">Очистить поиск</button>
         </div>
+        <details class="search-scenarios" open>
+          <summary>Сценарии поиска</summary>
+          <div id="searchScenarios" class="search-scenario-list"></div>
+        </details>
         <div id="matches" class="list empty">Совпадений пока нет.</div>
       </section>
     </section>
@@ -152,9 +156,14 @@
 
         <label class="field">
           <span>Общий элемент</span>
-          <select id="modalCommonElement">
-            <option value="">Не использовать</option>
+          <select id="modalCommonElement" multiple size="4" aria-label="Общие элементы">
           </select>
+          <p class="hint">Для выбора нескольких элементов удерживайте Ctrl и нажимайте на нужные пункты.</p>
+        </label>
+
+        <label class="field">
+          <span>Описание сценария</span>
+          <textarea id="modalScenarioDescription" rows="3" placeholder="Что проверяет этот сценарий"></textarea>
         </label>
 
         <div class="modal-rules-header">
@@ -165,6 +174,7 @@
 
         <div class="modal-actions">
           <button id="modalDeleteScenario" class="danger" type="button" hidden>Удалить</button>
+          <button id="modalDuplicateScenario" class="secondary" type="button" hidden>Дублировать</button>
           <span class="modal-actions-spacer"></span>
           <button class="secondary" type="button" data-close-scenario-modal>Отмена</button>
           <button id="modalSaveScenario" type="submit">Сохранить сценарий</button>
@@ -218,7 +228,15 @@
       <label class="field compact">
         <span>Значение</span>
         <input class="rule-value" type="text"
-          placeholder="auth_click, a|b,c или <<cookie(name)>> / <<url>> / <<path>>" />
+          placeholder="auth_click, a|b,c или <<cookie(name)>> / <<url>> / <<path>> / <<json != null>>" />
+      </label>
+      <label class="field compact">
+        <span>Описание значений</span>
+        <input class="rule-description" type="text" placeholder="ФЛ|ЮЛ" />
+      </label>
+      <label class="rule-search-toggle">
+        <input class="rule-show-in-search" type="checkbox" />
+        <span>Выводить в поиске</span>
       </label>
       <div class="rule-footer">
         <span class="rule-mode-hint">Строгое сравнение скрывает сценарий при неполном совпадении.</span>

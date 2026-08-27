@@ -72,6 +72,83 @@ button:hover { background: var(--primary-dark); }
 }
 .card h2 { margin: 0 0 10px; font-size: 16px; }
 .card-title-row, .actions { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.search-scenarios {
+  margin: 12px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+}
+.search-scenarios summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+.search-scenario-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.search-scenario-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  cursor: pointer;
+  font-size: 13px;
+}
+.search-scenario-option input {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+.search-scenario-option span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-scenario-option > span:nth-child(2) {
+  cursor: pointer;
+}
+.search-scenario-description {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+.search-scenario-rules {
+  grid-column: 2;
+  display: grid;
+  gap: 5px;
+}
+.search-rule-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.search-rule-option input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  margin: 0;
+}
+.search-rule-option span {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+.search-rule-option small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.search-rule-option.checked span {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
 .variable-card {
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -116,6 +193,10 @@ button:hover { background: var(--primary-dark); }
   padding: 9px 10px;
   background: var(--card);
   color: var(--text);
+}
+.field select[multiple] {
+  min-height: 96px;
+  padding: 4px;
 }
 .hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 
@@ -196,6 +277,18 @@ button:hover { background: var(--primary-dark); }
 .result-block-value {
   font-size: 13px;
   word-break: break-word;
+}
+.actual-values {
+  display: grid;
+  gap: 6px;
+}
+.actual-value {
+  display: grid;
+  gap: 1px;
+}
+.actual-value small {
+  color: var(--muted);
+  font-size: 12px;
 }
 pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 
@@ -302,7 +395,7 @@ pre { white-space: pre-wrap; margin: 8px 0 0; font-size: 12px; }
 
 .scenario-card {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 8px;
   align-items: center;
   width: 100%;

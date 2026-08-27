@@ -20,6 +20,8 @@ const state = {
   scenariosCollapsed: true,
 };
 
+const checkedSearchRules = new Set();
+
 const els = {
   requestPath: document.querySelector('#requestPath'),
   scenarios: document.querySelector('#scenarios'),
@@ -47,6 +49,7 @@ const els = {
   toggleScenarios: document.querySelector('#toggleScenarios'),
   clearMatches: document.querySelector('#clearMatches'),
   matches: document.querySelector('#matches'),
+  searchScenarios: document.querySelector('#searchScenarios'),
   history: document.querySelector('#history'),
   blockExternal: document.querySelector('#blockExternal'),
   downloadScenarios: document.querySelector('#downloadScenarios'),
@@ -62,10 +65,12 @@ const els = {
   scenarioForm: document.querySelector('#scenarioForm'),
   modalScenarioName: document.querySelector('#modalScenarioName'),
   modalCommonElement: document.querySelector('#modalCommonElement'),
+  modalScenarioDescription: document.querySelector('#modalScenarioDescription'),
   modalScenarioRules: document.querySelector('#modalScenarioRules'),
   modalAddRule: document.querySelector('#modalAddRule'),
   modalSaveScenario: document.querySelector('#modalSaveScenario'),
   modalDeleteScenario: document.querySelector('#modalDeleteScenario'),
+  modalDuplicateScenario: document.querySelector('#modalDuplicateScenario'),
   modalCancelButtons: document.querySelectorAll('[data-close-scenario-modal]'),
   commonElementModal: document.querySelector('#commonElementModal'),
   commonElementModalTitle: document.querySelector('#commonElementModalTitle'),
@@ -81,10 +86,11 @@ const els = {
 init();
 
 async function init() {
-  const data = await chrome.storage.local.get(['settings', 'matches', 'history']);
+  const data = await chrome.storage.local.get(['settings', 'matches', 'history', 'searchChecks']);
   state.settings = normalizeSettings(data.settings);
   state.matches = data.matches || [];
   state.history = data.history || [];
+  (Array.isArray(data.searchChecks) ? data.searchChecks : []).forEach((key) => checkedSearchRules.add(key));
 
   renderSettings();
   renderMatches();
@@ -124,6 +130,7 @@ function bindUi() {
   els.modalAddRule.addEventListener('click', () => addRule(els.modalScenarioRules, DEFAULT_RULE));
   els.scenarioForm.addEventListener('submit', handleScenarioSubmit);
   els.modalDeleteScenario.addEventListener('click', handleScenarioDelete);
+  els.modalDuplicateScenario.addEventListener('click', handleScenarioDuplicate);
   els.modalCancelButtons.forEach((button) => button.addEventListener('click', closeScenarioModal));
   els.scenarioModal.addEventListener('click', (event) => {
     if (event.target === els.scenarioModal) closeScenarioModal();
@@ -151,9 +158,121 @@ function activateTab(name) {
 function renderSettings() {
   els.requestPath.value = state.settings.requestPath;
   els.blockExternal.checked = Boolean(state.settings.blockExternal);
+  renderSearchScenarios();
   renderScenarios();
   renderVariables();
   renderCommonElements();
+}
+
+function renderSearchScenarios() {
+  if (!state.settings.scenarios.length) {
+    els.searchScenarios.textContent = 'Сценарии пока не заданы.';
+    els.searchScenarios.classList.add('empty');
+    return;
+  }
+
+  els.searchScenarios.classList.remove('empty');
+  els.searchScenarios.replaceChildren(...state.settings.scenarios.map((scenario, index) => {
+    const option = document.createElement('div');
+    option.className = 'search-scenario-option';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = scenario.enabled !== false;
+    checkbox.addEventListener('change', () => setScenarioEnabled(index, checkbox.checked));
+
+    const name = document.createElement('span');
+    name.textContent = scenario.name || `Сценарий ${index + 1}`;
+
+    const description = document.createElement('span');
+    description.className = 'search-scenario-description';
+    description.textContent = scenario.description || 'Описание не задано.';
+    description.hidden = true;
+
+    name.addEventListener('click', () => {
+      description.hidden = !description.hidden;
+    });
+
+    const rules = getScenarioRules(scenario);
+    const searchRules = document.createElement('div');
+    searchRules.className = 'search-scenario-rules';
+    rules.forEach((rule, ruleIndex) => {
+      if (!rule.showInSearch) return;
+
+      const values = rule.expected
+        ? rule.expected.split('|').map((value) => value.trim()).filter(Boolean)
+        : ['любое значение'];
+      const descriptions = String(rule.description || '').split('|').map((value) => value.trim());
+
+      values.forEach((value, valueIndex) => {
+        const ruleOption = document.createElement('label');
+        ruleOption.className = 'search-rule-option';
+        const ruleCheckbox = document.createElement('input');
+        const ruleKey = `${index}:${ruleIndex}:${valueIndex}`;
+        ruleCheckbox.type = 'checkbox';
+        ruleCheckbox.checked = checkedSearchRules.has(ruleKey);
+        ruleOption.classList.toggle('checked', ruleCheckbox.checked);
+        ruleCheckbox.addEventListener('change', () => {
+          if (ruleCheckbox.checked) checkedSearchRules.add(ruleKey);
+          else checkedSearchRules.delete(ruleKey);
+          ruleOption.classList.toggle('checked', ruleCheckbox.checked);
+          void saveSearchChecks();
+        });
+
+        const ruleText = document.createElement('span');
+        ruleText.textContent = `${rule.keyPath}: ${value}`;
+        if (descriptions[valueIndex]) {
+          const ruleDescription = document.createElement('small');
+          ruleDescription.textContent = descriptions[valueIndex];
+          ruleText.append(' ', ruleDescription);
+        }
+        ruleOption.append(ruleCheckbox, ruleText);
+        searchRules.append(ruleOption);
+      });
+    });
+
+    option.append(checkbox, name, description, searchRules);
+    return option;
+  }));
+}
+
+function syncAutomaticSearchChecks(matches) {
+  let changed = false;
+  matches.forEach((match) => {
+    (match.results || []).forEach((result) => {
+      if (!result.matched || result.scenarioIndex === undefined || result.ruleIndex === undefined) return;
+
+      const scenario = state.settings.scenarios[result.scenarioIndex];
+      const rule = scenario && getScenarioRules(scenario)[result.ruleIndex];
+      if (!rule?.showInSearch) return;
+
+      const values = rule.expected
+        ? rule.expected.split('|').map((value) => value.trim()).filter(Boolean)
+        : ['любое значение'];
+      values.forEach((value, valueIndex) => {
+        if (value === 'любое значение' || result.actual?.includes(value)) {
+          const ruleKey = `${result.scenarioIndex}:${result.ruleIndex}:${valueIndex}`;
+          if (!checkedSearchRules.has(ruleKey)) {
+            checkedSearchRules.add(ruleKey);
+            changed = true;
+          }
+        }
+      });
+    });
+  });
+  if (changed) void saveSearchChecks();
+}
+
+async function saveSearchChecks() {
+  await chrome.storage.local.set({ searchChecks: [...checkedSearchRules] });
+}
+
+function getScenarioRules(scenario) {
+  const commonElementIds = scenario.commonElementIds || (scenario.commonElementId ? [scenario.commonElementId] : []);
+  const commonRules = state.settings.commonElements
+    .filter((element) => commonElementIds.includes(element.id))
+    .flatMap((element) => element.rules || []);
+  return [...commonRules, ...(scenario.rules || [])];
 }
 
 function renderScenarios() {
@@ -276,15 +395,37 @@ async function setScenarioEnabled(index, enabled) {
   renderScenarios();
 }
 
+async function duplicateScenario(index) {
+  const source = state.settings.scenarios[index];
+  if (!source) return;
+
+  const duplicate = {
+    ...source,
+    name: `${source.name || `Сценарий ${index + 1}`} (копия)`,
+    rules: (source.rules || []).map((rule) => ({ ...rule })),
+  };
+  state.settings.scenarios = [...state.settings.scenarios, duplicate];
+  renderScenarios();
+  await saveSettings();
+}
+
+async function handleScenarioDuplicate() {
+  if (state.editingScenarioIndex === null) return;
+  await duplicateScenario(state.editingScenarioIndex);
+  closeScenarioModal();
+}
+
 
 function openScenarioModal(scenario, index = null) {
   state.editingScenarioIndex = index;
   els.scenarioModalTitle.textContent = index === null ? 'Добавить сценарий' : 'Редактировать сценарий';
   els.modalScenarioName.value = scenario.name || `Сценарий ${state.settings.scenarios.length + 1}`;
-  renderCommonElementOptions(scenario.commonElementId || '');
+  renderCommonElementOptions(scenario.commonElementIds || (scenario.commonElementId ? [scenario.commonElementId] : []));
+  els.modalScenarioDescription.value = scenario.description || '';
   els.modalScenarioRules.replaceChildren();
   (scenario.rules?.length ? scenario.rules : [DEFAULT_RULE]).forEach((rule) => addRule(els.modalScenarioRules, rule));
   els.modalDeleteScenario.hidden = index === null;
+  els.modalDuplicateScenario.hidden = index === null;
   els.scenarioModal.hidden = false;
   document.body.classList.add('modal-open');
   els.modalScenarioName.focus();
@@ -331,6 +472,8 @@ function addRule(container, rule) {
   node.querySelector('.rule-path').value = rule.keyPath || '';
   node.querySelector('.rule-mode').value = rule.mode || 'strict';
   node.querySelector('.rule-value').value = rule.expected || '';
+  node.querySelector('.rule-description').value = rule.description || '';
+  node.querySelector('.rule-show-in-search').checked = Boolean(rule.showInSearch);
   node.querySelector('.remove-rule').addEventListener('click', () => {
     node.remove();
 
@@ -345,7 +488,7 @@ async function handleScenarioSubmit(event) {
   event.preventDefault();
   readVariablesFromUi();
   const scenario = readScenarioFromModal();
-  if (!scenario.rules.length && !scenario.commonElementId) return;
+  if (!scenario.rules.length && !scenario.commonElementIds.length) return;
 
   if (state.editingScenarioIndex === null) {
     state.settings.scenarios = [...state.settings.scenarios, { ...scenario, enabled: true }];
@@ -384,7 +527,7 @@ async function deleteAllVariables() {
 
 async function deleteAllCommonElements() {
   state.settings.commonElements = [];
-  state.settings.scenarios = state.settings.scenarios.map((scenario) => ({ ...scenario, commonElementId: '' }));
+  state.settings.scenarios = state.settings.scenarios.map((scenario) => ({ ...scenario, commonElementIds: [] }));
   renderCommonElements();
   renderScenarios();
   els.commonElementsStatus.textContent = 'Все общие элементы удалены.';
@@ -413,9 +556,10 @@ async function handleCommonElementDelete() {
   if (state.editingCommonElementIndex === null) return;
   const removedElementId = state.settings.commonElements[state.editingCommonElementIndex]?.id;
   state.settings.commonElements = state.settings.commonElements.filter((_, index) => index !== state.editingCommonElementIndex);
-  state.settings.scenarios = state.settings.scenarios.map((scenario) => (
-    scenario.commonElementId === removedElementId ? { ...scenario, commonElementId: '' } : scenario
-  ));
+  state.settings.scenarios = state.settings.scenarios.map((scenario) => ({
+    ...scenario,
+    commonElementIds: (scenario.commonElementIds || []).filter((id) => id !== removedElementId),
+  }));
   renderCommonElements();
   renderScenarios();
   closeCommonElementModal();
@@ -427,6 +571,8 @@ function readRulesFromContainer(container) {
     keyPath: rule.querySelector('.rule-path').value.trim(),
     mode: rule.querySelector('.rule-mode').value,
     expected: rule.querySelector('.rule-value').value.trim(),
+    description: rule.querySelector('.rule-description').value.trim(),
+    showInSearch: rule.querySelector('.rule-show-in-search').checked,
   })).filter((rule) => rule.keyPath && (rule.expected || rule.mode === 'exists'));
 }
 
@@ -439,7 +585,8 @@ function readScenarioFromModal() {
 
   return {
     name: els.modalScenarioName.value.trim() || fallbackName,
-    commonElementId: els.modalCommonElement.value,
+    commonElementIds: [...els.modalCommonElement.selectedOptions].map((option) => option.value),
+    description: els.modalScenarioDescription.value.trim(),
     rules,
   };
 }
@@ -472,8 +619,12 @@ async function saveSettings() {
 
 function formatScenarioMeta(scenario) {
   const rulesCount = scenario.rules?.length || 0;
-  const commonName = state.settings.commonElements.find((element) => element.id === scenario.commonElementId)?.name;
-  return commonName ? `${formatRulesCount(rulesCount)} + ${commonName}` : formatRulesCount(rulesCount);
+  const commonNames = state.settings.commonElements
+    .filter((element) => (scenario.commonElementIds || []).includes(element.id))
+    .map((element) => element.name);
+  return commonNames.length
+    ? `${formatRulesCount(rulesCount)} + ${commonNames.join(', ')}`
+    : formatRulesCount(rulesCount);
 }
 
 function formatRulesCount(rulesCount) {
@@ -489,8 +640,18 @@ function handleStorageChanges(changes, areaName) {
     renderSettings();
   }
 
+  if (changes.searchChecks) {
+    checkedSearchRules.clear();
+    (Array.isArray(changes.searchChecks.newValue) ? changes.searchChecks.newValue : [])
+      .forEach((key) => checkedSearchRules.add(key));
+    renderSearchScenarios();
+  }
+
   if (changes.matches) {
   const newMatches = changes.matches.newValue || [];
+  const previousMatchIds = new Set(state.matches.map((match) => match.id));
+  const newEventMatches = newMatches.filter((match) => !previousMatchIds.has(match.id));
+  syncAutomaticSearchChecks(newEventMatches);
 
   // Если список еще не построен или был очищен
   if (
@@ -523,6 +684,7 @@ function handleStorageChanges(changes, areaName) {
 
 function renderMatches() {
   renderList(els.matches, state.matches, 'Совпадений пока нет.');
+  renderSearchScenarios();
 }
 
 function escapeHtml(value) {
@@ -654,7 +816,6 @@ function formatResults(results) {
     const mode = result.mode === 'strict' ? 'строго' : result.mode === 'exists' ? 'должно быть' : 'не строго';
     const blocks = [
       { label: 'ожидали', value: result.expected?.length ? result.expected.join(', ') : 'любое значение' },
-      { label: 'получили', value: result.actual.length ? result.actual.join(', ') : 'путь не найден' },
       { label: 'путь', value: result.found ? 'найден' : 'не найден' },
       { label: 'результат', value: result.matched ? 'совпало' : 'не совпало' },
     ];
@@ -672,6 +833,19 @@ function formatResults(results) {
               <span class="result-block-value">${escapeHtml(block.value)}</span>
             </div>
           `).join('')}
+          <div class="result-block-row">
+            <span class="result-block-label">получили</span>
+            <span class="result-block-value actual-values">
+              ${result.actual?.length
+                ? result.actual.map((value, index) => `
+                  <span class="actual-value">
+                    <span>${escapeHtml(value)}</span>
+                    ${result.actualDescriptions?.[index] ? `<small>${escapeHtml(result.actualDescriptions[index])}</small>` : ''}
+                  </span>
+                `).join('')
+                : 'путь не найден'}
+            </span>
+          </div>
         </div>
       </div>
     `;
@@ -823,20 +997,39 @@ function normalizeCommonElements(settings) {
   return [];
 }
 
-function renderCommonElementOptions(selectedId) {
-  els.modalCommonElement.replaceChildren(new Option('Не использовать', ''), ...state.settings.commonElements.map((element) => new Option(element.name, element.id)));
-  els.modalCommonElement.value = selectedId;
+function renderCommonElementOptions(selectedIds) {
+  const selected = new Set(selectedIds);
+  els.modalCommonElement.replaceChildren(...state.settings.commonElements.map((element) => {
+    const option = new Option(element.name, element.id);
+    option.selected = selected.has(element.id);
+    return option;
+  }));
 }
 
 function normalizeScenarios(settings) {
   if (Array.isArray(settings) && settings.length) {
-    return settings.map((scenario) => ({ enabled: true, ...scenario }));
+    return settings.map(normalizeScenario);
   }
   if (Array.isArray(settings?.scenarios)) {
-    return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
+    return settings.scenarios.map(normalizeScenario);
   }
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];
   return DEFAULT_SETTINGS.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
+}
+
+function normalizeScenario(scenario) {
+  return {
+    enabled: true,
+    ...scenario,
+    commonElementIds: normalizeCommonElementIds(scenario),
+  };
+}
+
+function normalizeCommonElementIds(scenario) {
+  const ids = Array.isArray(scenario.commonElementIds)
+    ? scenario.commonElementIds
+    : scenario.commonElementId ? [scenario.commonElementId] : [];
+  return ids.flat(Infinity).filter((id) => typeof id === 'string' && id);
 }
 
 function handleToggleScenarios() {

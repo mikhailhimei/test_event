@@ -74,13 +74,20 @@ async function inspectOutgoingRequest(details) {
   const meaningfulResults = [];
   const variableValues = await evaluateVariables(details);
 
-  for (const scenario of cachedSettings.scenarios) {
+  for (const [scenarioIndex, scenario] of cachedSettings.scenarios.entries()) {
     if (scenario.enabled === false) continue;
 
-    const commonElement = cachedSettings.commonElements.find((element) => element.id === scenario.commonElementId);
-    const rules = [...(commonElement?.rules || []), ...(scenario.rules || [])];
+    const commonElementIds = scenario.commonElementIds || (scenario.commonElementId ? [scenario.commonElementId] : []);
+    const commonRules = cachedSettings.commonElements
+      .filter((element) => commonElementIds.includes(element.id))
+      .flatMap((element) => element.rules || []);
+    const rules = [...commonRules, ...(scenario.rules || [])];
     const results = await Promise.all(
-      rules.map((rule) => compareRule(rule, json, details, scenario.name, variableValues))
+      rules.map((rule, ruleIndex) => compareRule(rule, json, details, scenario.name, variableValues).then((result) => ({
+        ...result,
+        scenarioIndex,
+        ruleIndex,
+      })))
     );
 
     const hasStrictMismatch = results.some((result) => result.mode === 'strict' && !result.matched);
@@ -150,6 +157,21 @@ function parseJsonLikeValue(value) {
 }
 
 async function compareRule(rule, json, details, scenarioName, variableValues) {
+  if (/^<<\s*json\s*!=\s*null\s*>>$/i.test(String(rule.expected || '').trim())) {
+    const hasJsonData = isNonEmptyJson(json);
+    return {
+      scenarioName,
+      keyPath: rule.keyPath,
+      mode: rule.mode,
+      expected: ['непустой JSON'],
+      actual: hasJsonData ? [stringifyComparable(json)] : [],
+      actualDescriptions: [],
+      found: hasJsonData,
+      matched: hasJsonData,
+      extra: [],
+    };
+  }
+
   const actualValues = getValuesByPath(json, rule.keyPath).map(stringifyComparable);
   const expectedGroups = parseExpected(rule.expected);
   const resolvedExpectedGroups = await resolveExpectedGroups(expectedGroups, details, variableValues);
@@ -157,6 +179,7 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
     ? actualValues.length > 0
       : matchExpectedValues(actualValues, resolvedExpectedGroups, rule.mode);
   const expectedFlatValues = resolvedExpectedGroups.flat();
+  const descriptions = String(rule.description || '').split('|').map((description) => description.trim());
 
   return {
     scenarioName,
@@ -164,10 +187,22 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
     mode: rule.mode,
     expected: resolvedExpectedGroups.map((values) => values.join(' | ')),
     actual: actualValues,
+    actualDescriptions: actualValues.map((actualValue) => {
+      const expectedIndex = expectedFlatValues.indexOf(actualValue);
+      return expectedIndex >= 0 ? descriptions[expectedIndex] || '' : '';
+    }),
     found: actualValues.length > 0,
     matched,
     extra: rule.mode === 'loose' ? actualValues.filter((value) => !expectedFlatValues.includes(value)) : [],
   };
+}
+
+function isNonEmptyJson(value) {
+  if (value == null) return false;
+  if (typeof value === 'string') return value.trim().length > 0;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === 'object') return Object.keys(value).length > 0;
+  return true;
 }
 
 
@@ -504,8 +539,19 @@ function safeHost(url) {
 
 function normalizeScenarios(settings) {
   if (Array.isArray(settings?.scenarios)) {
-    return settings.scenarios.map((scenario) => ({ enabled: true, ...scenario }));
+    return settings.scenarios.map((scenario) => ({
+      enabled: true,
+      ...scenario,
+      commonElementIds: normalizeCommonElementIds(scenario),
+    }));
   }
   if (settings?.rules?.length) return [{ name: 'Сценарий 1', rules: settings.rules, enabled: true }];
   return DEFAULT_SETTINGS.scenarios;
+}
+
+function normalizeCommonElementIds(scenario) {
+  const ids = Array.isArray(scenario.commonElementIds)
+    ? scenario.commonElementIds
+    : scenario.commonElementId ? [scenario.commonElementId] : [];
+  return ids.flat(Infinity).filter((id) => typeof id === 'string' && id);
 }
