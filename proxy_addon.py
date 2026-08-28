@@ -17,7 +17,7 @@ def send_capture(endpoint, payload):
         ctx.log.warn(f"Mobile Traffic Check: {error}")
 
 
-def response(flow: http.HTTPFlow):
+def request(flow: http.HTTPFlow):
     if flow.request.host in {"127.0.0.1", "localhost"} and flow.request.port == 8787:
         return
     if "application/json" not in flow.request.headers.get("content-type", "").lower():
@@ -27,5 +27,5 @@ def response(flow: http.HTTPFlow):
         json.loads(body)
     except (TypeError, json.JSONDecodeError):
         return
-    payload = {"request": {"url": flow.request.pretty_url, "method": flow.request.method, "postData": {"text": body}}, "response": {"status": flow.response.status_code}}
+    payload = {"request": {"url": flow.request.pretty_url, "method": flow.request.method, "postData": {"text": body}}, "response": {"status": 0}}
     threading.Thread(target=send_capture, args=(ctx.options.mobile_traffic_endpoint, payload), daemon=True).start()

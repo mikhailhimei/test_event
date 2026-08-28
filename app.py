@@ -79,21 +79,32 @@ def is_non_empty(value):
 def evaluate_rule(rule, body):
     raw_actual = values_by_path(body, rule["keyPath"])
     actual = [comparable(value) for value in raw_actual]
-    expected_groups = [[value.strip() for value in group.split("|") if value.strip()] for group in str(rule.get("expected", "")).split(",") if group.strip()]
+    expected_text = str(rule.get("expected", ""))
+    positional = ";" in expected_text
+    separator = ";" if positional else ","
+    expected_groups = [[value.strip() for value in group.split("|") if value.strip()] for group in expected_text.split(separator)]
     expected = [value for group in expected_groups for value in group]
     mode = rule.get("mode", "strict")
     if mode == "exists":
         matched = any(is_non_empty(value) for value in raw_actual)
-    elif len(expected_groups) > 1:
-        matched = len(actual) == len(expected_groups) and all(actual[index] in group for index, group in enumerate(expected_groups))
-    elif mode == "loose":
-        matched = bool(actual) and any(value in expected for value in actual)
+    elif positional:
+        all_objects_have_value = not isinstance(body, list) or len(actual) == len(body)
+        matched = all_objects_have_value and len(actual) == len(expected_groups) and all(actual[index] in group for index, group in enumerate(expected_groups))
+    elif mode == "strict":
+        all_objects_have_value = not isinstance(body, list) or len(actual) == len(body)
+        matched = all_objects_have_value and bool(actual) and all(value in expected for value in actual)
     else:
         matched = bool(actual) and all(value in expected for value in actual)
-    return {"keyPath": rule["keyPath"], "mode": mode, "expected": expected, "matchedExpected": [value for value in actual if value in expected], "actual": actual, "description": rule.get("description", ""), "showInSearch": bool(rule.get("showInSearch")), "matched": matched}
+    if positional:
+        matched_by_index = [index < len(expected_groups) and actual[index] in expected_groups[index] for index in range(len(actual))]
+    elif mode == "exists":
+        matched_by_index = [is_non_empty(value) for value in raw_actual]
+    else:
+        matched_by_index = [value in expected for value in actual]
+    return {"keyPath": rule["keyPath"], "mode": mode, "expected": expected, "expectedGroups": expected_groups, "matchedExpected": [value for value, item_matched in zip(actual, matched_by_index) if item_matched], "matchedByIndex": matched_by_index, "actual": actual, "description": rule.get("description", ""), "showInSearch": bool(rule.get("showInSearch")), "matched": matched}
 
 
-def evaluate_capture(entry):
+def evaluate_capture(entry, include_unmatched=False):
     request = entry.get("request", entry)
     url = request.get("url")
     raw_body = request.get("postData", {}).get("text") or request.get("body") or entry.get("requestBody")
@@ -105,7 +116,7 @@ def evaluate_capture(entry):
     if not url or not body or (settings["requestPath"] and settings["requestPath"] not in url):
         return None
     scenarios = []
-    for scenario in settings["scenarios"]:
+    for scenario_index, scenario in enumerate(settings["scenarios"]):
         if scenario.get("enabled", True) is False:
             continue
         common_ids = scenario.get("commonElementIds", scenario.get("commonElementId", []))
@@ -119,19 +130,56 @@ def evaluate_capture(entry):
         ]
         rules = [rule for rule in common_rules + scenario.get("rules", []) if rule.get("keyPath") and (rule.get("expected") or rule.get("mode") == "exists")]
         checks = [evaluate_rule(rule, body) for rule in rules]
-        if not checks or any(check["mode"] == "strict" and not check["matched"] for check in checks):
+        strict_failed = any(check["mode"] == "strict" and not check["matched"] for check in checks)
+        if not checks or strict_failed:
             continue
-        scenarios.append({"name": scenario.get("name") or "Сценарий", "description": scenario.get("description", ""), "checks": checks, "matched": all(check["matched"] for check in checks)})
+        scenario_matched = all(check["matched"] for check in checks)
+        partial = isinstance(body, list) and len(body) > 1 and not strict_failed and any(check["matchedExpected"] for check in checks) and not scenario_matched
+        if not scenario_matched and not partial:
+            continue
+        scenarios.append({"index": scenario_index, "name": scenario.get("name") or "Сценарий", "description": scenario.get("description", ""), "checks": checks, "matched": scenario_matched, "partial": partial})
     if not scenarios:
         return None
-    return {"id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "url": url, "method": request.get("method", "REQUEST"), "status": entry.get("response", {}).get("status", entry.get("status", 0)), "body": body, "scenarios": scenarios}
+    return {"id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "url": url, "method": request.get("method", "REQUEST"), "status": entry.get("response", {}).get("status", entry.get("status", 0)), "body": body, "scenarios": scenarios, "partialMatch": any(scenario["partial"] for scenario in scenarios)}
+
+
+def split_capture_entry(entry):
+    request = entry.get("request", entry)
+    raw_body = request.get("postData", {}).get("text") or request.get("body") or entry.get("requestBody")
+    try:
+        body = json.loads(raw_body) if isinstance(raw_body, str) else raw_body
+    except json.JSONDecodeError:
+        return [entry]
+    if not isinstance(body, list):
+        return [entry]
+
+    entries = []
+    for item in body:
+        split_entry = dict(entry)
+        split_request = dict(request)
+        split_request["postData"] = {**request.get("postData", {}), "text": json.dumps(item, ensure_ascii=False)}
+        split_entry["request"] = split_request
+        entries.append(split_entry)
+    return entries
 
 
 def store_captures(payload):
     entries = payload.get("entries", payload.get("log", {}).get("entries", [payload])) if isinstance(payload, dict) else payload
     if not isinstance(entries, list):
         entries = [entries]
-    records = [record for entry in entries if isinstance(entry, dict) and (record := evaluate_capture(entry))]
+    records = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        split_entries = split_capture_entry(entry)
+        if len(split_entries) > 1:
+            all_records = [record for record in [evaluate_capture(entry, include_unmatched=True)] if record]
+        else:
+            all_records = [record for split_entry in split_entries if (record := evaluate_capture(split_entry, include_unmatched=True))]
+        matched_records = [record for record in all_records if any(scenario["matched"] or scenario["partial"] for scenario in record["scenarios"])]
+        if not matched_records:
+            continue
+        records.extend(matched_records)
     results[0:0] = records
     del results[300:]
     return len(records)
@@ -242,7 +290,7 @@ def main():
     start_capture_server()
     eel.init(str(ROOT / "web"))
     threading.Thread(target=ui_start_proxy, daemon=True).start()
-    eel.start("index.html", host=UI_HOST, port=UI_PORT, block=True)
+    eel.start("index.html", host=UI_HOST, port=UI_PORT, size=(1000, 800), block=True)
 
 
 if __name__ == "__main__":
