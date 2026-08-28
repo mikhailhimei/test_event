@@ -5602,3 +5602,1290 @@ WebSocket connection closed by server: 1000
          << HTTP/2.0 200 OK 0b
 192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
          << HTTP/2.0 200 OK 411b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:41308: POST https://mc.yandex.ru/webvisor/25907066?wv-part=13&wv-ch… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+[11:07:44.979][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.9:443)
+[11:08:12.354][192.168.31.72:33834] 173.194.221.113:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:08:12.355][192.168.31.72:33834] server disconnect clients4.google.com:443 (173.194.221.113:443)
+[11:09:19.640][192.168.31.72:41316] Closing connection due to inactivity: Client(192.168.31.72:41316, state=open, alpn=h2)
+[11:09:19.641][192.168.31.72:41316] client disconnect
+[11:09:59.893][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.9:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:11:05.009][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.9:443)
+[11:13:13.008][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.7:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:14:18.146][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:15:56.161][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.7:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:17:01.279][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:19:02.221][192.168.31.72:33834] Closing connection due to inactivity: Client(192.168.31.72:33834, state=open, alpn=h2)
+[11:19:02.221][192.168.31.72:33834] client disconnect
+[11:19:31.293][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.7:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:21:39.944][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:22:30.849][192.168.31.72:60282] client connect
+[11:22:31.526][192.168.31.72:60282] server connect loc.map.baidu.com:443 (180.76.11.229:443)
+192.168.31.72:60282: POST https://loc.map.baidu.com/sdk.php
+                  << 200 OK 572b
+[11:23:02.775][192.168.31.72:60282] server disconnect loc.map.baidu.com:443 (180.76.11.229:443)
+[11:23:23.107][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.6:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:24:28.230][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.6:443)
+[11:27:21.332][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.7:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:28:13.518][192.168.31.72:53782] client connect
+[11:28:13.524][192.168.31.72:53782] server connect 178.72.90.151:8123
+192.168.31.72:53782: POST http://178.72.90.151:8123/api/webhook/8ab90c89ed838ab65…
+                  << 200 OK 10.0k
+192.168.31.72:53782: POST http://178.72.90.151:8123/api/webhook/8ab90c89ed838ab65…
+                  << 200 OK 34b
+[11:28:13.700][192.168.31.72:60282] client disconnect
+[11:28:13.900][192.168.31.72:53784] client connect
+[11:28:14.065][192.168.31.72:53784] server connect discover-pa.googleapis.com:443 (172.217.116.4:443)
+[11:28:14.287][192.168.31.72:53784] Client TLS handshake failed. The client does not trust the proxy's certificate for discover-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:14.287][192.168.31.72:53784] client disconnect
+[11:28:14.287][192.168.31.72:53784] server disconnect discover-pa.googleapis.com:443 (172.217.116.4:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:28:17.251][192.168.31.72:53786] client connect
+[11:28:17.415][192.168.31.72:53786] server connect region1.app-measurement.com:443 (216.239.32.36:443)
+[11:28:17.531][192.168.31.72:53786] Client TLS handshake failed. The client does not trust the proxy's certificate for region1.app-measurement.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:17.531][192.168.31.72:53786] client disconnect
+[11:28:17.532][192.168.31.72:53786] server disconnect region1.app-measurement.com:443 (216.239.32.36:443)
+192.168.31.72:41308: GET https://mc.yandex.ru/watch/25907066?wmode=8 HTTP/2.0
+         << HTTP/2.0 200 OK 157b
+[11:28:17.604][192.168.31.72:53788] client connect
+[11:28:17.695][192.168.31.72:53788] server connect mc.yandex.ru:443 (77.88.21.119:443)
+192.168.31.72:53788: GET https://mc.yandex.ru/solid.ws
+                  << 101 Switching protocols 0b
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:41308: GET https://mc.yandex.ru/clmap/25907066?page-url=https%3A%2… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:41308: GET https://mc.yandex.ru/clmap/106985860?page-url=https%3A%… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:41308: GET https://mc.yandex.ru/clmap/25907066?page-url=https%3A%2… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:41308: GET https://mc.yandex.ru/clmap/106985860?page-url=https%3A%… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 410b
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 413b
+[11:28:19.909][192.168.31.72:53794] client connect
+192.168.31.72:48060: GET https://www.mvideo.ru/my-account HTTP/2.0
+         << HTTP/2.0 200 OK 7.1k
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53788 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:41308: POST https://mc.yandex.ru/webvisor/25907066?wv-part=14&wv-ch… HTTP/2.0
+ << stream reset by client (CANCEL)
+WebSocket connection closed by client: 1001 
+[11:28:20.250][192.168.31.72:53788] server disconnect mc.yandex.ru:443 (77.88.21.119:443)
+[11:28:20.250][192.168.31.72:53788] client disconnect
+[11:28:20.357][192.168.31.72:53794] server connect idm.api.io.mi.com:443 (39.101.90.137:443)
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/ff HTTP/2.0
+         << HTTP/2.0 200 OK 234b
+[11:28:20.417][192.168.31.72:53806] client connect
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/settings?types=general&types=… HTTP/2.0
+         << HTTP/2.0 200 OK 21.5k
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/profile HTTP/2.0
+         << HTTP/2.0 200 OK 272b
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/location HTTP/2.0
+         << HTTP/2.0 200 OK 208b
+[11:28:20.498][192.168.31.72:53806] server connect yandex.ru:443 (77.88.44.55:443)
+[11:28:20.589][192.168.31.72:53820] client connect
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/loyalty/mcombo/status HTTP/2.0
+         << HTTP/2.0 200 OK 116b
+[11:28:20.679][192.168.31.72:53820] server connect smartcaptcha.cloud.yandex.ru:443 (84.201.151.229:443)
+[11:28:20.694][192.168.31.72:53834] client connect
+192.168.31.72:53806: GET https://yandex.ru/retail/system/retailMedia.js HTTP/2.0
+         << HTTP/2.0 200 OK 57.1k
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/shopping-list/v2/wishlist HTTP/2.0
+         << HTTP/2.0 200 OK 464b
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/profile HTTP/2.0
+         << HTTP/2.0 200 OK 272b
+[11:28:20.764][192.168.31.72:53838] client connect
+[11:28:20.814][192.168.31.72:53834] server connect content-autofill.googleapis.com:443 (172.217.117.4:443)
+[11:28:20.841][192.168.31.72:53838] server connect yastatic.net:443 (37.9.64.225:443)
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/shopping-list/v2/comparison HTTP/2.0
+         << HTTP/2.0 200 OK 126b
+192.168.31.72:53820: GET https://smartcaptcha.cloud.yandex.ru/captcha.js
+                  << 200 OK 70.7k
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/shopping-cart/short HTTP/2.0
+         << HTTP/2.0 200 OK 64b
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/my-account/finance?phone=%2B7… HTTP/2.0
+         << HTTP/2.0 200 OK 219b
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/my-account/product-interactio… HTTP/2.0
+         << HTTP/2.0 200 OK 376b
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/loyalty/bonuses HTTP/2.0
+         << HTTP/2.0 200 OK 125b
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/products/unreviewed?limit=10&… HTTP/2.0
+         << HTTP/2.0 200 OK 1.0k
+[11:28:20.960][192.168.31.72:53844] client connect
+192.168.31.72:53838: GET https://yastatic.net/partner-code-bundles/1306371/0b55b… HTTP/2.0
+         << HTTP/2.0 200 OK 4.0k
+192.168.31.72:53838: GET https://yastatic.net/partner-code-bundles/1306371/e65fd… HTTP/2.0
+         << HTTP/2.0 200 OK 47.8k
+192.168.31.72:48060: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 3.2k
+192.168.31.72:48060: POST https://www.mvideo.ru/bff/order/active HTTP/2.0
+         << HTTP/2.0 200 OK 677b
+[11:28:21.043][192.168.31.72:53844] server connect log-stream.mvideo.ru:443 (10.220.71.205:443)
+192.168.31.72:48060: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 8.4k
+192.168.31.72:48060: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 2.3k
+192.168.31.72:53838: GET https://yastatic.net/partner-code-bundles/1306371/36788… HTTP/2.0
+         << HTTP/2.0 200 OK 139k
+192.168.31.72:53834: GET https://content-autofill.googleapis.com/v1/pages/ChVDaH… HTTP/2.0
+         << HTTP/2.0 200 OK 36b
+[11:28:21.169][192.168.31.72:53846] client connect
+192.168.31.72:53844: POST https://log-stream.mvideo.ru/api/v1/events
+                  << 200 OK 0b
+[11:28:21.331][192.168.31.72:53846] server connect readaloud.googleapis.com:443 (172.217.113.4:443)
+[11:28:21.674][192.168.31.72:53862] client connect
+[11:28:21.682][192.168.31.72:53876] client connect
+192.168.31.72:48060: GET https://www.mvideo.ru/bff/shelf/personal HTTP/2.0
+         << HTTP/2.0 200 OK 5.3k
+[11:28:21.830][192.168.31.72:53862] server connect clientservices.googleapis.com:443 (108.177.14.102:443)
+[11:28:21.839][192.168.31.72:53876] server connect update.googleapis.com:443 (74.125.131.101:443)
+192.168.31.72:53846: POST https://readaloud.googleapis.com//v1:checkUrl?alt=proto HTTP/2.0
+         << HTTP/2.0 200 OK 79b
+[11:28:21.993][192.168.31.72:53794] Client TLS handshake failed. The client does not trust the proxy's certificate for idm.api.io.mi.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:21.993][192.168.31.72:53794] client disconnect
+[11:28:21.994][192.168.31.72:53794] server disconnect idm.api.io.mi.com:443 (39.101.90.137:443)
+192.168.31.72:53862: GET https://clientservices.googleapis.com/chrome-variations… HTTP/2.0
+         << HTTP/2.0 200 OK 81b
+192.168.31.72:53876: POST https://update.googleapis.com/service/update2
+                  << 200 OK 238b
+[11:28:22.249][192.168.31.72:53862] client disconnect
+[11:28:22.249][192.168.31.72:53844] client disconnect
+[11:28:22.250][192.168.31.72:53820] client disconnect
+[11:28:22.250][192.168.31.72:53806] client disconnect
+[11:28:22.250][192.168.31.72:41308] client disconnect
+[11:28:22.251][192.168.31.72:53862] server disconnect clientservices.googleapis.com:443 (108.177.14.102:443)
+[11:28:22.251][192.168.31.72:53844] server disconnect log-stream.mvideo.ru:443 (10.220.71.205:443)
+[11:28:22.252][192.168.31.72:53820] server disconnect smartcaptcha.cloud.yandex.ru:443 (84.201.151.229:443)
+[11:28:22.252][192.168.31.72:53806] server disconnect yandex.ru:443 (77.88.44.55:443)
+[11:28:22.252][192.168.31.72:41308] server disconnect mc.yandex.ru:443 (77.88.21.119:443)
+[11:28:22.254][192.168.31.72:48060] client disconnect
+[11:28:22.256][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:28:22.256][192.168.31.72:53846] client disconnect
+[11:28:22.256][192.168.31.72:53838] client disconnect
+[11:28:22.256][192.168.31.72:53834] client disconnect
+[11:28:22.257][192.168.31.72:53846] server disconnect readaloud.googleapis.com:443 (172.217.113.4:443)
+[11:28:22.257][192.168.31.72:53838] server disconnect yastatic.net:443 (37.9.64.225:443)
+[11:28:22.258][192.168.31.72:53834] server disconnect content-autofill.googleapis.com:443 (172.217.117.4:443)
+[11:28:22.441][192.168.31.72:53882] client connect
+[11:28:22.472][192.168.31.72:53884] client connect
+[11:28:22.487][192.168.31.72:53882] server connect assets-cdn.mvideo.ru:443 (95.181.182.182:443)
+[11:28:22.520][192.168.31.72:53884] server connect www.mvideo.ru:443 (10.210.42.7:443)
+[11:28:22.570][192.168.31.72:53898] client connect
+[11:28:22.654][192.168.31.72:53898] server connect content-autofill.googleapis.com:443 (172.217.117.4:443)
+192.168.31.72:53882: GET https://assets-cdn.mvideo.ru/a122ca6a83d01848d53e3da0c5… HTTP/2.0
+         << HTTP/2.0 200 OK 9.8k
+192.168.31.72:53884: POST https://www.mvideo.ru/api-chat/api/v1/get-chats-unread-… HTTP/2.0
+         << HTTP/2.0 200 OK 50b
+192.168.31.72:53884: GET https://www.mvideo.ru/chat-widget-sw.js HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+[11:28:22.821][192.168.31.72:53906] client connect
+[11:28:22.821][192.168.31.72:53900] client connect
+192.168.31.72:53898: GET https://content-autofill.googleapis.com/v1/pages/ChVDaH… HTTP/2.0
+         << HTTP/2.0 200 OK 45b
+[11:28:22.988][192.168.31.72:53900] server connect mvideo.edna.io:443 (91.213.158.234:443)
+[11:28:22.990][192.168.31.72:53906] server connect mvideo.edna.io:443 (91.213.158.234:443)
+[11:28:23.419][192.168.31.72:49548] client connect
+192.168.31.72:53906: OPTIONS https://mvideo.edna.io/api/client/history/unread
+                  << 200 OK 0b
+192.168.31.72:53900: GET https://mvideo.edna.io/api/chat/config?channelType=WEB&…
+                  << 200 OK 10.2k
+[11:28:23.473][192.168.31.72:49556] client connect
+[11:28:23.576][192.168.31.72:49548] server connect www.googletagmanager.com:443 (173.194.221.97:443)
+192.168.31.72:53900: GET https://mvideo.edna.io/api/client/history/unread
+                  << 200 OK 1b
+[11:28:23.599][192.168.31.72:49556] server connect mvideo.edna.io:443 (91.213.158.234:443)
+192.168.31.72:49548: GET https://www.googletagmanager.com/gtm.js?id=GTM-M3DL9V7 HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+192.168.31.72:49548: GET https://www.googletagmanager.com/gtm.js?id=GTM-6ZQL HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+[11:28:24.476][192.168.31.72:49558] client connect
+[11:28:24.500][192.168.31.72:49570] client connect
+[11:28:24.505][192.168.31.72:49584] client connect
+[11:28:24.505][192.168.31.72:49592] client connect
+[11:28:24.546][192.168.31.72:49584] server connect acmvid.com:443 (89.208.216.86:443)
+[11:28:24.548][192.168.31.72:49570] server connect mc.yandex.ru:443 (77.88.21.119:443)
+[11:28:24.593][192.168.31.72:49596] client connect
+[11:28:24.611][192.168.31.72:49558] server connect cdn.diginetica.net:443 (151.236.102.200:443)
+[11:28:24.612][192.168.31.72:49592] server connect top-fwz1.mail.ru:443 (90.156.233.120:443)
+[11:28:24.625][192.168.31.72:49604] client connect
+[11:28:24.676][192.168.31.72:49596] server connect eye.targetads.io:443 (158.160.181.27:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/api/fl/idgib-w-mvideo HTTP/2.0
+         << HTTP/2.0 200 OK 191b
+[11:28:24.721][192.168.31.72:49604] server connect ru.id.facct.ru:443 (212.41.12.11:443)
+192.168.31.72:49584: GET https://acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 18.9k
+192.168.31.72:49592: GET https://top-fwz1.mail.ru/js/code.js HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+[11:28:24.768][192.168.31.72:49622] client connect
+192.168.31.72:49558: GET https://cdn.diginetica.net/5860/client-lite.js HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+[11:28:24.770][192.168.31.72:49608] client connect
+192.168.31.72:53882: GET https://assets-cdn.mvideo.ru/chat_atg/settings-6.6.0-ne… HTTP/2.0
+         << HTTP/2.0 200 OK 10.8k
+[11:28:24.813][192.168.31.72:49622] server connect hit.acmvid.com:443 (89.208.216.240:443)
+192.168.31.72:49596: POST https://eye.targetads.io/web/collect?dl=https%3A%2F%2Fw… HTTP/2.0
+         << HTTP/2.0 200 OK 18b
+[11:28:24.819][192.168.31.72:49608] server connect hitcrypt.acmvid.com:443 (89.208.216.86:443)
+192.168.31.72:49570: GET https://mc.yandex.ru/metrika/tag.js HTTP/2.0
+         << HTTP/2.0 200 OK 92.5k
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+192.168.31.72:49604: GET https://ru.id.facct.ru/id.html HTTP/2.0
+         << HTTP/2.0 200 OK 584b
+192.168.31.72:49570: GET https://mc.yandex.ru/watch/25907066?wmode=7&page-url=ht… HTTP/2.0
+         << HTTP/2.0 200 OK 3.0k
+192.168.31.72:49622: GET https://hit.acmvid.com/mvideoru/?sid=bace627d-2c18-46f1… HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:49608: OPTIONS https://hitcrypt.acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:49570: GET https://mc.yandex.ru/watch/106985860?wmode=7&page-url=h… HTTP/2.0
+         << HTTP/2.0 200 OK 1.2k
+[11:28:24.994][192.168.31.72:49632] client connect
+[11:28:25.036][192.168.31.72:49632] server connect mc.yandex.ru:443 (77.88.21.119:443)
+192.168.31.72:49570: GET https://mc.yandex.ru/ytm-config/25907066?wmode=7 HTTP/2.0
+         << HTTP/2.0 200 OK 199b
+192.168.31.72:49570: GET https://mc.yandex.ru/metrika/tag_phono.js HTTP/2.0
+         << HTTP/2.0 200 OK 12.7k
+192.168.31.72:49570: GET https://mc.yandex.ru/ytm-config/106985860?wmode=7 HTTP/2.0
+         << HTTP/2.0 200 OK 1.7k
+192.168.31.72:49608: POST https://hitcrypt.acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 718b
+192.168.31.72:49632: GET https://mc.yandex.ru/solid.ws
+                  << 101 Switching protocols 0b
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 410b
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+[11:28:27.970][192.168.31.72:49644] client connect
+[11:28:28.136][192.168.31.72:49644] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.262][192.168.31.72:49644] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.262][192.168.31.72:49644] client disconnect
+[11:28:28.263][192.168.31.72:49644] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.274][192.168.31.72:49648] client connect
+[11:28:28.275][192.168.31.72:49668] client connect
+[11:28:28.276][192.168.31.72:49672] client connect
+[11:28:28.278][192.168.31.72:49678] client connect
+[11:28:28.280][192.168.31.72:49674] client connect
+[11:28:28.282][192.168.31.72:49664] client connect
+[11:28:28.289][192.168.31.72:49680] client connect
+[11:28:28.294][192.168.31.72:49690] client connect
+[11:28:28.366][192.168.31.72:49648] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.368][192.168.31.72:49680] server connect cdn1.ozone.ru:443 (185.73.193.119:443)
+[11:28:28.369][192.168.31.72:49672] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.370][192.168.31.72:49668] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.371][192.168.31.72:49664] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.371][192.168.31.72:49678] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.372][192.168.31.72:49674] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.373][192.168.31.72:49690] server connect xapi.ozon.ru:443 (185.73.194.77:443)
+[11:28:28.439][192.168.31.72:49680] Client TLS handshake failed. The client does not trust the proxy's certificate for cdn1.ozone.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.440][192.168.31.72:49680] client disconnect
+[11:28:28.440][192.168.31.72:49680] server disconnect cdn1.ozone.ru:443 (185.73.193.119:443)
+[11:28:28.443][192.168.31.72:49690] Client TLS handshake failed. The client does not trust the proxy's certificate for xapi.ozon.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.444][192.168.31.72:49690] client disconnect
+[11:28:28.444][192.168.31.72:49690] server disconnect xapi.ozon.ru:443 (185.73.194.77:443)
+[11:28:28.479][192.168.31.72:49648] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.488][192.168.31.72:49648] client disconnect
+[11:28:28.491][192.168.31.72:49672] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.492][192.168.31.72:49668] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.492][192.168.31.72:49648] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.493][192.168.31.72:49694] client connect
+[11:28:28.494][192.168.31.72:49672] client disconnect
+[11:28:28.494][192.168.31.72:49668] client disconnect
+[11:28:28.495][192.168.31.72:49672] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.495][192.168.31.72:49668] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.505][192.168.31.72:49704] client connect
+[11:28:28.506][192.168.31.72:49678] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.506][192.168.31.72:49664] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.507][192.168.31.72:49674] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.508][192.168.31.72:49678] client disconnect
+[11:28:28.509][192.168.31.72:49664] client disconnect
+[11:28:28.509][192.168.31.72:49674] client disconnect
+[11:28:28.510][192.168.31.72:49678] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.510][192.168.31.72:49664] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.510][192.168.31.72:49674] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.511][192.168.31.72:49710] client connect
+[11:28:28.550][192.168.31.72:49704] server connect xapi.ozon.ru:443 (185.73.194.77:443)
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:28:28.584][192.168.31.72:49694] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.597][192.168.31.72:49716] client connect
+[11:28:28.598][192.168.31.72:49710] server connect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.615][192.168.31.72:49704] Client TLS handshake failed. The client does not trust the proxy's certificate for xapi.ozon.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.615][192.168.31.72:49704] client disconnect
+[11:28:28.616][192.168.31.72:49704] server disconnect xapi.ozon.ru:443 (185.73.194.77:443)
+[11:28:28.694][192.168.31.72:49694] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.695][192.168.31.72:49694] client disconnect
+[11:28:28.695][192.168.31.72:49694] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.710][192.168.31.72:49710] Client TLS handshake failed. The client does not trust the proxy's certificate for verifiablecredentials-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.712][192.168.31.72:49710] client disconnect
+[11:28:28.712][192.168.31.72:49710] server disconnect verifiablecredentials-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.715][192.168.31.72:49766] client connect
+[11:28:28.743][192.168.31.72:49716] server connect www.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.867][192.168.31.72:49774] client connect
+[11:28:28.869][192.168.31.72:49790] client connect
+[11:28:28.873][192.168.31.72:49716] Client TLS handshake failed. The client does not trust the proxy's certificate for www.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:28.875][192.168.31.72:49716] client disconnect
+[11:28:28.875][192.168.31.72:49716] server disconnect www.googleapis.com:443 (172.217.114.4:443)
+[11:28:28.878][192.168.31.72:49766] server connect taskassist-pa.googleapis.com:443 (172.217.119.4:443)
+[11:28:28.956][192.168.31.72:49790] server connect sdk-api.apptracer.ru:443 (217.20.152.227:443)
+[11:28:29.004][192.168.31.72:49792] client connect
+[11:28:29.065][192.168.31.72:49774] server connect inbox.google.com:443 (64.233.161.19:443)
+[11:28:29.115][192.168.31.72:49790] Client TLS handshake failed. The client does not trust the proxy's certificate for sdk-api.apptracer.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:29.116][192.168.31.72:49790] client disconnect
+[11:28:29.116][192.168.31.72:49790] server disconnect sdk-api.apptracer.ru:443 (217.20.152.227:443)
+[11:28:29.159][192.168.31.72:49792] server connect safebrowsing.googleapis.com:443 (64.233.164.95:443)
+[11:28:29.208][192.168.31.72:49798] client connect
+192.168.31.72:49766: POST https://taskassist-pa.googleapis.com/v2/taskassist:comp… HTTP/2.0
+         << HTTP/2.0 200 OK 51b
+[11:28:29.298][192.168.31.72:49792] Client TLS handshake failed. The client does not trust the proxy's certificate for safebrowsing.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:29.299][192.168.31.72:49792] client disconnect
+[11:28:29.299][192.168.31.72:49792] server disconnect safebrowsing.googleapis.com:443 (64.233.164.95:443)
+192.168.31.72:49766: POST https://taskassist-pa.googleapis.com/v2/taskassist:comp… HTTP/2.0
+         << HTTP/2.0 200 OK 51b
+[11:28:29.331][192.168.31.72:49798] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:29.339][192.168.31.72:49812] client connect
+[11:28:29.439][192.168.31.72:49798] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:29.440][192.168.31.72:49798] client disconnect
+[11:28:29.440][192.168.31.72:49798] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:29.472][192.168.31.72:49826] client connect
+[11:28:29.504][192.168.31.72:49812] server connect appsgenaiserver-pa.googleapis.com:443 (172.217.112.4:443)
+[11:28:29.557][192.168.31.72:49826] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:49774: POST https://inbox.google.com/sync/i/s?hl=ru_RU&c=0 HTTP/2.0
+         << HTTP/2.0 200 OK 1.3k
+[11:28:29.726][192.168.31.72:49826] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:29.727][192.168.31.72:49826] client disconnect
+[11:28:29.727][192.168.31.72:49826] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:29.780][192.168.31.72:49742] client connect
+[11:28:29.781][192.168.31.72:49722] client connect
+[11:28:29.782][192.168.31.72:49754] client connect
+[11:28:29.784][192.168.31.72:49734] client connect
+[11:28:29.785][192.168.31.72:49840] client connect
+[11:28:29.830][192.168.31.72:49754] server connect sdk-api.apptracer.ru:443 (217.20.152.227:443)
+[11:28:29.870][192.168.31.72:49840] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:29.873][192.168.31.72:49722] server connect api.vk.com:443 (87.240.137.207:443)
+192.168.31.72:49812: POST https://appsgenaiserver-pa.googleapis.com/v1/genai/quot… HTTP/2.0
+         << HTTP/2.0 200 OK 46b
+[11:28:29.938][192.168.31.72:49754] Client TLS handshake failed. The client does not trust the proxy's certificate for sdk-api.apptracer.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:29.938][192.168.31.72:49754] client disconnect
+[11:28:29.939][192.168.31.72:49754] server disconnect sdk-api.apptracer.ru:443 (217.20.152.227:443)
+[11:28:29.964][192.168.31.72:49734] server connect graph.facebook.com:443 (157.240.205.1:443)
+[11:28:29.968][192.168.31.72:49742] server connect graph.facebook.com:443 (157.240.205.1:443)
+[11:28:30.022][192.168.31.72:49722] Client TLS handshake failed. The client does not trust the proxy's certificate for api.vk.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.023][192.168.31.72:49840] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.024][192.168.31.72:49722] client disconnect
+[11:28:30.024][192.168.31.72:49840] client disconnect
+[11:28:30.024][192.168.31.72:49722] server disconnect api.vk.com:443 (87.240.137.207:443)
+[11:28:30.025][192.168.31.72:49840] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:30.103][192.168.31.72:49848] client connect
+[11:28:30.104][192.168.31.72:49742] Client TLS handshake failed. The client does not trust the proxy's certificate for graph.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.105][192.168.31.72:49734] Client TLS handshake failed. The client does not trust the proxy's certificate for graph.facebook.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.106][192.168.31.72:49742] client disconnect
+[11:28:30.106][192.168.31.72:49734] client disconnect
+[11:28:30.107][192.168.31.72:49742] server disconnect graph.facebook.com:443 (157.240.205.1:443)
+[11:28:30.108][192.168.31.72:49734] server disconnect graph.facebook.com:443 (157.240.205.1:443)
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:28:30.189][192.168.31.72:49848] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:49774: POST https://inbox.google.com/sync/i/fd?hl=ru_RU&c=1 HTTP/2.0
+         << HTTP/2.0 200 OK 9.6k
+[11:28:30.339][192.168.31.72:49848] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.340][192.168.31.72:49848] client disconnect
+[11:28:30.340][192.168.31.72:49848] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:30.363][192.168.31.72:49856] client connect
+[11:28:30.450][192.168.31.72:49856] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:30.558][192.168.31.72:49856] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.559][192.168.31.72:49856] client disconnect
+[11:28:30.560][192.168.31.72:49856] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:30.588][192.168.31.72:49864] client connect
+[11:28:30.672][192.168.31.72:49864] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:30.842][192.168.31.72:49864] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:30.844][192.168.31.72:49864] client disconnect
+[11:28:30.845][192.168.31.72:49864] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:30.884][192.168.31.72:49866] client connect
+[11:28:30.974][192.168.31.72:49866] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:31.155][192.168.31.72:49866] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:31.156][192.168.31.72:49866] client disconnect
+[11:28:31.157][192.168.31.72:49866] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:31.194][192.168.31.72:49876] client connect
+[11:28:31.281][192.168.31.72:49876] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:31.438][192.168.31.72:49876] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:31.439][192.168.31.72:49876] client disconnect
+[11:28:31.440][192.168.31.72:49876] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:31.468][192.168.31.72:49884] client connect
+[11:28:31.552][192.168.31.72:49884] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:31.666][192.168.31.72:49884] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:31.667][192.168.31.72:49884] client disconnect
+[11:28:31.667][192.168.31.72:49884] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:31.701][192.168.31.72:49886] client connect
+[11:28:31.727][192.168.31.72:49898] client connect
+[11:28:31.863][192.168.31.72:49886] server connect clients4.google.com:443 (173.194.221.113:443)
+[11:28:31.890][192.168.31.72:49898] server connect locationhistoryplacedetails-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:32.076][192.168.31.72:49898] Client TLS handshake failed. The client does not trust the proxy's certificate for locationhistoryplacedetails-pa.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:32.082][192.168.31.72:49898] client disconnect
+[11:28:32.084][192.168.31.72:49898] server disconnect locationhistoryplacedetails-pa.googleapis.com:443 (172.217.114.4:443)
+[11:28:32.124][192.168.31.72:49902] client connect
+[11:28:32.210][192.168.31.72:49902] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:49886: POST https://clients4.google.com/chrome-sync/command/?client… HTTP/2.0
+         << HTTP/2.0 200 OK 383b
+[11:28:32.345][192.168.31.72:49902] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:32.346][192.168.31.72:49902] client disconnect
+[11:28:32.347][192.168.31.72:49902] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:32.375][192.168.31.72:49916] client connect
+[11:28:32.459][192.168.31.72:49916] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:32.582][192.168.31.72:49916] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:32.582][192.168.31.72:49916] client disconnect
+[11:28:32.582][192.168.31.72:49916] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:32.627][192.168.31.72:49924] client connect
+[11:28:32.713][192.168.31.72:49924] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:32.847][192.168.31.72:49924] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:32.848][192.168.31.72:49924] client disconnect
+[11:28:32.849][192.168.31.72:49924] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:33.022][192.168.31.72:49936] client connect
+[11:28:33.023][192.168.31.72:49938] client connect
+[11:28:33.109][192.168.31.72:49938] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:33.156][192.168.31.72:49936] server connect zond.api.2gis.ru:443 (91.236.49.1:443)
+[11:28:33.305][192.168.31.72:49938] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:33.305][192.168.31.72:49936] Client TLS handshake failed. The client does not trust the proxy's certificate for zond.api.2gis.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:33.306][192.168.31.72:49938] client disconnect
+[11:28:33.307][192.168.31.72:49936] client disconnect
+[11:28:33.307][192.168.31.72:49938] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:33.308][192.168.31.72:49936] server disconnect zond.api.2gis.ru:443 (91.236.49.1:443)
+[11:28:33.345][192.168.31.72:35292] client connect
+[11:28:33.431][192.168.31.72:35292] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:33.572][192.168.31.72:35292] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:33.572][192.168.31.72:35292] client disconnect
+[11:28:33.573][192.168.31.72:35292] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:28:33.611][192.168.31.72:35302] client connect
+[11:28:33.696][192.168.31.72:35302] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:33.840][192.168.31.72:35302] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:33.840][192.168.31.72:35302] client disconnect
+[11:28:33.841][192.168.31.72:35302] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:33.870][192.168.31.72:35308] client connect
+[11:28:33.953][192.168.31.72:35308] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:34.105][192.168.31.72:35308] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:34.106][192.168.31.72:35308] client disconnect
+[11:28:34.106][192.168.31.72:35308] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:34.171][192.168.31.72:35324] client connect
+[11:28:34.255][192.168.31.72:35324] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:34.431][192.168.31.72:35324] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:34.432][192.168.31.72:35324] client disconnect
+[11:28:34.432][192.168.31.72:35324] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:34.476][192.168.31.72:35340] client connect
+[11:28:34.564][192.168.31.72:35340] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:34.711][192.168.31.72:35340] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:34.713][192.168.31.72:35340] client disconnect
+[11:28:34.714][192.168.31.72:35340] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:34.763][192.168.31.72:49558] server disconnect cdn.diginetica.net:443 (151.236.102.200:443)
+[11:28:34.850][192.168.31.72:35354] client connect
+[11:28:34.934][192.168.31.72:35354] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.045][192.168.31.72:35354] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:35.046][192.168.31.72:35354] client disconnect
+[11:28:35.047][192.168.31.72:35354] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.074][192.168.31.72:35362] client connect
+[11:28:35.157][192.168.31.72:35362] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:28:35.339][192.168.31.72:35362] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:35.340][192.168.31.72:35362] client disconnect
+[11:28:35.341][192.168.31.72:35362] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.382][192.168.31.72:35368] client connect
+[11:28:35.467][192.168.31.72:35368] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.659][192.168.31.72:35368] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:35.660][192.168.31.72:35368] client disconnect
+[11:28:35.660][192.168.31.72:35368] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.693][192.168.31.72:35382] client connect
+[11:28:35.782][192.168.31.72:35382] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.895][192.168.31.72:35382] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:35.896][192.168.31.72:35382] client disconnect
+[11:28:35.896][192.168.31.72:35382] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:35.956][192.168.31.72:35392] client connect
+[11:28:36.040][192.168.31.72:35392] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:36.279][192.168.31.72:35392] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:36.280][192.168.31.72:35392] client disconnect
+[11:28:36.280][192.168.31.72:35392] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:36.284][192.168.31.72:35408] client connect
+[11:28:36.370][192.168.31.72:35414] client connect
+[11:28:36.456][192.168.31.72:35414] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:36.575][192.168.31.72:35414] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:36.576][192.168.31.72:35414] client disconnect
+[11:28:36.576][192.168.31.72:35414] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:36.611][192.168.31.72:35424] client connect
+[11:28:36.696][192.168.31.72:35424] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:36.701][192.168.31.72:35408] server connect nlp-restapi.amap.com:443 (14.215.172.34:443)
+[11:28:36.807][192.168.31.72:35424] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:36.808][192.168.31.72:35424] client disconnect
+[11:28:36.808][192.168.31.72:35424] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:36.843][192.168.31.72:35432] client connect
+[11:28:36.928][192.168.31.72:35432] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.036][192.168.31.72:35408] Client TLS handshake failed. The client does not trust the proxy's certificate for nlp-restapi.amap.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:37.037][192.168.31.72:35408] client disconnect
+[11:28:37.038][192.168.31.72:35408] server disconnect nlp-restapi.amap.com:443 (14.215.172.34:443)
+[11:28:37.042][192.168.31.72:35432] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:37.043][192.168.31.72:35432] client disconnect
+[11:28:37.044][192.168.31.72:35432] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.068][192.168.31.72:35438] client connect
+[11:28:37.152][192.168.31.72:35438] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.261][192.168.31.72:35438] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:37.262][192.168.31.72:35438] client disconnect
+[11:28:37.263][192.168.31.72:35438] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.297][192.168.31.72:35454] client connect
+[11:28:37.385][192.168.31.72:35454] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.513][192.168.31.72:35454] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:37.515][192.168.31.72:35454] client disconnect
+[11:28:37.515][192.168.31.72:35454] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.551][192.168.31.72:35460] client connect
+[11:28:37.640][192.168.31.72:35460] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.748][192.168.31.72:35460] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:37.749][192.168.31.72:35460] client disconnect
+[11:28:37.749][192.168.31.72:35460] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.788][192.168.31.72:35462] client connect
+[11:28:37.873][192.168.31.72:35462] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:37.984][192.168.31.72:35462] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:37.985][192.168.31.72:35462] client disconnect
+[11:28:37.985][192.168.31.72:35462] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.021][192.168.31.72:35468] client connect
+[11:28:38.107][192.168.31.72:35468] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.215][192.168.31.72:35468] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:38.215][192.168.31.72:35468] client disconnect
+[11:28:38.216][192.168.31.72:35468] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.253][192.168.31.72:35474] client connect
+[11:28:38.338][192.168.31.72:35474] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.515][192.168.31.72:35474] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:38.519][192.168.31.72:35474] client disconnect
+[11:28:38.520][192.168.31.72:35474] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.556][192.168.31.72:35490] client connect
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:28:38.640][192.168.31.72:35490] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.754][192.168.31.72:35490] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:38.755][192.168.31.72:35490] client disconnect
+[11:28:38.755][192.168.31.72:35490] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:38.783][192.168.31.72:35494] client connect
+[11:28:38.869][192.168.31.72:35494] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.030][192.168.31.72:35494] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:39.030][192.168.31.72:35494] client disconnect
+[11:28:39.031][192.168.31.72:35494] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.066][192.168.31.72:35508] client connect
+[11:28:39.149][192.168.31.72:35508] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.305][192.168.31.72:35508] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:39.306][192.168.31.72:35508] client disconnect
+[11:28:39.307][192.168.31.72:35508] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.344][192.168.31.72:35520] client connect
+[11:28:39.429][192.168.31.72:35520] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.572][192.168.31.72:35520] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:39.572][192.168.31.72:35520] client disconnect
+[11:28:39.573][192.168.31.72:35520] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.667][192.168.31.72:35526] client connect
+[11:28:39.752][192.168.31.72:35526] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.859][192.168.31.72:35526] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:39.860][192.168.31.72:35526] client disconnect
+[11:28:39.860][192.168.31.72:35526] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:39.888][192.168.31.72:35540] client connect
+192.168.31.72:49570: POST https://mc.yandex.ru/watch/25907066?page-url=https%3A%2… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+[11:28:39.976][192.168.31.72:35540] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:49570: POST https://mc.yandex.ru/watch/106985860?page-url=https%3A%… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+[11:28:40.083][192.168.31.72:35540] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:40.084][192.168.31.72:35540] client disconnect
+[11:28:40.085][192.168.31.72:35540] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.105][192.168.31.72:35552] client connect
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:28:40.191][192.168.31.72:35552] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.298][192.168.31.72:35552] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:40.299][192.168.31.72:35552] client disconnect
+[11:28:40.300][192.168.31.72:35552] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.305][192.168.31.72:35566] client connect
+[11:28:40.322][192.168.31.72:35574] client connect
+[11:28:40.389][192.168.31.72:35566] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.406][192.168.31.72:35574] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.502][192.168.31.72:35566] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:40.505][192.168.31.72:35566] client disconnect
+[11:28:40.509][192.168.31.72:35566] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.514][192.168.31.72:35574] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:40.515][192.168.31.72:35574] client disconnect
+[11:28:40.516][192.168.31.72:35574] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.552][192.168.31.72:35590] client connect
+[11:28:40.638][192.168.31.72:35590] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.743][192.168.31.72:35590] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:40.744][192.168.31.72:35590] client disconnect
+[11:28:40.744][192.168.31.72:35590] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.773][192.168.31.72:35600] client connect
+[11:28:40.860][192.168.31.72:35600] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:40.967][192.168.31.72:35600] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:40.967][192.168.31.72:35600] client disconnect
+[11:28:40.968][192.168.31.72:35600] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.025][192.168.31.72:35604] client connect
+[11:28:41.109][192.168.31.72:35604] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.214][192.168.31.72:35604] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:41.215][192.168.31.72:35604] client disconnect
+[11:28:41.216][192.168.31.72:35604] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.247][192.168.31.72:35616] client connect
+[11:28:41.333][192.168.31.72:35616] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.479][192.168.31.72:35616] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:41.481][192.168.31.72:35616] client disconnect
+[11:28:41.482][192.168.31.72:35616] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.510][192.168.31.72:35618] client connect
+[11:28:41.597][192.168.31.72:35618] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.817][192.168.31.72:35618] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:41.818][192.168.31.72:35618] client disconnect
+[11:28:41.819][192.168.31.72:35618] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:41.848][192.168.31.72:35624] client connect
+[11:28:41.933][192.168.31.72:35624] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:42.055][192.168.31.72:35624] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:42.056][192.168.31.72:35624] client disconnect
+[11:28:42.057][192.168.31.72:35624] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:42.079][192.168.31.72:35626] client connect
+[11:28:42.164][192.168.31.72:35626] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:42.276][192.168.31.72:35626] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:42.276][192.168.31.72:35626] client disconnect
+[11:28:42.277][192.168.31.72:35626] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 413b
+[11:28:42.297][192.168.31.72:35636] client connect
+[11:28:42.381][192.168.31.72:35636] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/my-account HTTP/2.0
+         << HTTP/2.0 200 OK 7.1k
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49632 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+WebSocket connection closed by client: 1001 
+[11:28:42.449][192.168.31.72:49632] server disconnect mc.yandex.ru:443 (77.88.21.119:443)
+[11:28:42.450][192.168.31.72:49632] client disconnect
+[11:28:42.495][192.168.31.72:35636] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:42.496][192.168.31.72:35636] client disconnect
+[11:28:42.496][192.168.31.72:35636] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:42.520][192.168.31.72:35638] client connect
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/ff HTTP/2.0
+         << HTTP/2.0 200 OK 234b
+[11:28:42.604][192.168.31.72:35638] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/settings?types=general&types=… HTTP/2.0
+         << HTTP/2.0 200 OK 21.5k
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/profile HTTP/2.0
+         << HTTP/2.0 200 OK 272b
+[11:28:42.707][192.168.31.72:35638] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:42.708][192.168.31.72:35638] client disconnect
+[11:28:42.708][192.168.31.72:35638] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/location HTTP/2.0
+         << HTTP/2.0 200 OK 208b
+[11:28:42.739][192.168.31.72:35642] client connect
+[11:28:42.812][192.168.31.72:35648] client connect
+[11:28:42.834][192.168.31.72:35642] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/loyalty/mcombo/status HTTP/2.0
+         << HTTP/2.0 200 OK 116b
+[11:28:42.861][192.168.31.72:35648] server connect smartcaptcha.cloud.yandex.ru:443 (84.201.151.229:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/profile HTTP/2.0
+         << HTTP/2.0 200 OK 272b
+[11:28:42.951][192.168.31.72:35642] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:42.952][192.168.31.72:35642] client disconnect
+[11:28:42.952][192.168.31.72:35642] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shopping-list/v2/wishlist HTTP/2.0
+         << HTTP/2.0 200 OK 464b
+[11:28:43.021][192.168.31.72:35650] client connect
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shopping-list/v2/comparison HTTP/2.0
+         << HTTP/2.0 200 OK 126b
+192.168.31.72:35648: GET https://smartcaptcha.cloud.yandex.ru/captcha.js
+                  << 200 OK 70.7k
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/loyalty/bonuses HTTP/2.0
+         << HTTP/2.0 200 OK 125b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shopping-cart/short HTTP/2.0
+         << HTTP/2.0 200 OK 64b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/my-account/finance?phone=%2B7… HTTP/2.0
+         << HTTP/2.0 200 OK 219b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/products/unreviewed?limit=10&… HTTP/2.0
+         << HTTP/2.0 200 OK 1.0k
+[11:28:43.106][192.168.31.72:35658] client connect
+[11:28:43.108][192.168.31.72:35650] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/my-account/product-interactio… HTTP/2.0
+         << HTTP/2.0 200 OK 376b
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/order/active HTTP/2.0
+         << HTTP/2.0 200 OK 677b
+[11:28:43.147][192.168.31.72:35658] server connect log-stream.mvideo.ru:443 (10.220.71.205:443)
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 3.2k
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 2.3k
+[11:28:43.214][192.168.31.72:35650] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:43.215][192.168.31.72:35650] client disconnect
+[11:28:43.215][192.168.31.72:35650] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:43.233][192.168.31.72:35668] client connect
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 8.4k
+192.168.31.72:35658: POST https://log-stream.mvideo.ru/api/v1/events
+                  << 200 OK 0b
+[11:28:43.321][192.168.31.72:35668] server connect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shelf/personal HTTP/2.0
+         << HTTP/2.0 200 OK 5.3k
+[11:28:43.441][192.168.31.72:35668] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:43.442][192.168.31.72:35668] client disconnect
+[11:28:43.442][192.168.31.72:35668] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:43.465][192.168.31.72:39766] client connect
+[11:28:43.549][192.168.31.72:39766] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:43.667][192.168.31.72:39766] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:43.668][192.168.31.72:39766] client disconnect
+[11:28:43.668][192.168.31.72:39766] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:43.683][192.168.31.72:39780] client connect
+[11:28:43.770][192.168.31.72:39780] server connect android.googleapis.com:443 (172.217.118.4:443)
+[11:28:43.880][192.168.31.72:39780] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:28:43.881][192.168.31.72:39780] client disconnect
+[11:28:43.881][192.168.31.72:39780] server disconnect android.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:53884: POST https://www.mvideo.ru/api-chat/api/v1/get-chats-unread-… HTTP/2.0
+         << HTTP/2.0 200 OK 50b
+192.168.31.72:53882: GET https://assets-cdn.mvideo.ru/a122ca6a83d01848d53e3da0c5… HTTP/2.0
+         << HTTP/2.0 200 OK 9.8k
+192.168.31.72:53906: GET https://mvideo.edna.io/api/client/history/unread
+                  << 200 OK 1b
+192.168.31.72:53884: GET https://www.mvideo.ru/chat-widget-sw.js HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+192.168.31.72:53900: GET https://mvideo.edna.io/api/chat/config?channelType=WEB&…
+                  << 200 OK 10.2k
+192.168.31.72:49570: GET https://mc.yandex.ru/watch/25907066?wmode=7&page-url=ht… HTTP/2.0
+         << HTTP/2.0 200 OK 3.0k
+192.168.31.72:49584: GET https://acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 18.9k
+192.168.31.72:49596: POST https://eye.targetads.io/web/collect?dl=https%3A%2F%2Fw… HTTP/2.0
+         << HTTP/2.0 200 OK 18b
+[11:28:46.311][192.168.31.72:39792] client connect
+192.168.31.72:49570: GET https://mc.yandex.ru/watch/106985860?wmode=7&page-url=h… HTTP/2.0
+         << HTTP/2.0 200 OK 1.2k
+192.168.31.72:53882: GET https://assets-cdn.mvideo.ru/chat_atg/settings-6.6.0-ne… HTTP/2.0
+         << HTTP/2.0 200 OK 10.8k
+192.168.31.72:49622: GET https://hit.acmvid.com/mvideoru/?sid=bace627d-2c18-46f1… HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:28:46.354][192.168.31.72:39792] server connect mc.yandex.ru:443 (77.88.21.119:443)
+192.168.31.72:49608: OPTIONS https://hitcrypt.acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:49608: POST https://hitcrypt.acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 718b
+192.168.31.72:39792: GET https://mc.yandex.ru/solid.ws
+                  << 101 Switching protocols 0b
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: GET https://www.mvideo.ru/api/fl/idgib-w-mvideo HTTP/2.0
+         << HTTP/2.0 200 OK 191b
+192.168.31.72:49604: GET https://ru.id.facct.ru/id.html HTTP/2.0
+         << HTTP/2.0 200 OK 584b
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 410b
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 409b
+[11:28:53.290][192.168.31.72:35658] server disconnect log-stream.mvideo.ru:443 (10.220.71.205:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/my-account HTTP/2.0
+         << HTTP/2.0 200 OK 7.1k
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:39792 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+WebSocket connection closed by client: 1001 
+[11:28:53.394][192.168.31.72:39792] server disconnect mc.yandex.ru:443 (77.88.21.119:443)
+[11:28:53.394][192.168.31.72:39792] client disconnect
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/ff HTTP/2.0
+         << HTTP/2.0 200 OK 234b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/settings?types=general&types=… HTTP/2.0
+         << HTTP/2.0 200 OK 21.5k
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/profile HTTP/2.0
+         << HTTP/2.0 200 OK 272b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/location HTTP/2.0
+         << HTTP/2.0 200 OK 208b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/loyalty/mcombo/status HTTP/2.0
+         << HTTP/2.0 200 OK 116b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/profile HTTP/2.0
+         << HTTP/2.0 200 OK 272b
+192.168.31.72:35648: GET https://smartcaptcha.cloud.yandex.ru/captcha.js
+                  << 200 OK 70.7k
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shopping-list/v2/wishlist HTTP/2.0
+         << HTTP/2.0 200 OK 464b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/my-account/finance?phone=%2B7… HTTP/2.0
+         << HTTP/2.0 200 OK 219b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/loyalty/bonuses HTTP/2.0
+         << HTTP/2.0 200 OK 125b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shopping-cart/short HTTP/2.0
+         << HTTP/2.0 200 OK 64b
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shopping-list/v2/comparison HTTP/2.0
+         << HTTP/2.0 200 OK 126b
+[11:28:54.078][192.168.31.72:35658] server connect log-stream.mvideo.ru:443 (10.220.71.205:443)
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/products/unreviewed?limit=10&… HTTP/2.0
+         << HTTP/2.0 200 OK 1.0k
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/my-account/product-interactio… HTTP/2.0
+         << HTTP/2.0 200 OK 376b
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 3.2k
+192.168.31.72:35658: POST https://log-stream.mvideo.ru/api/v1/events
+                  << 200 OK 0b
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/order/active HTTP/2.0
+         << HTTP/2.0 200 OK 677b
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 2.3k
+192.168.31.72:53884: POST https://www.mvideo.ru/bff/product-details/list HTTP/2.0
+         << HTTP/2.0 200 OK 8.4k
+192.168.31.72:53884: GET https://www.mvideo.ru/bff/shelf/personal HTTP/2.0
+         << HTTP/2.0 200 OK 5.3k
+192.168.31.72:53882: GET https://assets-cdn.mvideo.ru/a122ca6a83d01848d53e3da0c5… HTTP/2.0
+         << HTTP/2.0 200 OK 9.8k
+192.168.31.72:53884: POST https://www.mvideo.ru/api-chat/api/v1/get-chats-unread-… HTTP/2.0
+         << HTTP/2.0 200 OK 50b
+192.168.31.72:53884: GET https://www.mvideo.ru/chat-widget-sw.js HTTP/2.0
+         << HTTP/2.0 304 Not Modified 0b
+192.168.31.72:53900: GET https://mvideo.edna.io/api/chat/config?channelType=WEB&…
+                  << 200 OK 10.2k
+192.168.31.72:53906: GET https://mvideo.edna.io/api/client/history/unread
+                  << 200 OK 1b
+192.168.31.72:49570: GET https://mc.yandex.ru/watch/25907066?wmode=7&page-url=ht… HTTP/2.0
+         << HTTP/2.0 200 OK 3.0k
+192.168.31.72:49584: GET https://acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 18.9k
+192.168.31.72:49596: POST https://eye.targetads.io/web/collect?dl=https%3A%2F%2Fw… HTTP/2.0
+         << HTTP/2.0 200 OK 18b
+192.168.31.72:49570: GET https://mc.yandex.ru/watch/106985860?wmode=7&page-url=h… HTTP/2.0
+         << HTTP/2.0 200 OK 1.2k
+[11:28:57.237][192.168.31.72:48776] client connect
+192.168.31.72:53882: GET https://assets-cdn.mvideo.ru/chat_atg/settings-6.6.0-ne… HTTP/2.0
+         << HTTP/2.0 200 OK 10.8k
+[11:28:57.290][192.168.31.72:48776] server connect mc.yandex.ru:443 (77.88.21.119:443)
+192.168.31.72:49608: OPTIONS https://hitcrypt.acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:49622: GET https://hit.acmvid.com/mvideoru/?sid=bace627d-2c18-46f1… HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:49608: POST https://hitcrypt.acmvid.com/ HTTP/2.0
+         << HTTP/2.0 200 OK 718b
+192.168.31.72:48776: GET https://mc.yandex.ru/solid.ws
+                  << 101 Switching protocols 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:49886: POST https://clients4.google.com/chrome-sync/command/?client… HTTP/2.0
+         << HTTP/2.0 200 OK 405b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:49604: GET https://ru.id.facct.ru/id.html HTTP/2.0
+         << HTTP/2.0 200 OK 584b
+192.168.31.72:53884: GET https://www.mvideo.ru/api/fl/idgib-w-mvideo HTTP/2.0
+         << HTTP/2.0 200 OK 191b
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 413b
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 410b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:29:04.180][192.168.31.72:35658] server disconnect log-stream.mvideo.ru:443 (10.220.71.205:443)
+[11:29:04.785][192.168.31.72:49604] server disconnect ru.id.facct.ru:443 (212.41.12.11:443)
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:29:07.618][192.168.31.72:44600] client connect
+[11:29:07.646][192.168.31.72:44608] client connect
+[11:29:07.648][192.168.31.72:44610] client connect
+[11:29:07.664][192.168.31.72:44626] client connect
+[11:29:07.688][192.168.31.72:44610] server connect www.mvideo.ru:443 (10.210.42.7:443)
+[11:29:07.756][192.168.31.72:44600] server connect cdn-settings.appsflyersdk.com:443 (18.165.140.33:443)
+[11:29:07.802][192.168.31.72:44626] server connect launches.appsflyersdk.com:443 (52.85.154.60:443)
+[11:29:07.811][192.168.31.72:44608] server connect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+192.168.31.72:44610: POST https://www.mvideo.ru/api/fl/logs/
+                  << 200 OK 17b
+192.168.31.72:44600: GET https://cdn-settings.appsflyersdk.com/android/v2/0e99d3…
+                  << 200 OK 45b
+192.168.31.72:44626: POST https://launches.appsflyersdk.com/api/v6.18/androideven…
+                  << 200 OK 2b
+[11:29:08.022][192.168.31.72:44638] client connect
+[11:29:08.067][192.168.31.72:44638] server connect www.mvideo.ru:443 (10.210.42.7:443)
+[11:29:08.171][192.168.31.72:44654] client connect
+[11:29:08.257][192.168.31.72:44654] server connect region1.app-measurement.com:443 (216.239.32.36:443)
+192.168.31.72:44638: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 455b
+[11:29:08.288][192.168.31.72:44664] client connect
+[11:29:08.328][192.168.31.72:44664] server connect www.mvideo.ru:443 (10.210.42.7:443)
+[11:29:08.360][192.168.31.72:44654] Client TLS handshake failed. The client does not trust the proxy's certificate for region1.app-measurement.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:29:08.361][192.168.31.72:44654] client disconnect
+[11:29:08.362][192.168.31.72:44654] server disconnect region1.app-measurement.com:443 (216.239.32.36:443)
+192.168.31.72:44664: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 452b
+[11:29:08.484][192.168.31.72:44676] client connect
+[11:29:08.486][192.168.31.72:44610] client disconnect
+[11:29:08.486][192.168.31.72:44610] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:29:08.574][192.168.31.72:44676] server connect test-b2c-inta4.b2c-test1.yc.mvideo.ru:80 (10.192.77.12:80)
+192.168.31.72:44676: POST http://test-b2c-inta4.b2c-test1.yc.mvideo.ru/location-s…
+                  << 503 Service Temporarily Unavailable 190b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48776 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:44608: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 144b
+[11:29:10.233][192.168.31.72:44626] client disconnect
+[11:29:10.234][192.168.31.72:44626] server disconnect launches.appsflyersdk.com:443 (52.85.154.60:443)
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:49570: POST https://mc.yandex.ru/watch/25907066?page-url=https%3A%2… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:49570: POST https://mc.yandex.ru/watch/106985860?page-url=https%3A%… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:29:24.729][192.168.31.72:49592] server disconnect top-fwz1.mail.ru:443 (90.156.233.120:443)
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:29:26.473][192.168.31.72:58302] client connect
+[11:29:26.833][192.168.31.72:58302] server connect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[11:29:27.113][192.168.31.72:58302] Client TLS handshake failed. The client does not trust the proxy's certificate for grayconfig.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:29:27.115][192.168.31.72:58302] client disconnect
+[11:29:27.116][192.168.31.72:58302] server disconnect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+192.168.31.72:49570: POST https://mc.yandex.ru/webvisor/25907066?wv-part=1&wv-che… HTTP/2.0
+         << HTTP/2.0 200 OK 43b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 410b
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:29:47.218][192.168.31.72:49596] server disconnect eye.targetads.io:443 (158.160.181.27:443)
+[11:29:48.048][192.168.31.72:44666] client connect
+[11:29:48.092][192.168.31.72:44666] server connect www.mvideo.ru:443 (10.210.42.7:443)
+192.168.31.72:44666: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 457b
+[11:29:48.367][192.168.31.72:44600] client disconnect
+[11:29:48.368][192.168.31.72:44600] server disconnect cdn-settings.appsflyersdk.com:443 (18.165.140.33:443)
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:29:49.238][192.168.31.72:44680] client connect
+[11:29:49.323][192.168.31.72:44680] server connect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+192.168.31.72:44680: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 140b
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:29:57.241][192.168.31.72:53882] server disconnect assets-cdn.mvideo.ru:443 (95.181.182.182:443)
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:30:12.178][192.168.31.72:49584] server disconnect acmvid.com:443 (89.208.216.86:443)
+[11:30:12.310][192.168.31.72:49622] server disconnect hit.acmvid.com:443 (89.208.216.240:443)
+[11:30:12.418][192.168.31.72:49608] server disconnect hitcrypt.acmvid.com:443 (89.208.216.86:443)
+[11:30:13.263][192.168.31.72:44638] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:30:13.470][192.168.31.72:44664] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:30:16.973][192.168.31.72:53906] server disconnect mvideo.edna.io:443 (91.213.158.234:443)
+[11:30:17.015][192.168.31.72:53900] server disconnect mvideo.edna.io:443 (91.213.158.234:443)
+192.168.31.72:53884: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+[11:30:21.472][192.168.31.72:55906] client connect
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:30:21.708][192.168.31.72:55906] server connect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[11:30:22.067][192.168.31.72:55906] Client TLS handshake failed. The client does not trust the proxy's certificate for grayconfig.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:30:22.067][192.168.31.72:55906] client disconnect
+[11:30:22.068][192.168.31.72:55906] server disconnect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[11:30:23.658][192.168.31.72:44676] server disconnect test-b2c-inta4.b2c-test1.yc.mvideo.ru:80 (10.192.77.12:80)
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:30:28.054][192.168.31.72:48660] client connect
+[11:30:28.133][192.168.31.72:48660] server connect www.mvideo.ru:443 (10.210.42.6:443)
+192.168.31.72:48660: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 454b
+[11:30:28.353][192.168.31.72:44638] client disconnect
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:53884: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48776 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:30:53.304][192.168.31.72:44666] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:30:59.843][192.168.31.72:35648] server disconnect smartcaptcha.cloud.yandex.ru:443 (84.201.151.229:443)
+[11:31:08.049][192.168.31.72:41072] client connect
+[11:31:08.094][192.168.31.72:41072] server connect www.mvideo.ru:443 (10.210.42.6:443)
+192.168.31.72:41072: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 455b
+[11:31:08.411][192.168.31.72:44664] client disconnect
+[11:31:19.729][192.168.31.72:53914] client connect
+[11:31:19.736][192.168.31.72:53918] client connect
+[11:31:19.737][192.168.31.72:53916] client connect
+[11:31:19.922][192.168.31.72:53918] server connect connect.rom.miui.com:443 (154.85.93.83:443)
+[11:31:19.923][192.168.31.72:53916] server connect connect.rom.miui.com:80 (154.85.93.83:80)
+192.168.31.72:53916: GET http://connect.rom.miui.com/generate_204
+                  << 204 No Content 0b
+[11:31:19.968][192.168.31.72:53916] server disconnect connect.rom.miui.com:80 (154.85.93.83:80)
+[11:31:19.969][192.168.31.72:53916] client disconnect
+[11:31:20.019][192.168.31.72:53914] server connect www.baidu.com:443 (103.235.46.102:443)
+[11:31:20.133][192.168.31.72:53918] Client TLS handshake failed. The client does not trust the proxy's certificate for connect.rom.miui.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:31:20.135][192.168.31.72:53918] client disconnect
+[11:31:20.136][192.168.31.72:53918] server disconnect connect.rom.miui.com:443 (154.85.93.83:443)
+[11:31:20.642][192.168.31.72:53914] Client TLS handshake failed. The client does not trust the proxy's certificate for www.baidu.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:31:20.644][192.168.31.72:53914] client disconnect
+[11:31:20.645][192.168.31.72:53914] server disconnect www.baidu.com:443 (103.235.46.102:443)
+[11:31:20.924][192.168.31.72:53924] client connect
+[11:31:21.013][192.168.31.72:53924] server connect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+192.168.31.72:53924: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 140b
+[11:31:21.530][192.168.31.72:44608] client disconnect
+[11:31:21.532][192.168.31.72:44608] server disconnect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+[11:31:33.295][192.168.31.72:48660] server disconnect www.mvideo.ru:443 (10.210.42.6:443)
+WebSocket connection closed by server: 1000 
+[11:31:37.560][192.168.31.72:48776] server disconnect mc.yandex.ru:443 (77.88.21.119:443)
+[11:31:37.561][192.168.31.72:48776] client disconnect
+[11:31:41.613][192.168.31.72:53884] server disconnect www.mvideo.ru:443 (10.210.42.7:443)
+[11:31:48.069][192.168.31.72:36874] client connect
+[11:31:48.129][192.168.31.72:36874] server connect www.mvideo.ru:443 (10.210.42.6:443)
+192.168.31.72:36874: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 457b
+[11:31:48.426][192.168.31.72:44666] client disconnect
+[11:32:13.348][192.168.31.72:41072] server disconnect www.mvideo.ru:443 (10.210.42.6:443)
+[11:32:22.271][192.168.31.72:53876] server disconnect update.googleapis.com:443 (74.125.131.101:443)
+[11:32:22.940][192.168.31.72:53898] 172.217.117.4:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:32:22.942][192.168.31.72:53898] server disconnect content-autofill.googleapis.com:443 (172.217.117.4:443)
+[11:32:24.058][192.168.31.72:49548] 173.194.221.97:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:32:24.060][192.168.31.72:49548] server disconnect www.googletagmanager.com:443 (173.194.221.97:443)
+[11:32:28.059][192.168.31.72:40946] client connect
+[11:32:28.122][192.168.31.72:40946] server connect www.mvideo.ru:443 (10.210.42.6:443)
+192.168.31.72:40946: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 454b
+[11:32:28.389][192.168.31.72:44680] client disconnect
+[11:32:28.393][192.168.31.72:44680] server disconnect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+[11:32:29.329][192.168.31.72:49766] 172.217.119.4:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:32:29.331][192.168.31.72:49766] server disconnect taskassist-pa.googleapis.com:443 (172.217.119.4:443)
+[11:32:29.933][192.168.31.72:49812] 172.217.112.4:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:32:29.935][192.168.31.72:49812] server disconnect appsgenaiserver-pa.googleapis.com:443 (172.217.112.4:443)
+[11:32:30.219][192.168.31.72:49774] 64.233.161.19:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:32:30.221][192.168.31.72:49774] server disconnect inbox.google.com:443 (64.233.161.19:443)
+[11:32:30.371][192.168.31.72:40956] client connect
+[11:32:30.461][192.168.31.72:40956] server connect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+192.168.31.72:40956: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 140b
+[11:32:32.821][192.168.31.72:48660] client disconnect
+[11:32:53.383][192.168.31.72:36874] server disconnect www.mvideo.ru:443 (10.210.42.6:443)
+[11:32:57.641][192.168.31.72:49886] 173.194.221.113:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:32:57.642][192.168.31.72:49886] server disconnect clients4.google.com:443 (173.194.221.113:443)
+[11:33:08.056][192.168.31.72:58568] client connect
+[11:33:08.114][192.168.31.72:58568] server connect www.mvideo.ru:443 (10.210.42.6:443)
+192.168.31.72:58568: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 455b
+[11:33:08.483][192.168.31.72:41072] client disconnect
+[11:33:13.666][192.168.31.72:53782] client disconnect
+[11:33:13.666][192.168.31.72:53782] server disconnect 178.72.90.151:8123
+[11:33:22.310][192.168.31.72:53876] client disconnect
+[11:33:27.970][192.168.31.72:46140] client connect
+[11:33:28.051][192.168.31.72:49766] server connect taskassist-pa.googleapis.com:443 (172.217.119.4:443)
+[11:33:28.102][192.168.31.72:49774] server connect inbox.google.com:443 (64.233.161.19:443)
+[11:33:28.109][192.168.31.72:46140] server connect appsgrowthpromo-pa.googleapis.com:443 (172.217.114.4:443)
+192.168.31.72:49766: POST https://taskassist-pa.googleapis.com/v2/taskassist:comp… HTTP/2.0
+         << HTTP/2.0 200 OK 51b
+192.168.31.72:49774: POST https://inbox.google.com/sync/i/s?hl=ru_RU&c=0 HTTP/2.0
+         << HTTP/2.0 200 OK 990b
+192.168.31.72:46140: POST https://appsgrowthpromo-pa.googleapis.com/v1/promotion/… HTTP/2.0
+         << HTTP/2.0 200 OK 122b
+192.168.31.72:49774: POST https://inbox.google.com/sync/i/fd?hl=ru_RU&c=1 HTTP/2.0
+         << HTTP/2.0 200 OK 5.4k
+[11:33:33.327][192.168.31.72:40946] server disconnect www.mvideo.ru:443 (10.210.42.6:443)
+[11:33:48.054][192.168.31.72:37868] client connect
+[11:33:48.142][192.168.31.72:37868] server connect www.mvideo.ru:443 (10.210.42.8:443)
+192.168.31.72:37868: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 456b
+[11:33:48.359][192.168.31.72:53924] client disconnect
+[11:33:48.359][192.168.31.72:53924] server disconnect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+[11:34:08.647][192.168.31.72:44676] client disconnect
+[11:34:13.360][192.168.31.72:58568] server disconnect www.mvideo.ru:443 (10.210.42.6:443)
+[11:34:15.356][192.168.31.72:33408] client connect
+[11:34:15.522][192.168.31.72:33408] server connect firebaselogging-pa.googleapis.com:443 (172.217.113.4:443)
+192.168.31.72:33408: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 140b
+[11:34:17.854][192.168.31.72:36874] client disconnect
+[11:34:28.049][192.168.31.72:46572] client connect
+[11:34:28.088][192.168.31.72:46572] server connect www.mvideo.ru:443 (10.210.42.8:443)
+192.168.31.72:46572: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 456b
+[11:34:28.392][192.168.31.72:40946] client disconnect
+[11:34:53.297][192.168.31.72:37868] server disconnect www.mvideo.ru:443 (10.210.42.8:443)
+[11:35:08.051][192.168.31.72:55710] client connect
+[11:35:08.090][192.168.31.72:55710] server connect www.mvideo.ru:443 (10.210.42.8:443)
+192.168.31.72:55710: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 456b
+[11:35:08.414][192.168.31.72:40956] client disconnect
+[11:35:08.414][192.168.31.72:40956] server disconnect firebaselogging-pa.googleapis.com:443 (172.217.114.4:443)
+[11:35:20.933][192.168.31.72:37470] client connect
+[11:35:21.020][192.168.31.72:37470] server connect firebaselogging-pa.googleapis.com:443 (172.217.113.4:443)
+[11:35:21.066][192.168.31.72:37482] client connect
+[11:35:21.193][192.168.31.72:37482] server connect play.googleapis.com:443 (172.217.112.4:443)
+[11:35:21.322][192.168.31.72:37482] Client TLS handshake failed. The client does not trust the proxy's certificate for play.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:21.323][192.168.31.72:37482] client disconnect
+[11:35:21.323][192.168.31.72:37482] server disconnect play.googleapis.com:443 (172.217.112.4:443)
+192.168.31.72:37470: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 140b
+[11:35:23.594][192.168.31.72:58568] client disconnect
+[11:35:25.438] Mobile Traffic Check: <urlopen error timed out>
+[11:35:33.332][192.168.31.72:46572] server disconnect www.mvideo.ru:443 (10.210.42.8:443)
+[11:35:35.567][192.168.31.72:52698] client connect
+[11:35:35.599][192.168.31.72:52704] client connect
+[11:35:35.652][192.168.31.72:52698] server connect play.googleapis.com:443 (172.217.112.4:443)
+[11:35:35.722][192.168.31.72:52704] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:35.822][192.168.31.72:52698] Client TLS handshake failed. The client does not trust the proxy's certificate for play.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:35.822][192.168.31.72:52698] client disconnect
+[11:35:35.823][192.168.31.72:52698] server disconnect play.googleapis.com:443 (172.217.112.4:443)
+[11:35:35.825][192.168.31.72:52704] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:35.825][192.168.31.72:52704] client disconnect
+[11:35:35.826][192.168.31.72:52704] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:35.864][192.168.31.72:52714] client connect
+[11:35:35.948][192.168.31.72:52714] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.047][192.168.31.72:52714] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:36.047][192.168.31.72:52714] client disconnect
+[11:35:36.048][192.168.31.72:52714] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.115][192.168.31.72:52718] client connect
+[11:35:36.202][192.168.31.72:52718] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.324][192.168.31.72:52718] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:36.324][192.168.31.72:52718] client disconnect
+[11:35:36.324][192.168.31.72:52718] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.387][192.168.31.72:52722] client connect
+[11:35:36.471][192.168.31.72:52722] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.577][192.168.31.72:52722] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:36.577][192.168.31.72:52722] client disconnect
+[11:35:36.578][192.168.31.72:52722] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.614][192.168.31.72:52726] client connect
+[11:35:36.699][192.168.31.72:52726] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.829][192.168.31.72:52726] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:36.829][192.168.31.72:52726] client disconnect
+[11:35:36.830][192.168.31.72:52726] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:36.867][192.168.31.72:52732] client connect
+[11:35:36.953][192.168.31.72:52732] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.055][192.168.31.72:52732] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:37.055][192.168.31.72:52732] client disconnect
+[11:35:37.056][192.168.31.72:52732] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.099][192.168.31.72:52740] client connect
+[11:35:37.184][192.168.31.72:52740] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.284][192.168.31.72:52740] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:37.285][192.168.31.72:52740] client disconnect
+[11:35:37.285][192.168.31.72:52740] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.379][192.168.31.72:52754] client connect
+[11:35:37.462][192.168.31.72:52754] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.568][192.168.31.72:52754] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:37.569][192.168.31.72:52754] client disconnect
+[11:35:37.569][192.168.31.72:52754] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.631][192.168.31.72:52762] client connect
+[11:35:37.716][192.168.31.72:52762] server connect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:37.819][192.168.31.72:52762] Client TLS handshake failed. The client does not trust the proxy's certificate for android.googleapis.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:35:37.819][192.168.31.72:52762] client disconnect
+[11:35:37.819][192.168.31.72:52762] server disconnect android.googleapis.com:443 (172.217.114.4:443)
+[11:35:48.056][192.168.31.72:42970] client connect
+[11:35:48.097][192.168.31.72:42970] server connect www.mvideo.ru:443 (10.210.42.8:443)
+192.168.31.72:42970: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 455b
+[11:35:48.366][192.168.31.72:37868] client disconnect
+[11:36:13.359][192.168.31.72:55710] server disconnect www.mvideo.ru:443 (10.210.42.8:443)
+[11:36:28.054][192.168.31.72:51220] client connect
+[11:36:28.095][192.168.31.72:51220] server connect www.mvideo.ru:443 (10.210.42.8:443)
+192.168.31.72:51220: POST https://www.mvideo.ru/api/fl?as=2.0.43fd301222&p=ru.fil…
+                  << 200 OK 455b
+[11:36:28.321][192.168.31.72:33408] client disconnect
+[11:36:28.321][192.168.31.72:33408] server disconnect firebaselogging-pa.googleapis.com:443 (172.217.113.4:443)
+[11:36:30.369][192.168.31.72:51228] client connect
+[11:36:30.454][192.168.31.72:51228] server connect firebaselogging-pa.googleapis.com:443 (172.217.113.4:443)
+192.168.31.72:51228: POST https://firebaselogging-pa.googleapis.com/v1/firelog/le…
+                  << 200 OK 140b
