@@ -1,25 +1,29 @@
-# Response Match Side Panel
+# Mobile Traffic Check
 
-Chrome Manifest V3 extension that opens as a browser side panel and watches outgoing JSON request payloads for a configured request path.
+Локальное desktop-веб-приложение на **Python + Eel** со встроенным запуском **mitmproxy**. Node.js и SQL-база не требуются: сценарии сохраняются в локальном `settings.json`, а история запросов хранится только в памяти текущего запуска.
 
-## Features
+## Установка и запуск
 
-- Filters outgoing network requests by a URL/path fragment.
-- Supports accordion scenarios; each scenario contains its own comparison rules with:
-  - key path, for example `extra_data.visual_object.id`;
-  - strict or non-strict comparison;
-  - expected value list split by commas;
-  - optional **100% required** flag: required rules must match for the scenario to be recorded, while non-required rules are reported as matched, missing, or mismatched.
-- Shows current search results and records matched outgoing requests in the History tab.
-- Provides buttons to clear current search results and delete history.
-- Can warn with an alert when the active page navigates to a different host.
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
 
-## Load locally
+Откроется UI по адресу `http://127.0.0.1:8000`. Нажмите **«Запустить proxy»** — приложение запустит mitmproxy на порту `8080` и само будет получать завершённые JSON-запросы.
 
-1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select this repository folder.
-5. Click the extension icon to open the side panel.
+## Тестирование телефона
 
-> To inspect requests in Incognito, enable **Allow in Incognito** for the extension in `chrome://extensions`. Chrome keeps split Incognito storage separate from regular browsing storage.
+1. Узнайте LAN-IP компьютера, например `192.168.1.20`.
+2. На телефоне в настройках Wi‑Fi задайте HTTP proxy: `192.168.1.20`, порт `8080`.
+3. Для разрешённого HTTPS-тестирования установите сертификат mitmproxy с `http://mitm.it` и выполните сценарий в приложении.
+4. Запросы с `Content-Type: application/json` появятся в разделе «Поступившие запросы» и будут сверены со сценариями.
+
+## Charles и Fiddler
+
+Они не блокируются и могут быть запущены параллельно. На одном соединении телефон использует только один явный proxy, поэтому для конкретного теста выбирайте mitmproxy **или** Charles/Fiddler. Если Charles/Fiddler настроен на отправку JSON-записей, он может посылать их в `POST http://127.0.0.1:8787/api/captures` — встроенный приёмник их обработает.
+
+Приложение не обходит TLS certificate pinning. Используйте его только для трафика, на анализ которого у вас есть разрешение.
