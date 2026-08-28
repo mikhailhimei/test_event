@@ -5120,3 +5120,485 @@ Error logged during startup, exiting...
 192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
 192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
          << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[10:56:34.241][192.168.31.72:36538] client disconnect
+[10:56:34.242][192.168.31.72:36538] server disconnect 178.72.90.151:8123
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[10:57:30.562][192.168.31.72:38824] client connect
+[10:57:30.588][192.168.31.72:38826] client connect
+[10:57:30.688][192.168.31.72:38824] server connect cdn.exp.xiaomi.com:443 (23.75.20.19:443)
+[10:57:30.940][192.168.31.72:38824] Client TLS handshake failed. The client does not trust the proxy's certificate for cdn.exp.xiaomi.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:57:30.941][192.168.31.72:38824] client disconnect
+[10:57:30.942][192.168.31.72:38824] server disconnect cdn.exp.xiaomi.com:443 (23.75.20.19:443)
+[10:57:30.950][192.168.31.72:38826] server connect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:31.205][192.168.31.72:38826] Client TLS handshake failed. The client does not trust the proxy's certificate for grayconfig.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:57:31.206][192.168.31.72:38826] client disconnect
+[10:57:31.207][192.168.31.72:38826] server disconnect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:31.215][192.168.31.72:38842] client connect
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[10:57:31.449][192.168.31.72:38842] server connect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:31.729][192.168.31.72:38842] Client TLS handshake failed. The client does not trust the proxy's certificate for grayconfig.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:57:31.730][192.168.31.72:38842] client disconnect
+[10:57:31.731][192.168.31.72:38842] server disconnect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:31.741][192.168.31.72:38856] client connect
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[10:57:33.032][192.168.31.72:38856] server connect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:33.330][192.168.31.72:38856] Client TLS handshake failed. The client does not trust the proxy's certificate for grayconfig.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:57:33.331][192.168.31.72:38856] client disconnect
+[10:57:33.332][192.168.31.72:38856] server disconnect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:33.347][192.168.31.72:38870] client connect
+[10:57:33.570][192.168.31.72:38870] server connect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+[10:57:33.903][192.168.31.72:38870] Client TLS handshake failed. The client does not trust the proxy's certificate for grayconfig.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:57:33.904][192.168.31.72:38870] client disconnect
+[10:57:33.905][192.168.31.72:38870] server disconnect grayconfig.xiaomixiaoai.com:443 (120.133.85.92:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 413b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[10:58:12.649][192.168.31.72:33834] 173.194.221.100:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[10:58:12.650][192.168.31.72:33834] server disconnect clients4.google.com:443 (173.194.221.100:443)
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[10:58:23.580][192.168.31.72:57962] client connect
+[10:58:23.587][192.168.31.72:57966] client connect
+[10:58:23.588][192.168.31.72:57982] client connect
+[10:58:23.844][192.168.31.72:57982] server connect connect.rom.miui.com:80 (23.35.104.56:80)
+[10:58:23.845][192.168.31.72:57966] server connect connect.rom.miui.com:443 (23.35.104.56:443)
+[10:58:23.872][192.168.31.72:57962] server connect www.baidu.com:443 (103.235.46.115:443)
+192.168.31.72:57982: GET http://connect.rom.miui.com/generate_204
+                  << 204 No Content 0b
+[10:58:23.896][192.168.31.72:57982] server disconnect connect.rom.miui.com:80 (23.35.104.56:80)
+[10:58:23.897][192.168.31.72:57982] client disconnect
+[10:58:23.951][192.168.31.72:57966] Client TLS handshake failed. The client does not trust the proxy's certificate for connect.rom.miui.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:58:23.951][192.168.31.72:57966] client disconnect
+[10:58:23.952][192.168.31.72:57966] server disconnect connect.rom.miui.com:443 (23.35.104.56:443)
+[10:58:24.492][192.168.31.72:57962] Client TLS handshake failed. The client does not trust the proxy's certificate for www.baidu.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:58:24.493][192.168.31.72:57962] client disconnect
+[10:58:24.493][192.168.31.72:57962] server disconnect www.baidu.com:443 (103.235.46.115:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+[10:58:29.595][192.168.31.72:41316] 172.217.118.4:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[10:58:29.596][192.168.31.72:41316] server disconnect content-autofill.googleapis.com:443 (172.217.118.4:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[10:58:33.964][192.168.31.72:34726] client connect
+[10:58:34.271][192.168.31.72:34726] server connect tracker.xiaomixiaoai.com:443 (47.236.178.176:443)
+[10:58:34.799][192.168.31.72:34726] Client TLS handshake failed. The client does not trust the proxy's certificate for tracker.xiaomixiaoai.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[10:58:34.801][192.168.31.72:34726] client disconnect
+[10:58:34.801][192.168.31.72:34726] server disconnect tracker.xiaomixiaoai.com:443 (47.236.178.176:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[10:59:12.063][192.168.31.72:33834] server connect clients4.google.com:443 (173.194.221.138:443)
+192.168.31.72:33834: POST https://clients4.google.com/ukm HTTP/2.0
+         << HTTP/2.0 200 OK 22b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:00:06.289][192.168.31.72:35558] client connect
+[11:00:06.709][192.168.31.72:35558] server connect client.sms.miui.com:443 (39.102.218.208:443)
+[11:00:07.509][192.168.31.72:35558] Client TLS handshake failed. The client does not trust the proxy's certificate for client.sms.miui.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:00:07.510][192.168.31.72:35558] client disconnect
+[11:00:07.511][192.168.31.72:35558] server disconnect client.sms.miui.com:443 (39.102.218.208:443)
+[11:00:07.519][192.168.31.72:35566] client connect
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:00:08.834][192.168.31.72:35566] server connect client.sms.miui.com:443 (39.102.218.208:443)
+[11:00:09.663][192.168.31.72:35566] Client TLS handshake failed. The client does not trust the proxy's certificate for client.sms.miui.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:00:09.664][192.168.31.72:35566] client disconnect
+[11:00:09.664][192.168.31.72:35566] server disconnect client.sms.miui.com:443 (39.102.218.208:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:00:40.133][192.168.31.72:43350] client connect
+[11:00:40.420][192.168.31.72:43350] server connect tracking.miui.com:443 (47.237.24.60:443)
+[11:00:41.200][192.168.31.72:43350] Client TLS handshake failed. The client does not trust the proxy's certificate for tracking.miui.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:00:41.205][192.168.31.72:43350] client disconnect
+[11:00:41.206][192.168.31.72:43350] server disconnect tracking.miui.com:443 (47.237.24.60:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:02:00.969][192.168.31.72:50508] client connect
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:02:01.890][192.168.31.72:50508] server connect aloc-control-plus.amap.com:443 (106.11.226.4:443)
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:02:09.572][192.168.31.72:50508] Client TLS handshake failed. The client does not trust the proxy's certificate for aloc-control-plus.amap.com (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:02:09.573][192.168.31.72:50508] client disconnect
+[11:02:09.574][192.168.31.72:50508] server disconnect aloc-control-plus.amap.com:443 (106.11.226.4:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:02:55.287][192.168.31.72:55782] client connect
+[11:02:55.371][192.168.31.72:55782] server connect xapi.ozon.ru:443 (185.73.195.108:443)
+[11:02:55.548][192.168.31.72:55782] Client TLS handshake failed. The client does not trust the proxy's certificate for xapi.ozon.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:02:55.549][192.168.31.72:55782] client disconnect
+[11:02:55.550][192.168.31.72:55782] server disconnect xapi.ozon.ru:443 (185.73.195.108:443)
+[11:02:55.574][192.168.31.72:55798] client connect
+[11:02:55.615][192.168.31.72:55798] server connect xapi.ozon.ru:443 (185.73.195.108:443)
+[11:02:55.750][192.168.31.72:55798] Client TLS handshake failed. The client does not trust the proxy's certificate for xapi.ozon.ru (OpenSSL Error([('SSL routines', '', 'tls alert certificate unknown')]))
+[11:02:55.751][192.168.31.72:55798] client disconnect
+[11:02:55.751][192.168.31.72:55798] server disconnect xapi.ozon.ru:443 (185.73.195.108:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 412b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:03:12.356][192.168.31.72:33834] 173.194.221.138:443: HTTP/2 protocol error: Invalid input ConnectionInputs.RECV_PING in state ConnectionState.CLOSED
+[11:03:12.356][192.168.31.72:33834] server disconnect clients4.google.com:443 (173.194.221.138:443)
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+[11:04:12.064][192.168.31.72:33834] server connect clients4.google.com:443 (173.194.221.113:443)
+192.168.31.72:33834: POST https://clients4.google.com/ukm HTTP/2.0
+         << HTTP/2.0 200 OK 22b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:04:14.364][192.168.31.72:41326] Closing connection due to inactivity: Client(192.168.31.72:41326, state=open, alpn=h2)
+[11:04:14.364][192.168.31.72:41326] client disconnect
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+192.168.31.72:45572 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:45572 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:45572 <- WebSocket text message <- mc.yandex.ru:443/solid.ws
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:45572 -> WebSocket text message -> mc.yandex.ru:443/solid.ws
+[11:04:39.547][192.168.31.72:41310] Closing connection due to inactivity: Client(192.168.31.72:41310, state=open, alpn=http/1.1)
+[11:04:39.548][192.168.31.72:41310] client disconnect
+WebSocket connection closed by server: 1000 
+[11:05:33.932][192.168.31.72:45572] server disconnect mc.yandex.ru:443 (77.88.21.119:443)
+[11:05:33.933][192.168.31.72:45572] client disconnect
+[11:05:36.968][192.168.31.72:48060] server disconnect www.mvideo.ru:443 (10.210.42.8:443)
+[11:05:45.032][192.168.31.72:48060] server connect www.mvideo.ru:443 (10.210.42.9:443)
+192.168.31.72:48060: HEAD https://www.mvideo.ru/favicon.ico HTTP/2.0
+         << HTTP/2.0 200 OK 0b
+192.168.31.72:48060: POST https://www.mvideo.ru/api/fl?u=7627191801&mv=2&cfidsgib… HTTP/2.0
+         << HTTP/2.0 200 OK 411b

@@ -17,6 +17,7 @@ import eel
 
 ROOT = Path(__file__).parent
 SETTINGS_FILE = ROOT / "settings.json"
+PROXY_LOG_FILE = ROOT / "mitmproxy.log"
 CAPTURE_HOST, CAPTURE_PORT = "127.0.0.1", 8787
 UI_HOST, UI_PORT = "127.0.0.1", 8000
 DEFAULT_SETTINGS = {
@@ -225,7 +226,7 @@ def ui_start_proxy():
     executable = next((path for path in executable_candidates if path.exists()), None)
     if executable is None:
         return {"ok": False, "message": "mitmproxy не найден. Установите зависимости: pip install -r requirements.txt"}
-    proxy_log = (ROOT / "mitmproxy.log").open("a", encoding="utf-8")
+    proxy_log = PROXY_LOG_FILE.open("a", encoding="utf-8")
     proxy_process = subprocess.Popen(
         [str(executable), "-s", str(ROOT / "proxy_addon.py"), "--set", f"mobile_traffic_endpoint=http://{CAPTURE_HOST}:{CAPTURE_PORT}/api/captures"],
         stdout=proxy_log,
@@ -237,6 +238,7 @@ def ui_start_proxy():
 
 def main():
     initialize_storage()
+    PROXY_LOG_FILE.write_text("", encoding="utf-8")
     start_capture_server()
     eel.init(str(ROOT / "web"))
     threading.Thread(target=ui_start_proxy, daemon=True).start()
