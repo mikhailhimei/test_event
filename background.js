@@ -115,11 +115,13 @@ async function inspectOutgoingRequest(details, json, statusCode) {
       })))
     );
 
-    const hasStrictMismatch = results.some((result) => result.mode === 'strict' && !result.matched);
-    const hasVisibleResult = results.some((result) => result.found || result.matched || result.mode === 'loose');
+    const hasBlockingMismatch = results.some((result) => (
+      (result.mode === 'strict' || result.expectedArrayLength !== null && result.expectedArrayLength !== undefined)
+      && !result.matched
+    ));
+    const hasMatchedRule = results.some((result) => result.matched);
 
-    if (hasStrictMismatch) continue;
-    if (hasVisibleResult) meaningfulResults.push(...results);
+    if (!hasBlockingMismatch && hasMatchedRule) meaningfulResults.push(...results);
   }
 
   if (!meaningfulResults.length) return;
@@ -202,9 +204,15 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
   const actualValues = actualRawValues.map(stringifyComparable);
   const expectedGroups = parseExpected(rule.expected);
   const resolvedExpectedGroups = await resolveExpectedGroups(expectedGroups, details, variableValues);
+  const expectedArrayLength = resolvedExpectedGroups.length > 1 ? resolvedExpectedGroups.length : null;
+  const actualArrayLength = expectedArrayLength === null ? null : actualValues.length;
+  const arrayLengthValid = expectedArrayLength === null || actualArrayLength === expectedArrayLength;
   const matched = rule.mode === 'exists'
     ? actualRawValues.some(isNonEmptyValue)
       : matchExpectedValues(actualValues, resolvedExpectedGroups, rule.mode);
+  const actualMatches = resolvedExpectedGroups.length > 1 && actualValues.length === resolvedExpectedGroups.length
+    ? actualValues.map((actualValue, index) => resolvedExpectedGroups[index]?.includes(actualValue) || false)
+    : null;
   const expectedFlatValues = resolvedExpectedGroups.flat();
   const descriptions = String(rule.description || '').split('|').map((description) => description.trim());
 
@@ -214,6 +222,10 @@ async function compareRule(rule, json, details, scenarioName, variableValues) {
     mode: rule.mode,
     expected: resolvedExpectedGroups.map((values) => values.join(' | ')),
     actual: actualValues,
+    actualMatches,
+    expectedArrayLength,
+    actualArrayLength,
+    arrayLengthValid,
     actualDescriptions: actualValues.map((actualValue) => {
       const expectedIndex = expectedFlatValues.indexOf(actualValue);
       return expectedIndex >= 0 ? descriptions[expectedIndex] || '' : '';
@@ -293,6 +305,7 @@ function getValuesByPath(source, path) {
 
 function parseExpected(value) {
   return splitTopLevel(value, ',')
+    .flatMap((part) => splitTopLevel(part, ';'))
     .map((part) => splitTopLevel(part, '|')
       .map((variant) => variant.trim())
       .filter(Boolean)

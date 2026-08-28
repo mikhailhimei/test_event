@@ -8,7 +8,7 @@ Chrome Manifest V3 extension that opens as a browser side panel and watches outg
 - Supports accordion scenarios; each scenario contains its own comparison rules with:
   - key path, for example `extra_data.visual_object.id`;
   - strict or non-strict comparison;
-  - expected value list split by commas;
+  - expected values can be separated by commas or semicolons; semicolon-separated values are matched by array position and require the same array length;
   - optional **100% required** flag: required rules must match for the scenario to be recorded, while non-required rules are reported as matched, missing, or mismatched.
 - Shows current search results and records matched outgoing requests in the History tab.
 - Provides buttons to clear current search results and delete history.

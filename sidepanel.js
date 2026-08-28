@@ -753,6 +753,8 @@ function getDisplayRecords(records) {
   if (Array.isArray(records)) return records.flatMap(getDisplayRecords);
 
   const results = Array.isArray(records.results) ? records.results : [];
+  if (!results.length || !results.some((result) => result.matched)) return [];
+
   const groups = new Map();
   results.forEach((result) => {
     const groupKey = result.scenarioIndex ?? result.scenarioName ?? 'scenario';
@@ -760,11 +762,19 @@ function getDisplayRecords(records) {
     groups.get(groupKey).push(result);
   });
 
-  return [...groups.entries()].map(([scenarioKey, scenarioResults]) => ({
-    ...records,
-    results: scenarioResults,
-    displayScenarioKey: scenarioKey,
-  }));
+  return [...groups.entries()]
+    .filter(([, scenarioResults]) => {
+      const hasBlockingMismatch = scenarioResults.some((result) => (
+        (result.mode === 'strict' || result.expectedArrayLength !== null && result.expectedArrayLength !== undefined)
+        && !result.matched
+      ));
+      return !hasBlockingMismatch && scenarioResults.some((result) => result.matched);
+    })
+    .map(([scenarioKey, scenarioResults]) => ({
+      ...records,
+      results: scenarioResults,
+      displayScenarioKey: scenarioKey,
+    }));
 }
 
 function getDisplayRecordKey(record) {
@@ -862,6 +872,9 @@ function formatResults(results) {
     const blocks = [
       { label: 'ожидали', value: result.expected?.length ? result.expected.join(', ') : 'любое значение' },
       { label: 'путь', value: result.found ? 'найден' : 'не найден' },
+      ...(result.expectedArrayLength !== null && result.expectedArrayLength !== undefined
+        ? [{ label: 'элементов', value: `${result.actualArrayLength} из ${result.expectedArrayLength}` }]
+        : []),
       { label: 'результат', value: result.matched ? 'совпало' : 'не совпало' },
     ];
 
@@ -881,10 +894,16 @@ function formatResults(results) {
           <div class="result-block-row">
             <span class="result-block-label">получили</span>
             <span class="result-block-value actual-values">
-              ${result.actual?.length
+              ${result.expectedArrayLength !== null && result.expectedArrayLength !== undefined
+                && result.actualArrayLength !== result.expectedArrayLength
+                ? `<span class="actual-value"><span>массив не подходит: получено ${result.actualArrayLength} элементов, ожидалось ${result.expectedArrayLength}</span></span>`
+                : result.actual?.length
                 ? result.actual.map((value, index) => `
                   <span class="actual-value">
                     <span>${escapeHtml(value)}</span>
+                    ${Array.isArray(result.actualMatches) && result.actualMatches[index] !== undefined
+                      ? `<small>${result.actualMatches[index] ? `массив ${index + 1}: совпал` : `массив ${index + 1}: не совпал`}</small>`
+                      : ''}
                     ${result.actualDescriptions?.[index] ? `<small>${escapeHtml(result.actualDescriptions[index])}</small>` : ''}
                   </span>
                 `).join('')
