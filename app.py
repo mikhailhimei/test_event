@@ -2,7 +2,8 @@
 """Desktop UI and capture receiver for Mobile Traffic Check."""
 
 import json
-import shutil
+import site
+import socket
 import subprocess
 import sys
 import threading
@@ -21,8 +22,10 @@ UI_HOST, UI_PORT = "127.0.0.1", 8000
 DEFAULT_SETTINGS = {
     "requestPath": "",
     "scenarios": [{"name": "Сценарий 1", "rules": [{"keyPath": "event", "mode": "strict", "expected": "auth_click"}]}],
+    "commonElements": [],
 }
 proxy_process = None
+proxy_log = None
 results = []
 
 
@@ -39,6 +42,7 @@ def save_settings(settings):
     normalized = {
         "requestPath": str(settings.get("requestPath", "")),
         "scenarios": settings.get("scenarios", []) if isinstance(settings.get("scenarios"), list) else [],
+        "commonElements": settings.get("commonElements", []) if isinstance(settings.get("commonElements"), list) else [],
     }
     SETTINGS_FILE.write_text(json.dumps(normalized, ensure_ascii=False, indent=2), encoding="utf-8")
     return normalized
@@ -61,17 +65,31 @@ def comparable(value):
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")) if isinstance(value, (dict, list)) else str(value if value is not None else "")
 
 
+def is_non_empty(value):
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, (list, dict)):
+        return bool(value)
+    return True
+
+
 def evaluate_rule(rule, body):
-    actual = [comparable(value) for value in values_by_path(body, rule["keyPath"])]
-    expected = [value.strip() for group in str(rule.get("expected", "")).split(",") for value in group.split("|") if value.strip()]
+    raw_actual = values_by_path(body, rule["keyPath"])
+    actual = [comparable(value) for value in raw_actual]
+    expected_groups = [[value.strip() for value in group.split("|") if value.strip()] for group in str(rule.get("expected", "")).split(",") if group.strip()]
+    expected = [value for group in expected_groups for value in group]
     mode = rule.get("mode", "strict")
     if mode == "exists":
-        matched = any(value.strip() for value in actual)
+        matched = any(is_non_empty(value) for value in raw_actual)
+    elif len(expected_groups) > 1:
+        matched = len(actual) == len(expected_groups) and all(actual[index] in group for index, group in enumerate(expected_groups))
     elif mode == "loose":
-        matched = any(value in expected for value in actual)
+        matched = bool(actual) and any(value in expected for value in actual)
     else:
         matched = bool(actual) and all(value in expected for value in actual)
-    return {"keyPath": rule["keyPath"], "mode": mode, "expected": expected, "actual": actual, "matched": matched}
+    return {"keyPath": rule["keyPath"], "mode": mode, "expected": expected, "matchedExpected": [value for value in actual if value in expected], "actual": actual, "description": rule.get("description", ""), "showInSearch": bool(rule.get("showInSearch")), "matched": matched}
 
 
 def evaluate_capture(entry):
@@ -87,10 +105,24 @@ def evaluate_capture(entry):
         return None
     scenarios = []
     for scenario in settings["scenarios"]:
-        rules = [rule for rule in scenario.get("rules", []) if rule.get("keyPath") and (rule.get("expected") or rule.get("mode") == "exists")]
+        if scenario.get("enabled", True) is False:
+            continue
+        common_ids = scenario.get("commonElementIds", scenario.get("commonElementId", []))
+        if isinstance(common_ids, str):
+            common_ids = [common_ids]
+        common_rules = [
+            rule
+            for element in settings.get("commonElements", [])
+            if element.get("id") in common_ids
+            for rule in element.get("rules", [])
+        ]
+        rules = [rule for rule in common_rules + scenario.get("rules", []) if rule.get("keyPath") and (rule.get("expected") or rule.get("mode") == "exists")]
         checks = [evaluate_rule(rule, body) for rule in rules]
-        if checks:
-            scenarios.append({"name": scenario.get("name") or "Сценарий", "checks": checks, "matched": all(check["matched"] for check in checks)})
+        if not checks or any(check["mode"] == "strict" and not check["matched"] for check in checks):
+            continue
+        scenarios.append({"name": scenario.get("name") or "Сценарий", "description": scenario.get("description", ""), "checks": checks, "matched": all(check["matched"] for check in checks)})
+    if not scenarios:
+        return None
     return {"id": str(uuid.uuid4()), "at": datetime.now(timezone.utc).isoformat(), "url": url, "method": request.get("method", "REQUEST"), "status": entry.get("response", {}).get("status", entry.get("status", 0)), "body": body, "scenarios": scenarios}
 
 
@@ -159,14 +191,47 @@ def ui_proxy_status():
 
 
 @eel.expose
+def ui_proxy_info():
+    try:
+        local_ip = socket.gethostbyname(socket.gethostname())
+    except socket.gaierror:
+        local_ip = "127.0.0.1"
+    return {
+        "host": local_ip,
+        "port": 8080,
+        "certificateUrl": "http://mitm.it",
+        "certificatePath": str(Path.home() / ".mitmproxy" / "mitmproxy-ca-cert.cer"),
+    }
+
+
+@eel.expose
+def ui_open_certificate_folder():
+    certificate_path = Path.home() / ".mitmproxy" / "mitmproxy-ca-cert.cer"
+    if not certificate_path.exists():
+        return {"ok": False, "message": "Сертификат еще не создан."}
+    subprocess.Popen(["explorer.exe", f"/select,{certificate_path}"])
+    return {"ok": True}
+
+
+@eel.expose
 def ui_start_proxy():
-    global proxy_process
+    global proxy_process, proxy_log
     if proxy_process is not None and proxy_process.poll() is None:
         return {"ok": True, "message": "mitmproxy уже запущен."}
-    executable = shutil.which("mitmdump")
-    if not executable:
-        return {"ok": False, "message": "mitmdump не найден. Установите зависимости: pip install -r requirements.txt"}
-    proxy_process = subprocess.Popen([executable, "-s", str(ROOT / "proxy_addon.py"), "--set", f"mobile_traffic_endpoint=http://{CAPTURE_HOST}:{CAPTURE_PORT}/api/captures"])
+    executable_candidates = [
+        Path(sys.executable).parent / "Scripts" / "mitmdump.exe",
+        Path(site.getusersitepackages()).parent / "Scripts" / "mitmdump.exe",
+    ]
+    executable = next((path for path in executable_candidates if path.exists()), None)
+    if executable is None:
+        return {"ok": False, "message": "mitmproxy не найден. Установите зависимости: pip install -r requirements.txt"}
+    proxy_log = (ROOT / "mitmproxy.log").open("a", encoding="utf-8")
+    proxy_process = subprocess.Popen(
+        [str(executable), "-s", str(ROOT / "proxy_addon.py"), "--set", f"mobile_traffic_endpoint=http://{CAPTURE_HOST}:{CAPTURE_PORT}/api/captures"],
+        stdout=proxy_log,
+        stderr=subprocess.STDOUT,
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+    )
     return {"ok": True, "message": "mitmproxy запущен на порту 8080."}
 
 
@@ -174,6 +239,7 @@ def main():
     initialize_storage()
     start_capture_server()
     eel.init(str(ROOT / "web"))
+    threading.Thread(target=ui_start_proxy, daemon=True).start()
     eel.start("index.html", host=UI_HOST, port=UI_PORT, block=True)
 
 
