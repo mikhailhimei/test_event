@@ -111,7 +111,8 @@ function bindUi() {
   els.downloadCommonElements.addEventListener('click', downloadCommonElements);
   els.uploadCommonElements.addEventListener('click', uploadCommonElements);
   els.openDocs.addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('documentation.html') }));
-  // els.requestPath.addEventListener('change', saveSettings);
+  els.requestPath.addEventListener('input', saveSettings);
+  els.requestPath.addEventListener('change', saveSettings);
   els.blockExternal.addEventListener('change', saveSettings);
   els.downloadScenarios.addEventListener('click', downloadScenarios);
   els.uploadScenarios.addEventListener('click', uploadScenarios);

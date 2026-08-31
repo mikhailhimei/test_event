@@ -1,0 +1,62 @@
+{
+  "requestPath": "/api/v1/events",
+  "scenarios": [
+    {
+      "name": "Клик на выбор или изменение магазина, ПВЗ или адреса доставки",
+      "description": "Событие клика на выбор или изменение магазина, ПВЗ или адреса доставки",
+      "commonElementIds": [],
+      "rules": [
+        {
+          "keyPath": "kind",
+          "mode": "loose",
+          "expected": "C",
+          "description": "Тип события",
+          "showInSearch": false
+        },
+        {
+          "keyPath": "extra_data.visual_object.id",
+          "mode": "strict",
+          "expected": "choose_delivery|change_delivery",
+          "description": "магазин или пвз или адрес доставки не заполнен|магазин или пвз или адрес доставки заполнен",
+          "showInSearch": true
+        },
+        {
+          "keyPath": "extra_data.visual_object.type",
+          "mode": "loose",
+          "expected": "5",
+          "description": "Тип визуального объекта",
+          "showInSearch": false
+        },
+        {
+          "keyPath": "extra_data.placement_tag",
+          "mode": "exists",
+          "expected": "",
+          "description": "Тег плейсмента",
+          "showInSearch": false
+        },
+        {
+          "keyPath": "extra_data.visual_object.text",
+          "mode": "loose",
+          "expected": "pickup|delivery",
+          "description": "самовывоз|доставка",
+          "showInSearch": true
+        },
+        {
+          "keyPath": "extra_data.pickup_point_id",
+          "mode": "exists",
+          "expected": "",
+          "description": "Идентификатор магазина или пункта выдачи заказа",
+          "showInSearch": false
+        },
+        {
+          "keyPath": "extra_data.date_delivery",
+          "mode": "exists",
+          "expected": "",
+          "description": "Дефолтная дата доставки или самовывоза",
+          "showInSearch": false
+        }
+      ]
+    }
+  ],
+  "commonElements": []
+}

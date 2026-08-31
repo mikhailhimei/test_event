@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "RequestCheck",
   "description": "Проверяйте JSON-запросы по сценариям, сравнивайте поля ответов API и отслеживайте ошибки прямо в боковой панели браузера.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "permissions": [
     "storage",
     "cookies",
