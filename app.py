@@ -134,7 +134,7 @@ def evaluate_capture(entry, include_unmatched=False):
         if not checks or strict_failed:
             continue
         scenario_matched = all(check["matched"] for check in checks)
-        partial = isinstance(body, list) and len(body) > 1 and not strict_failed and any(check["matchedExpected"] for check in checks) and not scenario_matched
+        partial = not strict_failed and not scenario_matched
         if not scenario_matched and not partial:
             continue
         scenarios.append({"index": scenario_index, "name": scenario.get("name") or "Сценарий", "description": scenario.get("description", ""), "checks": checks, "matched": scenario_matched, "partial": partial})
