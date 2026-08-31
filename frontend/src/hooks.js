@@ -1,3 +1,5 @@
+import React from 'react';
+
 function useStoredSet(storageKey) {
   const [values, setValues] = React.useState(() => new Set(JSON.parse(localStorage.getItem(storageKey) || '[]')));
   const replace = React.useCallback((nextValues) => {
@@ -12,3 +14,5 @@ function useStoredSet(storageKey) {
   }, [replace, values]);
   return [values, replace, toggle];
 }
+
+export { useStoredSet };

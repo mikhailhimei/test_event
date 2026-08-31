@@ -1,3 +1,6 @@
+import React from 'react';
+import { Card, FormField, TabPanel } from './layout';
+
 function SettingsTab({ settings, setSettings, saveSettings, proxyInfo, openCertificateFolder }) {
   const updatePath = (value) => {
     const next = { ...settings, requestPath: value };
@@ -85,3 +88,6 @@ function JsonTransfer({ title, name, data, settings, saveSettings }) {
     </div>
   );
 }
+
+
+export { SettingsTab };

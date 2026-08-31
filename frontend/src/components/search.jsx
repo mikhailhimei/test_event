@@ -1,3 +1,7 @@
+import React from 'react';
+import { Card, ResultRow, TabPanel, TitleRow } from './layout';
+import { splitValues } from '../constants';
+
 function SearchTab({
   settings,
   matches,
@@ -185,24 +189,20 @@ function MatchItem({ record, scenario }) {
 
 function ScenarioChecks({ checks }) {
   const count = Math.max(1, ...checks.map((check) => check.actual?.length || 0));
-  const groups = Array.from({ length: count }, (_, index) => (
-    <ArrayGroup key={index} index={index} checks={checks} />
-  ));
 
-  if (count < 2) return groups;
+  if (count === 1) return <ArrayGroup index={0} checks={checks} />;
 
-  return (
-    <details className="array-accordion">
-      <summary>Показать массивы ({count})</summary>
-      {groups}
+  return Array.from({ length: count }, (_, index) => (
+    <details key={index} className="array-accordion">
+      <summary>Элемент массива {index + 1}</summary>
+      <ArrayGroup index={index} checks={checks} />
     </details>
-  );
+  ));
 }
 
 function ArrayGroup({ index, checks }) {
   return (
     <div className="array-group">
-      <div className="array-group-title">Массив {index + 1}</div>
       {checks.map((check, checkIndex) => (
         <CheckBlock key={checkIndex} check={check} index={index} />
       ))}
@@ -240,3 +240,6 @@ function CheckBlock({ check, index }) {
     </div>
   );
 }
+
+
+export { SearchTab };
