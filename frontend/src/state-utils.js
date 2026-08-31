@@ -1,3 +1,5 @@
+import { splitValues } from './constants';
+
 function collectMatchedSearchRules(matches, scenarios) {
   const matched = new Set();
 
@@ -50,3 +52,5 @@ function duplicateScenario(updateAndSave, scenario) {
     return next;
   });
 }
+
+export { collectMatchedSearchRules, saveEntity, deleteEntity, duplicateScenario };

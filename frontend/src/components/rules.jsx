@@ -1,3 +1,7 @@
+import React from 'react';
+import { FormField } from './layout';
+import { ruleTemplate } from '../constants';
+
 function RulesEditor({ rules, setRules }) {
   const updateRule = (index, patch) => {
     setRules(rules.map((rule, current) => (
@@ -55,3 +59,6 @@ function RuleEditor({ rule, onChange, onRemove }) {
     </div>
   );
 }
+
+
+export { RulesEditor };

@@ -1,4 +1,12 @@
-const { useCallback, useEffect, useState } = React;
+import { useCallback, useEffect, useState } from 'react';
+import { makeCommon, makeScenario, emptySettings, normalizeSettings } from './constants';
+import { useStoredSet } from './hooks';
+import { collectMatchedSearchRules, deleteEntity, duplicateScenario, saveEntity } from './state-utils';
+import { AppHeader, TabMenu } from './components/layout';
+import { EntityList } from './components/entity-list';
+import { ScenarioModal, CommonModal } from './components/modals';
+import { SearchTab } from './components/search';
+import { SettingsTab } from './components/settings';
 
 function App() {
   const [settings, setSettings] = useState(emptySettings);
@@ -154,3 +162,5 @@ function App() {
     </>
   );
 }
+
+export default App;

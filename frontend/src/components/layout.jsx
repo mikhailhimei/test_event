@@ -1,3 +1,6 @@
+import React from 'react';
+import { tabs } from '../constants';
+
 function AppHeader({ proxy }) {
   const statusText = proxy.running ? `mitmproxy: порт ${proxy.port}` : 'mitmproxy остановлен';
 
@@ -79,3 +82,6 @@ function Modal({ children, onClose }) {
     </div>
   );
 }
+
+
+export { AppHeader, TabMenu, TabPanel, Card, TitleRow, FormField, ResultRow, Modal };

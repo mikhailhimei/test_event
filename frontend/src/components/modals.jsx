@@ -1,3 +1,8 @@
+import React from 'react';
+import { ruleTemplate, validRules } from '../constants';
+import { FormField, Modal } from './layout';
+import { RulesEditor } from './rules';
+
 function ScenarioModal({ editor, commonElements, onClose, onSave, onDelete, onDuplicate }) {
   const renderScenarioFields = (draft, setDraft) => (
     <>
@@ -92,3 +97,6 @@ function EntityModal({ editor, title, fallbackName, onClose, onSave, onDelete, e
     </Modal>
   );
 }
+
+
+export { ScenarioModal, CommonModal };
